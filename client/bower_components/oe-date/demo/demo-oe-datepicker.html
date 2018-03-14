@@ -1,0 +1,98 @@
+<!--
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>evf-ui demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../paper-styles/paper-styles.html">
+  <link rel="import" href="custom-styles.html">
+  <link rel="import" href="utils.html">
+
+  <link rel="import" href="../oe-datepicker-dlg.html">
+</head>
+
+<body unresolved>
+
+  <div class="vertical-section-container centered">
+
+    <h3>Simple</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <p>{{date_value}}</p>
+          <oe-datepicker value="{{date_value}}"></oe-datepicker>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h3>Locale Settings</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <p>{{date_value}}</p>
+          <oe-datepicker locale="ar-SA" value="{{date_value}}"></oe-datepicker>
+        </template>
+      </template>
+    </demo-snippet>
+
+
+    <h3>Start of Week as Sunday</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <p>{{date_value}}</p>
+          <oe-datepicker start-of-week="0" value="{{date_value}}"></oe-datepicker>
+        </template>
+      </template>
+    </demo-snippet>
+
+
+    <h3>Weekend Friday/Saturday</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <p>{{date_value}}</p>
+          <oe-datepicker disabled-days="[5,6]" value="{{date_value}}"></oe-datepicker>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h3>Min/Max</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <p>{{date_value}}</p>
+          <oe-datepicker min="2016-01-01" max="2016-12-31" value="{{date_value}}"></oe-datepicker>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h3>Date Picker Dialog</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <oe-datepicker-dlg value="{{date_value}}" disabled-days="[6,0]" start-of-week="1" id="_dlg">
+          </oe-datepicker-dlg>
+          <p>{{date_value}}</p>
+          <paper-button onclick="showDatePicker()" color raised>Open</paper-button>
+        </template>
+      </template>
+    </demo-snippet>
+
+  </div>
+
+</body>
+
+</html>

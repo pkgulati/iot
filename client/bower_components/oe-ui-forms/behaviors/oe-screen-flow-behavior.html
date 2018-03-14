@@ -1,0 +1,155 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!--
+`OEUtils.ScreenFlowBehavior` behavior is intended to help in the transition/flow from one screen to another.
+It supports both conditional as well as plain routing(transition/flow from one screen to another).
+-->
+
+<script>
+  var OEUtils = OEUtils || {};
+
+  /** @polymerBehavior OEUtils.ScreenFlowBehavior */
+  OEUtils.ScreenFlowBehavior = {
+    /*
+    This method performs an AJAX (asynchronous HTTP) request.
+    Parameters :
+    url : Specifies the URL to send the request to
+    method : Specifies the type of request(GET or POST or PUT, etc.)
+    header : Headers to be passed for the AJAX request
+    params : Any additional parameters required for the AJAX request
+    ajaxProps : Properties to be used by oe-ajax component.
+    cb : callback implemented by the caller
+    */
+    _makeAjaxCall: function (url, method, body, header, params, ajaxProps, cb) {
+
+      ajaxProps = ajaxProps || {};
+      if (!cb && typeof ajaxProps === 'function') {
+        cb = ajaxProps;
+        ajaxProps = {};
+      }
+
+      var ajax = document.createElement('oe-ajax');
+      ajax.contentType = ajaxProps.contentType || 'application/json';
+      ajax.handleAs = ajaxProps.handleAs || 'json';
+      ajax.url = url;
+      ajax.method = method.toUpperCase();
+      if (ajax.method == 'GET') {
+        params = params || {};
+        params.filter = params.filter || {};
+        params.filter.scope = {};
+      }
+      if (params) {
+        if (params.filter) {
+          params.filter = JSON.stringify(params.filter);
+        }
+        ajax.params = params;
+      }
+      if (body) {
+        delete body._scope;
+        delete body.score;
+        ajax.body = JSON.stringify(body);
+      }
+
+      if (header) {
+        Object.keys(header).forEach(function (k) {
+          var val = header[k];
+          if (Array.isArray(val)) {
+            ajax.headers[k] = val[0]
+          } else {
+            ajax.headers[k] = val
+          }
+
+        })
+      }
+
+      ajax.addEventListener('response', function (event) {
+        if (cb) {
+          cb(null, event.detail.response);
+        }
+      }.bind(this));
+      ajax.addEventListener('error', function (err) {
+        if (cb) {
+          cb(err);
+        }
+      }.bind(this));
+
+      ajax.generateRequest();
+    },
+    /*
+    This method parses the server error object to extract the error message and show a toast.
+    Parameters :
+    err ; the error object to be parsed
+    */
+    resolveError: function (err) {
+      var errObj = OEUtils.extractErrorMessage(err);
+      this.fire('oe-show-error', errObj);
+      return errObj.code || errObj.message;
+    },
+    /*
+    This method is used to execute the bussiness rule
+    Parameters :
+    ruleName : Name of the rule to be executed
+    ruleInput : The payload/context with which the rule should be executed
+    cb : callback implemented by the caller
+    */
+    _executeRule: function(ruleName, ruleInput, cb){
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      var ruleURL = restApiRoot + '/DecisionTables/exec/'+ruleName;
+      this._makeAjaxCall(ruleURL, 'POST', ruleInput, null, null, function(err, resp){
+        cb(err, resp);
+      }.bind(this));
+    },
+    /*
+    This method returns a state object used for navigation to another screen.
+    Parameters :
+    evt : the event for which doConditionalNavigate/doNavigate is used as an handler
+    */
+    _getState: function(evt){
+      var targetName = (evt.currentTarget.dataset.stateTarget || this.modelAlias);
+      var state = {};
+      state[targetName] = this[evt.currentTarget.dataset.stateSource || this.modelAlias];
+      return state;
+    },
+    /*
+    This methods executes a bussiness rule and get backs a route/path to which the screen should navigate next, and navigates to that path.
+    Parameters :
+    evt : the event for which it is used as an handler
+    */
+    doConditionalNavigate: function (evt) {
+      var self = this;
+      var ruleName = evt.currentTarget.dataset.ruleName;//data-rule-name
+      var ruleInput = this[evt.currentTarget.dataset.ruleInput || this.modelAlias];//data-rule-input
+      var state = this._getState(evt);
+        self.validateForm().then(function(status){
+          if(status.valid){
+            self._executeRule(ruleName, ruleInput, function(err, resp){
+              if(err){
+                self.resolveError(err);
+                return;              
+              }
+              window.oe_navigate_to(resp.URL, state);
+            });
+          } else {
+            self.fire('oe-show-error', {
+              code: status.message,
+              placeholders: status.control ? status.control.errorPlaceholders : undefined
+            });
+          }
+        });
+    },
+    /*
+    This method navigates to another screen with the required state object.
+    Parameters :
+    evt : the event for which it is used as an handler
+    */
+    doNavigate: function (evt) {
+      var path = evt.currentTarget.dataset.url;
+      var state = this._getState(evt);
+      window.oe_navigate_to(path, state);
+    }
+  };
+
+</script>

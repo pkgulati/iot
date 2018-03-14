@@ -1,0 +1,69 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../oe-i18n-msg/oe-i18n-msg.html">
+<link rel="import" href="../oe-field-behavior/oe-field-behavior.html">
+
+
+<!--
+A wrapper over `paper-checkbox` for usage in EVF model forms. Adds functionalities related to i18n as well as
+form validations.
+@demo demo/demo-oe-checkbox.html
+-->
+
+<dom-module id="oe-checkbox">
+  <template>
+    <style>
+      :host {
+        padding-top: 30px;
+      }
+
+    </style>
+
+    <paper-checkbox disabled=[[disabled]] checked={{value}}>
+      <oe-i18n-msg msgid=[[label]]>[[label]]</oe-i18n-msg>
+    </paper-checkbox>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'oe-checkbox',
+    properties: {
+
+      /**
+       * label
+       */
+      label: {
+        type: String
+      },
+
+      /*Boolean value property bound to `checked` property of underlying `paper-checkbox`*/
+      value: {
+        type: Boolean,
+        notify: true
+      },
+
+      /*Boolean disabled property bound to `disabled` property of underlying `paper-checkbox`*/
+      disabled: {
+        type: Boolean,
+        notify: true
+      }
+    },
+    listeners: {
+      'change': 'validate'
+    },
+    behaviors: [
+      OEUtils.FieldBehavior
+    ],
+    _validate: function () {
+      this.setValidity(true, undefined);
+      return true;
+    }
+  });
+
+</script>

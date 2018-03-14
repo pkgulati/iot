@@ -1,0 +1,240 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="oe-datepicker.html">
+
+<!--
+Raises event `oe-date-picked` when date is selected.
+-->
+
+<dom-module is="oe-datepicker-dlg">
+
+  <template>
+
+    <style>
+      :host {
+        --dpg-header-text: var(--primary-background-color);
+        --dpg-default-background: var(--primary-background-color);
+        --dpg-header-background: var(--default-primary-color);
+        --dpg-dark-background: var(--dark-primary-color);
+      }
+
+      #dialog div.container {
+        margin: 0;
+        padding: 0;
+        background-color: var(--dpg-default-background);
+      }
+
+      #dialog:host > ::content > *:first-child {
+        margin-top: 0;
+      }
+
+      .vertical {
+        @apply (--layout-vertical);
+      }
+
+      .filler {
+        @apply (--layout-flex);
+      }
+
+      .horizontal {
+        @apply (--layout-horizontal);
+      }
+
+      .header {
+        background-color: var(--dpg-header-background);
+        color: var(--dpg-header-text);
+
+        @apply (--layout-vertical);
+        @apply (--layout-center);
+        @apply (--layout-flex);
+      }
+
+      .dayOfWeekContainer {
+        width: 100%;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        background-color: var(--dpg-dark-background);
+        text-align: center;
+        font-size: 18px;
+        min-height: 18px;
+        font-weight: 300;
+      }
+
+      .dayOfMonthContainer {
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 89px;
+        min-height: 89px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .monthContainer,
+      .yearContainer {
+        text-transform: none;
+        padding: 0;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 24px;
+      }
+
+      .monthContainer {
+        padding-top: 10px;
+        font-weight: 300;
+      }
+
+      .yearContainer {
+        font-weight: 400;
+      }
+
+      @media (max-width: 600px) {
+        .header {
+          display: none !important;
+        }
+      }
+    </style>
+
+
+    <paper-dialog id="dialog" on-iron-overlay-opened="patchOverlay">
+      <div class="container horizontal no-padding">
+        <div class="header">
+          <div class="dayOfWeekContainer" id="day">{{day}}</div>
+          <div class="dayOfMonthContainer" id="date" on-tap="_showMonth">
+            <paper-ripple></paper-ripple>
+            {{date}}
+          </div>
+          <paper-button class="monthContainer" id="month" on-tap="_showYear">{{month}}</paper-button>
+          <paper-button class="yearContainer" id="year" on-tap="_showDecade">{{year}}</paper-button>
+        </div>
+        <div class="vertical">
+          <oe-datepicker id="datePicker" value="{{localValue}}" locale="[[locale]]" start-of-week="[[startOfWeek]]" disabled-days="[[disabledDays]]"
+            max=[[max]] min=[[min]]></oe-datepicker>
+          <div class="horizontal">
+            <div class="filler"></div>
+            <paper-button id="cancelBtn" on-tap="_onCancel">Cancel</paper-button>
+            <paper-button id="okBtn" on-tap="_onOK">OK</paper-button>
+          </div>
+        </div>
+      </div>
+    </paper-dialog>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'oe-datepicker-dlg',
+    properties: {
+      value: {
+        type: Date,
+        notify: true
+      },
+      startOfWeek: {
+        type: Number,
+        value: 1
+      },
+      locale: {
+        type: String,
+        value: navigator.language
+      },
+      disabledDays: {
+        type: Array
+      },
+
+      /**
+       * Maximum selectable date
+       */
+      max: Date,
+
+      /**
+       * Minimum selectable date
+       */
+      min: Date
+    },
+    localValue: undefined,
+    open: function () {
+
+      if (this.value) {
+        this.set('localValue', this.value);
+      } else {
+        var now = new Date();
+        if (now > this.max) {
+          now = this.max;
+        } else if (now < this.min) {
+          now = this.min;
+        }
+        this.set('localValue', new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())));
+      }
+      this._refreshDetails({
+        detail: this.$.datePicker.getDetails(this.localValue)
+      });
+      this.$.dialog.open();
+    },
+    _showMonth: function () {
+      this.$.datePicker.set('showing', 'month');
+    },
+    _showYear: function () {
+      this.$.datePicker._showYear();
+    },
+    _showDecade: function () {
+      this.$.datePicker._showDecade();
+    },
+
+    listeners: {
+      'datePicker.selection-changed': '_refreshDetails',
+      'datePicker.selection-double-click': '_selectionConfirmed'
+    },
+
+    attached: function () {
+
+      /**
+       * aria-modal attribute is not valid aria attribute as per w3 spec (https://www.w3.org/TR/wai-aria/states_and_properties#state_prop_def), which is added to paper dialog.
+       *
+       * In order to make the a11y test suit to pass, explicitly removing this attribute.
+       *
+       * An issue regarding this is already in GitHub https://github.com/PolymerElements/paper-dialog/issues/110
+       *  */
+
+      this.$.dialog.removeAttribute('aria-modal');
+    },
+
+    _refreshDetails: function (e) {
+      this.set('day', e.detail.day);
+      this.set('date', new Intl.NumberFormat(this.locale, {
+        minimumIntegerDigits: 2
+      }).format(e.detail.date));
+      this.set('month', e.detail.month);
+      this.set('year', e.detail.year);
+    },
+    _selectionConfirmed: function (e) {
+      this._refreshDetails(e);
+      this._onOK();
+    },
+    _onOK: function () {
+      this.set('value', this.localValue);
+      this.fire('oe-date-picked', this.value);
+      this.$.dialog.close();
+    },
+    _onCancel: function () {
+      this.set('localValue', this.value);
+      this.$.dialog.close();
+    },
+    patchOverlay: function (e) {
+      if (e.target.withBackdrop) {
+        e.target.parentNode.insertBefore(e.target._backdrop, e.target);
+      }
+    }
+  });
+
+</script>

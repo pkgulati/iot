@@ -1,0 +1,715 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../oe-ajax/oe-ajax.html">
+
+<link rel="import" href="../marked-element/marked-element.html">
+
+
+<link rel="stylesheet" href="styles/github.min.css">
+<link rel="stylesheet" href="styles/github-gist.css">
+
+
+<!--
+`oe-markdown-link` loads a mark-down file and displays as content. 
+Uses Polymer's [marked-element](https://elements.polymer-project.org/elements/marked-element) for rendering. A wrapper is required since  [marked-element](https://elements.polymer-project.org/elements/marked-element) does not allow specifying a url.
+
+@demo demo/demo-oe-markdown-link.html
+-->
+<dom-module id="oe-markdown-link">
+  <template>
+
+    <style>
+      .markdown-html {
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+        color: var(--primary-text-color);
+        font-size: 18px;
+        line-height: 1.2;
+        word-wrap: break-word;
+        font-weight: 400;
+      }
+
+      .markdown-html table {
+        font-weight: 400;
+      }
+
+      .markdown-html a {
+        background: transparent;
+      }
+
+      .markdown-html a:active,
+      .markdown-html a:hover {
+        outline: 0;
+      }
+
+      .markdown-html strong {
+        font-weight: bold;
+      }
+
+      .markdown-html h1 {
+        font-size: 2em;
+        margin: 0.67em 0;
+      }
+
+      .markdown-html img {
+        border: 0;
+      }
+
+      .markdown-html hr {
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+        height: 0;
+      }
+
+      .markdown-html pre {
+        overflow: auto;
+      }
+
+      .markdown-html code,
+      .markdown-html kbd,
+      .markdown-html pre {
+        font-size: 1em;
+      }
+
+      .markdown-html input {
+        color: inherit;
+        font: inherit;
+        margin: 0;
+      }
+
+      .markdown-html html input[disabled] {
+        cursor: default;
+      }
+
+      .markdown-html input {
+        line-height: normal;
+      }
+
+      .markdown-html input[type="checkbox"] {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 0;
+      }
+
+      .markdown-html table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      .markdown-html td,
+      .markdown-html th {
+        padding: 0;
+        line-height: 22px;
+      }
+
+      .markdown-html * {
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      .markdown-html input {
+        font: "SansPro-Regular";
+      }
+
+      .markdown-html a {
+        color: #4183c4;
+        text-decoration: none;
+      }
+
+      .markdown-html a:hover,
+      .markdown-html a:focus,
+      .markdown-html a:active {
+        text-decoration: underline;
+      }
+
+      .markdown-html hr {
+        height: 0;
+        margin: 15px 0;
+        overflow: hidden;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .markdown-html hr::before {
+        display: table;
+        content: "";
+      }
+
+      .markdown-html hr::after {
+        display: table;
+        clear: both;
+        content: "";
+      }
+
+      .markdown-html h1,
+      .markdown-html h2,
+      .markdown-html h3,
+      .markdown-html h4,
+      .markdown-html h5,
+      .markdown-html h6 {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        line-height: 1.1;
+        font-weight: normal;
+      }
+
+      .markdown-html h1 {
+        font-size: 30px;
+      }
+
+      .markdown-html h2 {
+        font-size: 21px;
+      }
+
+      .markdown-html h3 {
+        font-size: 16px;
+      }
+
+      .markdown-html h4 {
+        font-size: 14px;
+      }
+
+      .markdown-html h5 {
+        font-size: 12px;
+      }
+
+      .markdown-html h6 {
+        font-size: 11px;
+      }
+
+      .markdown-html blockquote {
+        margin: 0;
+      }
+
+      .markdown-html ul,
+      .markdown-html ol {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .markdown-html ol ol,
+      .markdown-html ul ol {
+        list-style-type: lower-roman;
+      }
+
+      .markdown-html ul ul ol,
+      .markdown-html ul ol ol,
+      .markdown-html ol ul ol,
+      .markdown-html ol ol ol {
+        list-style-type: lower-alpha;
+      }
+
+      .markdown-html dd {
+        margin-left: 0;
+      }
+
+      .markdown-html code {
+        font: 12px Consolas, "Liberation Mono", Menlo, Courier, "SansPro-Regular";
+      }
+
+      .markdown-html pre {
+        margin-top: 0;
+        margin-bottom: 0;
+        font: 12px Consolas, "Liberation Mono", Menlo, Courier, "SansPro-Regular";
+      }
+
+      .markdown-html .octicon {
+        font: normal normal 16px octicons-anchor;
+        line-height: 1;
+        display: inline-block;
+        text-decoration: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      .markdown-html .octicon-link::before {
+        content: '\f05c';
+      }
+
+      .markdown-html > *:first-child {
+        margin-top: 0 !important;
+      }
+
+      .markdown-html > *:last-child {
+        margin-bottom: 0 !important;
+      }
+
+      .markdown-html .anchor {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        padding-right: 6px;
+        padding-left: 30px;
+        margin-left: -30px;
+      }
+
+      .markdown-html .anchor:focus {
+        outline: none;
+      }
+
+      .markdown-html h1,
+      .markdown-html h2,
+      .markdown-html h3,
+      .markdown-html h4,
+      .markdown-html h5,
+      .markdown-html h6 {
+        position: relative;
+        margin-top: 1em;
+        margin-bottom: 16px;
+        font-weight: normal;
+        line-height: 1.4;
+      }
+
+      .markdown-html h1 .octicon-link,
+      .markdown-html h2 .octicon-link,
+      .markdown-html h3 .octicon-link,
+      .markdown-html h4 .octicon-link,
+      .markdown-html h5 .octicon-link,
+      .markdown-html h6 .octicon-link {
+        display: none;
+        color: #000;
+        vertical-align: middle;
+      }
+
+      .markdown-html h1:hover .anchor,
+      .markdown-html h2:hover .anchor,
+      .markdown-html h3:hover .anchor,
+      .markdown-html h4:hover .anchor,
+      .markdown-html h5:hover .anchor,
+      .markdown-html h6:hover .anchor {
+        padding-left: 8px;
+        margin-left: -30px;
+        line-height: 1;
+        text-decoration: none;
+      }
+
+      .markdown-html h1:hover .anchor .octicon-link,
+      .markdown-html h2:hover .anchor .octicon-link,
+      .markdown-html h3:hover .anchor .octicon-link,
+      .markdown-html h4:hover .anchor .octicon-link,
+      .markdown-html h5:hover .anchor .octicon-link,
+      .markdown-html h6:hover .anchor .octicon-link {
+        display: inline-block;
+      }
+
+      .markdown-html h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid #eee;
+      }
+
+      .markdown-html h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid #eee;
+      }
+
+      .markdown-html h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+      }
+
+      .markdown-html h4 {
+        font-size: 1.25em;
+      }
+
+      .markdown-html h5 {
+        font-size: 1em;
+      }
+
+      .markdown-html h6 {
+        font-size: 1em;
+        color: #777;
+      }
+
+      .markdown-html p,
+      .markdown-html blockquote,
+      .markdown-html ul,
+      .markdown-html ol,
+      .markdown-html dl,
+      .markdown-html table,
+      .markdown-html pre {
+        margin-top: 0;
+        margin-bottom: 16px;
+      }
+
+      .markdown-html hr {
+        height: 4px;
+        padding: 0;
+        margin: 16px 0;
+        background-color: #e7e7e7;
+        border: 0 none;
+      }
+
+      .markdown-html ul,
+      .markdown-html ol {
+        padding-left: 2em;
+      }
+
+      .markdown-html ul ul,
+      .markdown-html ul ol,
+      .markdown-html ol ol,
+      .markdown-html ol ul {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      .markdown-html li > p {
+        margin-top: 16px;
+      }
+
+      .markdown-html dl {
+        padding: 0;
+      }
+
+      .markdown-html dl dt {
+        padding: 0;
+        margin-top: 16px;
+        font-size: 1em;
+        font-style: italic;
+        font-weight: bold;
+      }
+
+      .markdown-html dl dd {
+        padding: 0 16px;
+        margin-bottom: 16px;
+      }
+
+      .markdown-html blockquote {
+        padding: 0 15px;
+        color: #777;
+        border-left: 4px solid #ddd;
+      }
+
+      .markdown-html blockquote > :first-child {
+        margin-top: 0;
+      }
+
+      .markdown-html blockquote > :last-child {
+        margin-bottom: 0;
+      }
+
+      .markdown-html table {
+        display: block;
+        width: 100%;
+        overflow: auto;
+        word-break: normal;
+        word-break: keep-all;
+      }
+
+      .markdown-html table th {
+        font-weight: bold;
+      }
+
+      .markdown-html table th,
+      .markdown-html table td {
+        padding: 6px 13px;
+        border: 1px solid #ddd;
+      }
+
+      .markdown-html table tr {
+        background-color: #fff;
+        border-top: 1px solid #ccc;
+      }
+
+      .markdown-html table tr:nth-child(2n) {
+        background-color: #f8f8f8;
+      }
+
+      .markdown-html img {
+        max-width: 100%;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      .markdown-html code {
+        padding: 0;
+        padding-top: 0.2em;
+        padding-bottom: 0.2em;
+        margin: 0;
+        font-size: 85%;
+        background-color: rgba(0, 0, 0, 0.04);
+        border-radius: 3px;
+      }
+
+      .markdown-html code::before,
+      .markdown-html code::after {
+        letter-spacing: -0.2em;
+        content: "\00a0";
+      }
+
+      .markdown-html pre > code {
+        padding: 0;
+        margin: 0;
+        font-size: 100%;
+        word-break: normal;
+        white-space: pre;
+        background: transparent;
+        border: 0;
+      }
+
+      .markdown-html .highlight {
+        margin-bottom: 16px;
+      }
+
+      .markdown-html .highlight pre,
+      .markdown-html pre {
+        padding: 16px;
+        overflow: auto;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: #f7f7f7;
+        border-radius: 3px;
+      }
+
+      .markdown-html .highlight pre {
+        margin-bottom: 0;
+        word-break: normal;
+      }
+
+      .markdown-html pre {
+        word-wrap: normal;
+      }
+
+      .markdown-html pre code {
+        display: inline;
+        max-width: initial;
+        padding: 0;
+        margin: 0;
+        overflow: initial;
+        line-height: inherit;
+        word-wrap: normal;
+        background-color: transparent;
+        border: 0;
+      }
+
+      .markdown-html pre code::before,
+      .markdown-html pre code::after {
+        content: normal;
+      }
+
+      .markdown-html .pl-c {
+        color: #969896;
+      }
+
+      .markdown-html .pl-c1,
+      .markdown-html .pl-mdh,
+      .markdown-html .pl-mm,
+      .markdown-html .pl-mp,
+      .markdown-html .pl-mr,
+      .markdown-html .pl-s1 .pl-v,
+      .markdown-html .pl-s3,
+      .markdown-html .pl-sc,
+      .markdown-html .pl-sv {
+        color: #0086b3;
+      }
+
+      .markdown-html .pl-e,
+      .markdown-html .pl-en {
+        color: #795da3;
+      }
+
+      .markdown-html .pl-s1 .pl-s2,
+      .markdown-html .pl-smi,
+      .markdown-html .pl-smp,
+      .markdown-html .pl-stj,
+      .markdown-html .pl-vo,
+      .markdown-html .pl-vpf {
+        color: #333;
+      }
+
+      .markdown-html .pl-ent {
+        color: #63a35c;
+      }
+
+      .markdown-html .pl-k,
+      .markdown-html .pl-s,
+      .markdown-html .pl-st {
+        color: #a71d5d;
+      }
+
+      .markdown-html .pl-pds,
+      .markdown-html .pl-s1,
+      .markdown-html .pl-s1 .pl-pse .pl-s2,
+      .markdown-html .pl-sr,
+      .markdown-html .pl-sr .pl-cce,
+      .markdown-html .pl-sr .pl-sra,
+      .markdown-html .pl-sr .pl-sre,
+      .markdown-html .pl-src,
+      .markdown-html .pl-v {
+        color: #df5000;
+      }
+
+      .markdown-html .pl-id {
+        color: #b52a1d;
+      }
+
+      .markdown-html .pl-ii {
+        background-color: #b52a1d;
+        color: #f8f8f8;
+      }
+
+      .markdown-html .pl-sr .pl-cce {
+        color: #63a35c;
+        font-weight: bold;
+      }
+
+      .markdown-html .pl-ml {
+        color: #693a17;
+      }
+
+      .markdown-html .pl-mh,
+      .markdown-html .pl-mh .pl-en,
+      .markdown-html .pl-ms {
+        color: #1d3e81;
+        font-weight: bold;
+      }
+
+      .markdown-html .pl-mq {
+        color: #008080;
+      }
+
+      .markdown-html .pl-mi {
+        color: #333;
+        font-style: italic;
+      }
+
+      .markdown-html .pl-mb {
+        color: #333;
+        font-weight: bold;
+      }
+
+      .markdown-html .pl-md,
+      .markdown-html .pl-mdhf {
+        background-color: #ffecec;
+        color: #bd2c00;
+      }
+
+      .markdown-html .pl-mdht,
+      .markdown-html .pl-mi1 {
+        background-color: #eaffea;
+        color: #55a532;
+      }
+
+      .markdown-html .pl-mdr {
+        color: #795da3;
+        font-weight: bold;
+      }
+
+      .markdown-html .pl-mo {
+        color: #1d3e81;
+      }
+
+      .markdown-html kbd {
+        background-color: #e7e7e7;
+        background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
+        background-image: linear-gradient(#fefefe, #e7e7e7);
+        background-repeat: repeat-x;
+        display: inline-block;
+        padding: 3px 5px;
+        font: 11px Consolas, "Liberation Mono", Menlo, Courier, "SansPro-Regular";
+        line-height: 10px;
+        color: #000;
+        border: 1px solid #cfcfcf;
+        border-radius: 2px;
+      }
+
+      .markdown-html .task-list-item {
+        list-style-type: none;
+      }
+
+      .markdown-html .task-list-item + .task-list-item {
+        margin-top: 3px;
+      }
+
+      .markdown-html .task-list-item input {
+        float: left;
+        margin: 0.3em 0 0.25em -1.6em;
+        vertical-align: middle;
+      }
+
+    </style>
+
+
+    <oe-ajax auto verbose url=[[markdownUrl]] last-response={{markdown}} handle-as="text" content-type="text/html"></oe-ajax>
+
+    <marked-element id="_markdown" markdown={{markdown}}>
+      <div class="markdown-html"></div>
+      <content></content>
+    </marked-element>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'oe-markdown-link',
+    properties: {
+
+      /**
+       * markdown to render
+       */
+      markdown: {
+        type: String
+      },
+
+      /**
+       * url to load the markdown data from
+       */
+      markdownUrl: {
+        type: String,
+        notify: true
+      }
+    },
+    listeners: {
+      'marked-render-complete': '_renderPostProcess'
+    },
+    _renderPostProcess: function () {
+      var self = this;
+      var allAnchors = this.querySelectorAll('a');
+      var regex = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)');
+
+      for (var i = 0, l = allAnchors.length; i < l; i++) {
+        var anchor = allAnchors[i];
+        var href = anchor.getAttribute('href');
+        var isAbsolute = regex.test(href);
+        var isMD = href.endsWith('.md') || href.endsWith('.MD');
+
+        //relative .MD path specified in href
+        if (!isAbsolute && isMD) {
+          anchor.addEventListener('click', function (e) {
+            var markdownUrl = self.markdownUrl || '';
+            var parts = markdownUrl.split('/');
+            //remove current markdown file name.
+            parts.pop();
+
+            markdownUrl = parts.join('/');
+            if (markdownUrl[markdownUrl.length - 1] === '/' || e.target.getAttribute('href')[0] === '/') {
+              markdownUrl += e.target.getAttribute('href');
+            } else {
+              markdownUrl = markdownUrl + '/' + e.target.getAttribute('href');
+            }
+            self.set('markdownUrl', markdownUrl);
+            e.preventDefault();
+          });
+        }
+      }
+      self.fire('oe-marked-render-complete');
+    }
+  });
+
+</script>

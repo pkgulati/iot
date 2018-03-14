@@ -1,0 +1,174 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+<html>
+
+<head>
+
+  <title>oe-radio-group tests</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="../oe-radio-group.html">
+</head>
+
+<body>
+  <test-fixture id="Preselected">
+    <template>
+      <oe-radio-group value="Oranges" listdata='["Apples","Oranges"]'>
+      </oe-radio-group>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="Label">
+    <template>
+      <oe-radio-group>
+      </oe-radio-group>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="has-disabled">
+    <template>
+      <oe-radio-group disabled="true">
+      </oe-radio-group>
+    </template>
+  </test-fixture>
+
+
+  <test-fixture id="object-choices">
+    <template>
+      <oe-radio-group value=1 valueproperty="id" displayproperty="name" listdata='[{"id":1,"name":"Apples"},{"id":2,"name":"Oranges"}]'>
+      </oe-radio-group>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="object-choices-object-value">
+    <template>
+      <oe-radio-group displayproperty="name" listdata='[{"id":1,"name":"Apples"},{"id":2,"name":"Oranges"}]'>
+      </oe-radio-group>
+    </template>
+  </test-fixture>
+
+
+  <script>
+    suite('Basic', function () {
+
+      test('verify listdata contains values', function () {
+        var el = fixture('Preselected');
+        //var val = el.getAttribute('listdata');
+        assert.deepEqual(el.listdata, ['Apples', 'Oranges']);
+
+      });
+
+
+      test('verify radio-button display', function () {
+        var el = fixture('Label');
+        var getValChoice = el._getValue('Apples')
+        var getDispChoice = el._getDisplay('Oranges')
+        assert.equal(getValChoice, 'Apples');
+        assert.equal(getDispChoice, 'Oranges');
+
+      });
+
+
+
+      test('radio-group can have a preselected value', function () {
+        var el = fixture('Preselected');
+        var rg = el.$.radiogroup;
+        assert.equal(rg.selected, 'Oranges');
+
+      });
+
+      test('has-disabled on radio-group', function () {
+        var el = fixture('has-disabled');
+        var rg = el.$.radiogroup;
+        assert.equal(Boolean(rg.disabled), true);
+
+      });
+
+      test('disabled button cannot be clicked', function () {
+        var el = fixture('Preselected');
+        el.disabled = true;
+        MockInteractions.tap(el);
+        assert.isTrue(el.getAttribute('value') !== null);
+      });
+
+
+      test('arrow keys cause iron-activate events', function (done) {
+        var el = fixture('Preselected');
+
+        Polymer.Base.async(function () {
+          el.focus();
+          var i = 1;
+          el.addEventListener('iron-activate', function () {
+            switch (i++) {
+              case 1:
+                MockInteractions.pressAndReleaseKeyOn(el, 38);
+                break;
+              case 2:
+                MockInteractions.pressAndReleaseKeyOn(el, 39);
+                break;
+              case 3:
+                MockInteractions.pressAndReleaseKeyOn(el, 40);
+                break;
+              default:
+                break;
+            }
+          });
+          MockInteractions.pressAndReleaseKeyOn(el, 37);
+        }, 1);
+        done();
+      });
+
+
+      test('preselected value on object array set correctly', function () {
+        var el = fixture('object-choices');
+        var rg = el.$.radiogroup;
+        assert.equal(rg.selected, 1);
+      });
+
+      test('if valueproperty is not defined with object choices, the selection results full object as value',
+        function (done) {
+          var el = fixture('object-choices-object-value');
+          assert.deepEqual(el.listdata, [{
+            id: 1,
+            name: 'Apples'
+          }, {
+            id: 2,
+            name: 'Oranges'
+          }]);
+          el.focus();
+          var rg = el.$.radiogroup;
+
+          Polymer.Base.async(function () {
+            var allRadio = Polymer.dom(rg).querySelectorAll('paper-radio-button');
+            assert.equal(allRadio.length, 2);
+            assert.isUndefined(el.value);
+
+            MockInteractions.downAndUp(allRadio[0],
+              function () {
+                assert.deepEqual(el.value, {
+                  id: 1,
+                  name: 'Apples'
+                });
+                done();
+              });
+          });
+        });
+
+
+    });
+
+  </script>
+
+</body>
+
+</html>

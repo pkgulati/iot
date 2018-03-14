@@ -1,0 +1,234 @@
+<!--
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+    var OEUtils = OEUtils || {};
+    OEUtils.AjaxBehavior = {
+        makeAjaxCall: function (url, method, body, header, params, ajaxProps, cb) {
+
+            ajaxProps = ajaxProps || {};
+            if (!cb && typeof ajaxProps === 'function') {
+                cb = ajaxProps;
+                ajaxProps = {};
+            }
+
+            var ajax = document.createElement('oe-ajax');
+            ajax.contentType = ajaxProps.contentType || 'application/json';
+            ajax.handleAs = ajaxProps.handleAs || 'json';
+            ajax.url = url;
+            ajax.method = method.toUpperCase();
+            if (ajax.method == 'GET') {
+                params = params || {};
+                params.filter = params.filter || {};
+                params.filter.scope = {};
+            }
+            if (params) {
+                if (params.filter) {
+                    params.filter = JSON.stringify(params.filter);
+                }
+                ajax.params = params;
+            }
+            if (body) {
+                delete body._scope;
+                delete body.score;
+                ajax.body = JSON.stringify(body);
+            }
+
+            if (header) {
+                Object.keys(header).forEach(function (k) {
+                    var val = header[k];
+                    if (Array.isArray(val)) {
+                        ajax.headers[k] = val[0]
+                    } else {
+                        ajax.headers[k] = val
+                    }
+
+                })
+            }
+
+            ajax.addEventListener('response', function (event) {
+                if (cb) {
+                    cb(null, event.detail.response);
+                }
+            }.bind(this));
+            ajax.addEventListener('error', function (err) {
+                if (cb) {
+                    cb(err);
+                }
+            }.bind(this));
+            ajax.generateRequest();
+        },
+        makeXhrCall: function (url, method, body, header, cb) {
+            var self = this;
+            method = method.toLowerCase();
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState == 4 && xhr.response.length > 0) {
+                    cb(null, xhr.response)
+                }
+            }
+            xhr.onerror = function () {
+                cb(err)
+            };
+            if (header) {
+                Object.keys(header).forEach(function (k) {
+                    var val = header[k];
+                    if (Array.isArray(val)) {
+                        xhr.setRequestHeader(k, val[0]);
+                    } else {
+                        xhr.setRequestHeader(k, val);
+                    }
+                })
+            }
+            xhr.open(method, url);
+            if (method === 'get') {
+                xhr.send()
+            } else {
+                xhr.setRequestHeader("content-type", "application/json");
+                xhr.send(JSON.stringify(body));
+            }
+        },
+        resolveError: function (err) {
+            var errObj = OEUtils.extractErrorMessage(err);
+            this.fire('oe-show-error', errObj);
+            return errObj.code || errObj.message;
+        },
+        resolveErrors: function (err) {
+            function contructError(messages, codes) {
+                var fields = Object.keys(messages);
+                var messageArr = [];
+                fields.forEach(function (d) {
+                    messages[d].forEach(function (e, j) {
+                        var messageObj = {
+                            message: d + ' ' + e,
+                            code: codes[d][j],
+                            field: d
+                        }
+                        messageArr.push(messageObj);
+                    });
+                });
+                return messageArr;
+            }
+
+            var extractErr = function (err) {
+                var retErrorMsg;
+                if (err && err.detail && err.detail.request && err.detail.request.response) {
+                    var errorObj = err.detail.request.response.error;
+                    var errorMessages = [];
+
+                    if (!errorObj) {
+                        retErrorMsg = {
+                            code: 'UNKNOWN_SERVER_ERROR',
+                            message: 'Unknown server error'
+                        };
+                    } else if (errorObj.details) {
+                        if (Array.isArray(errorObj.details)) {
+                            errorMessages = errorObj.details.map(function (d) {
+                                if (d && d.details && d.details.messages) {
+                                    return contructError(d.details.messages, d.details.codes);
+                                } else {
+                                    return d;
+                                }
+                            }).filter(function (d) {
+                                return d !== undefined;
+                            });
+                        } else {
+                            errorMessages.push(contructError(errorObj.details.messages, errorObj.details.codes));
+                        }
+                        // flattening array of arrays to single array.
+                        errorMessages = [].concat.apply([], errorMessages);
+                        retErrorMsg = errorMessages;
+                    } else if (errorObj.details && errorObj.details.messages && errorObj.details.messages.errs && errorObj.details
+                        .messages.errs.length > 0) {
+                        retErrorMsg = errorObj.details.messages.errs;
+                    } else if (errorObj.errors && errorObj.errors.length > 0) {
+                        retErrorMsg = errorObj.errors;
+                    } else if (errorObj.message) {
+                        retErrorMsg = {
+                            code: errorObj.code || errorObj.message,
+                            message: errorObj.message
+                        };
+                    } else if (errorObj.errmsg) {
+                        retErrorMsg = {
+                            code: errorObj.errmsg,
+                            message: errorObj.errmsg
+                        };
+                    } else {
+                        retErrorMsg = {
+                            code: 'UNKNOWN_SERVER_ERROR',
+                            message: 'Unknown server error'
+                        };
+                    }
+                } else {
+                    retErrorMsg = {
+                        code: 'NO_RESPONSE_FROM_SERVER',
+                        message: 'No response from server'
+                    };
+                }
+
+                if (!Array.isArray) {
+                    if (!retErrorMsg.code && retErrorMsg.errCode) {
+                        retErrorMsg.code = retErrorMsg.errCode;
+                    }
+                    if (!retErrorMsg.message && retErrorMsg.errMessage) {
+                        retErrorMsg.message = retErrorMsg.errMessage;
+                    }
+                }
+                return retErrorMsg;
+            };
+            var errObj = extractErr(err);
+            if (Array.isArray(errObj)) {
+                this.fire('oe-show-error', errObj.map(function (e) {
+                    return e.message || e.code
+                }).join(' , '));
+                return errObj;
+            }
+            this.fire('oe-show-error', errObj);
+            return errObj.code || errObj.message;
+        },
+        _getRestApiUrl: function (path) {
+            var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+            return restApiRoot + path;
+        }
+    }
+    OEUtils.HTMLHelper = {
+        downloadToFile: function (fileName, type, content) {
+            if (type === 'application/json' && typeof content === 'object') {
+                content = JSON.stringify(content, null, 2);
+            }
+            var dl = document.createElement('a');
+            dl.setAttribute('href', 'data:' + type + ';charset=utf-8,' + escape(content));
+            dl.setAttribute('download', fileName);
+            dl.click();
+        },
+        dashToCamel: function (word) {
+            return word.replace(/(\-[a-z])/g, function ($1) {
+                return $1.toUpperCase().replace('-', '');
+            });
+        },
+        camelToDash: function (word) {
+            return word.replace(/([A-Z])/g, function ($1) {
+                return '-' + $1.toLowerCase();
+            });
+        },
+        camelToLabel: function (word) {
+            var test = word.replace(/([A-Z])/g, function ($1) {
+                return ' ' + $1.toUpperCase();
+            });
+            test = test.substring(0, 1).toUpperCase() + test.substring(1)
+            return test
+        },
+        labelToCamel: function (word) {
+            var test = word.replace(/(\s[A-Z])/g, function ($1) {
+                return $1.toUpperCase().replace(' ', '');
+            });
+            test = test.substring(0, 1).toLowerCase() + test.substring(1)
+            return test
+        }
+    }
+
+</script>

@@ -1,0 +1,213 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+<html>
+
+<head>
+
+  <title>oe-meta-component tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+
+  <link rel="import" href="../oe-datepicker-dlg.html">
+  <script>
+    function getRandomDate() {
+      var cryptoObj = window.crypto || window.msCrypto;
+      return cryptoObj.getRandomValues(new Uint32Array(1))[0] % 27; // eslint-disable-line no-undef
+    }
+
+    function pad(num, size) {
+      var s = num + '';
+      while (s.length < size) {
+        s = '0' + s;
+      }
+      return s;
+    }
+
+  </script>
+</head>
+
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <oe-datepicker-dlg></oe-datepicker-dlg>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('<oe-datepicker-dlg>', function () {
+
+      setup(function () {});
+      teardown(function () {});
+
+
+      test('dialog box is not opened by default', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+        done();
+      });
+
+      test('open(), opens the dialog box showing current month by default', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+        element.open();
+        expect(element.$.dialog.opened).to.equal(true);
+
+        expect(element.$.datePicker.showing).to.equal('month');
+        var now = new Date();
+        expect(element.$.datePicker.month.number).to.equal(now.getMonth());
+        expect(element.$.datePicker.month.year).to.equal(now.getFullYear());
+        done();
+      });
+
+      test('cancelBtn closes the dialog box, value should not be set', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+
+        element.open();
+
+        expect(element.$.dialog.opened).to.equal(true);
+        expect(element.value).to.not.exist;
+
+        MockInteractions.tap(element.$.cancelBtn);
+
+        expect(element.$.dialog.opened).to.equal(false);
+        expect(element.value).to.not.exist;
+
+        done();
+      });
+
+      test('okBtn, closes the dialog box, sets the value as  by default today', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+
+        element.open();
+
+        expect(element.$.dialog.opened).to.equal(true);
+        expect(element.value).to.not.exist;
+
+        MockInteractions.tap(element.$.okBtn);
+
+        expect(element.$.dialog.opened).to.equal(false);
+
+        var now = new Date();
+        var today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+        expect(element.value).to.deep.equal(today);
+        done();
+      });
+
+      test('Clicking on side-month shows current year', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+        element.open();
+        expect(element.$.dialog.opened).to.equal(true);
+        MockInteractions.tap(element.$.month);
+
+        expect(element.$.datePicker.showing).to.equal('year');
+        var now = new Date();
+        expect(element.$.datePicker._activeYear).to.equal(now.getFullYear());
+        done();
+      });
+
+      test('Clicking on side-year shows current decade', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+        element.open();
+        expect(element.$.dialog.opened).to.equal(true);
+        MockInteractions.tap(element.$.year);
+
+        expect(element.$.datePicker.showing).to.equal('decade');
+        var now = new Date();
+        var year = now.getFullYear();
+        var min = year - (year % 10);
+        var max = min + 10;
+
+        expect(element.$.datePicker.decadeYears).to.be.not.empty;
+        expect(element.$.datePicker.decadeYears.pop()).to.equal(max);
+        expect(element.$.datePicker.decadeYears.shift()).to.equal(min);
+        done();
+      });
+
+      test('Clicking on side-date shows current month', function (done) {
+        var element = fixture('basic');
+        expect(element.$.dialog.opened).to.equal(false);
+        element.open();
+        expect(element.$.dialog.opened).to.equal(true);
+        MockInteractions.tap(element.$.month);
+
+        expect(element.$.datePicker.showing).to.equal('year');
+        MockInteractions.tap(element.$.date);
+        expect(element.$.datePicker.showing).to.equal('month');
+        done();
+      });
+
+      test('When value is set, initial calendar is shown based on value', function (done) {
+        var element = fixture('basic');
+        var value = new Date();
+        value.setFullYear(value.getFullYear() + 5);
+        value.setMonth(value.getMonth() - 5);
+        element.value = value;
+        element.open();
+        expect(element.$.datePicker.month.number).to.equal(value.getMonth());
+        expect(element.$.datePicker.month.year).to.equal(value.getFullYear());
+        done();
+      });
+
+      test('When a date is tapped, it is selected and displayed and dialog remains open', function (done) {
+        var element = fixture('basic');
+        element.open();
+
+        Polymer.Base.async(function () {
+          var allDateElems = element.$.datePicker.querySelectorAll('div[data-date][data-month][data-year]');
+          var randomElement = allDateElems[getRandomDate()];
+
+          MockInteractions.tap(randomElement);
+
+          expect(element.date).to.equal(pad(randomElement.dataset.date, 2));
+          expect(element.$.dialog.opened).to.equal(true);
+          done();
+        }, 100);
+      });
+
+      test('When a date is double-clicked, it is selected and dialog is closed', function (done) {
+        var element = fixture('basic');
+        element.open();
+
+        Polymer.Base.async(function () {
+          var allDateElems = element.$.datePicker.querySelectorAll('div[data-date][data-month][data-year]');
+          var randomElement = allDateElems[getRandomDate()];
+
+          MockInteractions.tap(randomElement);
+          var value = new Date(Date.UTC(randomElement.dataset.year, randomElement.dataset.month,
+            randomElement.dataset.date));
+          element.$.datePicker.fire('selection-double-click', element.$.datePicker.getDetails(value));
+
+          Polymer.Base.async(function () {
+            expect(element.value).to.exist;
+            expect(element.value).to.deep.equal(value);
+            expect(element.$.dialog.opened).to.equal(false);
+            done();
+          }, 100);
+
+        }, 100);
+      });
+    });
+
+  </script>
+
+
+</body>
+
+</html>

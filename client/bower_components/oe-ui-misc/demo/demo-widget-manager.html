@@ -1,0 +1,200 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+  <title>widget-manager demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../widget-manager.html">
+  <link rel="import" href="widgets/chat-bot.html">
+  <link rel="import" href="widgets/oe-carousel.html">
+  <link rel="import" href="../../paper-card/paper-card.html">
+<!--  <link rel="import" href="../../oe-data-table/oe-data-table.html">-->
+  <style is="custom-style" include="demo-pages-shared-styles"></style>
+</head>
+
+<body>
+  
+<!--
+  <h3>Basic Fixed Widgets</h3>
+  <demo-snippet>
+    <template>
+      <widget-manager resize="none">
+        <paper-card data-row=1 data-col=1 data-sizex=1 data-sizey=1 name="card1" heading="Card 1">
+          <div class="card-content">
+            row 1 x col 1
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card  data-row=1 data-col=2 data-sizex=2 data-sizey=1 name="card2" heading="Card 2">
+          <div class="card-content">
+            row 1 x col 2
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card  data-row=2 data-col=1 data-sizex=2 data-sizey=1 name="card3" heading="Card 3">
+          <div class="card-content">
+            row 2 x col 1
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card data-row=2 data-col=3 data-sizex=1 data-sizey=1 name="card4" heading="Card 4">
+          <div class="card-content">
+            row 2 x col 4
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+
+      </widget-manager>
+    </template>
+  </demo-snippet>
+
+  <h3>Resizable</h3>
+  <demo-snippet>
+    <template>
+      <widget-manager resize="all">
+        <paper-card data-row=1 data-col=1 data-sizex=1 data-sizey=1 name="card1" heading="Card 1">
+          <div class="card-content">
+            row 1 x col 1
+          </div>
+        </paper-card>
+        <paper-card  data-row=1 data-col=2 data-sizex=2 data-sizey=1 name="card2" heading="Card 2">
+          <div class="card-content">
+            row 1 x col 2
+          </div>
+        </paper-card>
+        <paper-card  data-row=2 data-col=1 data-sizex=2 data-sizey=1 name="card3" heading="Card 3">
+          <div class="card-content">
+            row 2 x col 1
+          </div>
+        </paper-card>
+        <paper-card data-row=2 data-col=3 data-sizex=1 data-sizey=1 name="card4" heading="Card 4">
+          <div class="card-content">
+            row 2 x col 4
+          </div>
+        </paper-card>
+      </widget-manager>
+    </template>
+  </demo-snippet>
+
+  <h3>Dragging enabled</h3>
+  <demo-snippet>
+    <template>
+      <widget-manager enable-dragging>
+        <paper-card data-row=1 data-col=1 data-sizex=1 data-sizey=1 name="card1" heading="Card 1">
+          <div class="card-content">
+            row 1 x col 1
+          </div>
+        </paper-card>
+        <paper-card  data-row=1 data-col=2 data-sizex=2 data-sizey=1 name="card2" heading="Card 2">
+          <div class="card-content">
+            row 1 x col 2
+          </div>
+        </paper-card>
+        <paper-card data-row=2 data-col=1 data-sizex=2 data-sizey=1 name="card3" heading="Card 3">
+          <div class="card-content">
+            row 2 x col 1
+          </div>
+        </paper-card>
+        <paper-card data-row=2 data-col=3 data-sizex=1 data-sizey=1 name="card4" heading="Card 4">
+          <div class="card-content">
+            row 2 x col 4
+          </div>
+        </paper-card>
+      </widget-manager>
+    </template>
+  </demo-snippet>
+
+  <h3>Selective Resizing</h3>
+  <demo-snippet>
+    <template>
+      <widget-manager resize="explicit">
+        <paper-card data-enable-resize data-row=1 data-col=1 data-sizex=1 data-sizey=1 name="card1" heading="Card 1">
+          <div class="card-content">
+            row 1 x col 1 (Can Resize this one...)
+          </div>
+        </paper-card>
+        <paper-card  data-row=1 data-col=2 data-sizex=2 data-sizey=1 name="card2" heading="Card 2">
+          <div class="card-content">
+            row 1 x col 2
+          </div>
+        </paper-card>
+        <paper-card  data-row=2 data-col=1 data-sizex=2 data-sizey=1 name="card3" heading="Card 3">
+          <div class="card-content">
+            row 2 x col 1
+          </div>
+        </paper-card>
+        <paper-card data-enable-resize data-row=2 data-col=3 data-sizex=1 data-sizey=1 name="card4" heading="Card 4">
+          <div class="card-content">
+            row 2 x col 3 (...and this one)
+          </div>
+        </paper-card>
+      </widget-manager>
+    </template>
+  </demo-snippet>
+-->
+  
+  
+  <h3>Auto Rearrange Rows and Columns</h3>
+  <demo-snippet>
+    <template>
+      <widget-manager auto-arrange enable-dragging config='{"columns":4,"media":[{"query":"(max-width: 600px)","config":{"columns":2}},{"query":"(max-width: 400px)","config":{"columns":1}}]}'>
+
+        <chat-bot></chat-bot>
+        <paper-card data-sizex=1 data-sizey=2 name="card1" heading="Card 1">
+          <div class="card-content">
+            row 1 x col 1
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card data-sizex=3 data-sizey=1 name="card2" heading="Card 2">
+          <div class="card-content">
+            row 1 x col 2
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card data-sizex=2 data-sizey=1 name="card3" heading="Card 3">
+          <div class="card-content">
+            row 2 x col 1
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+        <paper-card data-sizex=1 data-sizey=2 name="card4" heading="Card 4">
+          <div class="card-content">
+            row 2 x col 4
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+          </div>
+        </paper-card>
+
+      </widget-manager>
+    </template>
+  </demo-snippet>
+
+  
+</body>
+
+</html>

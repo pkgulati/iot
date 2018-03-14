@@ -1,0 +1,24 @@
+{
+  "name": "oe-field-behavior",
+  "main": "oe-field-behavior.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/EdgeVerve/oe-field-behavior",
+  "version": "1.2.0",
+  "_release": "1.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.2.0",
+    "commit": "1ea3ac414d9e6bb2d528feeb1146c2b6982cae38"
+  },
+  "_source": "https://github.com/EdgeVerve/oe-field-behavior.git",
+  "_target": "^1.0.0",
+  "_originalSource": "oe-field-behavior"
+}

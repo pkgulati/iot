@@ -1,0 +1,96 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+
+  <title>oe-resource-page tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="../oe-resource-page.html">
+</head>
+
+<body>
+
+
+  <test-fixture id="simple">
+    <template>
+      <oe-resource-page resource-url="_x/html/simple"></oe-resource-page>
+    </template>
+  </test-fixture>
+
+  <script>
+    HTMLImports.whenReady(function () {
+      if (OEUtils.geturl) {
+        OEUtils.geturl = function (url) {
+          return url;
+        }
+      }
+    });
+    suite('<oe-resource-page>', function () {
+      var server;
+      var responseHeaders = {
+        metadata: {
+          'Content-Type': 'application/json'
+        },
+        html: {
+          'Content-Type': 'text/plain'
+        }
+
+      };
+
+      var responseBodies = {
+        html: {
+          simple: '<div id="simple">A Simple Page Include</div>'
+        }
+      };
+
+      setup(function () {
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
+        server.respondWith(
+          'GET',
+          /_x\/.*\/.*/,
+          function (req) { 
+            //url ~ http:/dasdas/asdasd/A/B
+            var parts = req.url.split('/');
+            var metadata = (responseBodies[parts[parts.length - 2]])[parts[parts.length - 1]];
+            // if (!metadata) metadata = JSON.stringify(simpleMetadata);
+            req.respond(200, responseHeaders[parts[parts.length - 2]], metadata);
+          }
+        );
+      });
+      teardown(function () {
+        server.restore();
+      });
+
+
+      test('loads the page', function (done) {
+        var element = fixture('simple');
+        element.addEventListener('oe-resource-page-loaded', function (e) { // eslint-disable-line no-unused-vars
+          expect(element.innerHTML).to.exist;
+          expect(element.innerHTML.trim()).to.not.equal('');
+          done();
+        });
+      });
+
+    });
+
+  </script>
+
+</body>
+
+</html>

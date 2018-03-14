@@ -1,0 +1,29 @@
+{
+  "name": "oe-checkbox",
+  "main": "oe-checkbox.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-checkbox": "^1.4.2",
+    "oe-field-behavior": "^1.0.0",
+    "oe-i18n-msg": "^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+    "oe-input": "^1.0.0",
+    "iron-test-helpers": "^1.4.1"
+  },
+  "homepage": "https://github.com/EdgeVerve/oe-checkbox",
+  "version": "1.2.0",
+  "_release": "1.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.2.0",
+    "commit": "41eeef81631ebf9c1aa47cc77663012b6aba7eae"
+  },
+  "_source": "https://github.com/EdgeVerve/oe-checkbox.git",
+  "_target": "^1.1.0",
+  "_originalSource": "oe-checkbox"
+}

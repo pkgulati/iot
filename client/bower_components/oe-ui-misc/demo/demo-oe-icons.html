@@ -1,0 +1,77 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>oe-icons demo</title>
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../paper-styles/paper-styles.html">
+
+  <link rel="import" href="../elements/oe-icons.html">
+  <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+</head>
+
+<body unresolved>
+
+  <dom-module id="demo-oe-icons">
+    <template>
+      <style>
+        .text {
+          font-size: 11px;
+          padding: 8px 0;
+        }
+
+        .container {
+          padding: 8px;
+        }
+
+      </style>
+      <div>
+        <h3>OE icons</h3>
+        <div class="horizontal wrap justified center flex layout">
+          <template is="dom-repeat" items="{{iconsList}}" as="icon">
+            <div class="container vertical layout center">
+              <iron-icon icon="{{icon}}"></iron-icon>
+              <span class="text">{{icon}}</span>
+            </div>
+          </template>
+        </div>
+    </template>
+    <script>
+      Polymer({
+        is: 'demo-oe-icons',
+        ready: function () {
+          this.iconsList = ['oe-icons:evf-logo', 'oe-icons:users', 'oe-icons:play', 'oe-icons:database',
+            'oe-icons:folder', 'oe-icons:file', 'oe-icons:polymer', 'oe-icons:tool-design',
+            'oe-icons:oe-date-icon', 'oe-icons:oe-combo-icon', 'oe-icons:model-exp', 'oe-icons:has-many',
+            'oe-icons:belongs-to', 'oe-icons:has-one', 'oe-icons:model', 'oe-icons:site-map',
+            'oe-icons:master-page', 'oe-icons:html-page', 'oe-icons:oe-components', 'oe-icons:evf-logo',
+            'oe-icons:add-datasource', 'oe-icons:oe-video-icon', 'oe-icons:oe-vbox-icon',
+            'oe-icons:oe-typeahead-icon', 'oe-icons:oe-textarea-icon', 'oe-icons:oe-radio-icon',
+            'oe-icons:oe-input-icon', 'oe-icons:oe-label-icon', 'oe-icons:oe-image-icon',
+            'oe-icons:oe-hbox-icon', 'oe-icons:oe-fab-icon', 'oe-icons:oe-decimal-icon',
+            'oe-icons:oe-checkbox-icon', 'oe-icons:oe-button-icon', 'oe-icons:oe-date-icon',
+            'oe-icons:oe-combo-icon', 'oe-icons:user-account', 'oe-icons:banking-menu', 'oe-icons:cached',
+            'oe-icons:inter-bank', 'oe-icons:account', 'oe-icons:relations', 'oe-icons:sidebar'
+          ];
+        }
+      });
+
+    </script>
+  </dom-module>
+
+</body>
+
+</html>

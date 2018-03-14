@@ -1,0 +1,222 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+
+<html>
+
+<head>
+
+  <title>oe-datepicker tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="../oe-datepicker.html">
+
+</head>
+
+<body>
+
+  <test-fixture id="basic">
+    <template>
+      <oe-datepicker></oe-datepicker>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('oe-datepicker', function () {
+
+      test('default display is current month and year', function () {
+        var picker = fixture('basic');
+        var today = new Date();
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+      });
+
+      test('When value is set, calendar is shown based on value', function (done) {
+        var element = fixture('basic');
+        var value = new Date();
+        value.setFullYear(value.getFullYear() + 5);
+        value.setMonth(value.getMonth() - 5);
+        element.set('value', value);
+        expect(element.month.number).to.equal(value.getMonth());
+        expect(element.month.year).to.equal(value.getFullYear());
+        done();
+      });
+
+      test('When showing months, Next shows next-month', function (done) {
+        var picker = fixture('basic');
+        var today = new Date();
+        var nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+        forceXIfStamp(picker);
+        //Polymer.Base.async(function () {
+        MockInteractions.tap(picker.querySelector('#mnext'));
+
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(nextMonth.getMonth());
+        expect(picker._activeYear).to.equal(nextMonth.getFullYear());
+        done();
+        //}, 100);
+      });
+
+      test('When showing months, Prev shows proe-month', function (done) {
+        var picker = fixture('basic');
+        var today = new Date();
+        var prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+        forceXIfStamp(picker);
+
+        //Polymer.Base.async(function () {
+        MockInteractions.tap(picker.querySelector('#mprev'));
+
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(prevMonth.getMonth());
+        expect(picker._activeYear).to.equal(prevMonth.getFullYear());
+        done();
+        //}, 100);
+      });
+
+      test('When showing months, Clicking month shows year', function (done) {
+        var picker = fixture('basic');
+        var today = new Date();
+        var prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());  // eslint-disable-line no-unused-vars
+
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+
+        forceXIfStamp(picker);
+        //Polymer.Base.async(function () {
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        expect(picker.showing).to.equal('year');
+        done();
+        //}, 100);
+      });
+
+      test('When showing years, Next shows next-year', function (done) {
+        var picker = fixture('basic');
+        forceXIfStamp(picker);
+        var today = new Date();
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#ynext'));
+        var nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+
+        expect(picker.showing).to.equal('year');
+        expect(picker._activeMonth).to.equal(nextYear.getMonth());
+        expect(picker._activeYear).to.equal(nextYear.getFullYear());
+        done();
+      });
+
+      test('When showing years, Prev shows next-year', function (done) {
+        var picker = fixture('basic');
+        forceXIfStamp(picker);
+        var today = new Date();
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#yprev'));
+        var prevYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+        expect(picker.showing).to.equal('year');
+        expect(picker._activeMonth).to.equal(prevYear.getMonth());
+        expect(picker._activeYear).to.equal(prevYear.getFullYear());
+        done();
+      });
+
+      test('When showing years, Clicking Year shows decade', function (done) {
+        var picker = fixture('basic');
+        forceXIfStamp(picker);
+        var today = new Date();
+        expect(picker.showing).to.equal('month');
+        expect(picker._activeMonth).to.equal(today.getMonth());
+        expect(picker._activeYear).to.equal(today.getFullYear());
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#ymain'));
+        expect(picker.showing).to.equal('decade');
+
+        var year = today.getFullYear();
+        var min = year - (year % 10);
+        var max = min + 10;
+
+        expect(picker.decadeYears).to.be.not.empty;
+        expect(picker.decadeYears.pop()).to.equal(max);
+        expect(picker.decadeYears.shift()).to.equal(min);
+
+        done();
+      });
+
+      test('When showing decade, Clicking Next shows next decade', function (done) {
+        var picker = fixture('basic');
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#ymain'));
+        expect(picker.showing).to.equal('decade');
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#dnext'));
+
+        var today = new Date();
+        var year = today.getFullYear() + 10;
+        var min = year - (year % 10);
+        var max = min + 10;
+
+        expect(picker.decadeYears).to.be.not.empty;
+        expect(picker.decadeYears.pop()).to.equal(max);
+        expect(picker.decadeYears.shift()).to.equal(min);
+
+        done();
+      });
+
+      test('When showing decade, Clicking Prev shows prev decade', function (done) {
+        var picker = fixture('basic');
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#mmain'));
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#ymain'));
+        expect(picker.showing).to.equal('decade');
+        forceXIfStamp(picker);
+        MockInteractions.tap(picker.querySelector('#dprev'));
+
+        var today = new Date();
+        var year = today.getFullYear() - 10;
+        var min = year - (year % 10);
+        var max = min + 10;
+
+        expect(picker.decadeYears).to.be.not.empty;
+        expect(picker.decadeYears.pop()).to.equal(max);
+        expect(picker.decadeYears.shift()).to.equal(min);
+
+        done();
+      });
+
+    });
+
+  </script>
+
+</body>
+
+</html>

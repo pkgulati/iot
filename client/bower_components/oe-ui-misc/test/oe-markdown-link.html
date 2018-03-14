@@ -1,0 +1,179 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+
+  <title>oe-markdown-link tests</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <script src="../../fakerest/dist/FakeRest.min.js"></script>
+
+  <link rel="import" href="../oe-markdown-link.html">
+</head>
+
+<body>
+
+    <template id="README">
+Read Me
+------------- 
+        
+loads a mark-down file and displays as content. 
+Uses Polymer's [marked-element](https://elements.polymer-project.org/elements/marked-element) for rendering. 
+A wrapper is required since [marked-element](https://elements.polymer-project.org/elements/marked-element) does not allow specifying a url. 
+        
+``` html
+    <oe-markdown-link markdown={{md}} markdown-url={{mdurl}}>
+    </oe-markdown-link>
+``` 
+> **Properties:** 
+
+> - **markdown** markdown to render. 
+> - **maskdownUrl** url to load the markdown data from. 
+[Details](DETAILS.md)
+    </template>
+
+
+  <template id="DETAILS">
+Details about element 
+------------- 
+This section contains details about the element. [Back](README.md)
+  </template>
+
+  <test-fixture id="simple">
+    <template>
+      <oe-markdown-link></oe-markdown-link>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="load-from-url">
+    <template>
+      <oe-markdown-link markdown-url="_x/markdown/README.md"></oe-markdown-link>
+    </template>
+  </test-fixture>
+
+  <script>
+    HTMLImports.whenReady(function () {
+      if (window.OEUtils && window.OEUtils.geturl) {
+        window.OEUtils.geturl = function (url) {
+          return url;
+        }
+      }
+    });
+    suite('<oe-markdown-link>', function () {
+      var server;
+
+      setup(function () {
+
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
+
+        server.respondWith(
+          'GET',
+          /_x\/markdown\/.*.md/,
+          function (req) {
+            //url ~ _x/markdown/B
+            var parts = req.url.split('/');
+            var mdfileName = parts[parts.length - 1];
+            var mdTemplateId = mdfileName.split('.')[0];
+
+            var mdTemplate = document.querySelector('template#' + mdTemplateId);
+
+            if (mdTemplate) {
+              req.respond(200, 'text/html', mdTemplate.innerHTML);
+            } else {
+              req.respond(404);
+            }
+          }
+        );
+      });
+      teardown(function () {
+        server.restore();
+      });
+
+
+      test('element should render provided markdown', function (done) {
+
+        var element = fixture('simple');
+
+        expect(element.$._markdown.querySelectorAll('a')).to.be.empty;
+
+        element.addEventListener('oe-marked-render-complete', function (evt) { //eslint-disable-line no-unused-vars
+          expect(element.$._markdown.querySelectorAll('a')).to.not.be.empty;
+          var detailsLink = element.$._markdown.querySelectorAll('a[href="DETAILS.md"]');
+          expect(detailsLink).to.exist;
+
+          done();
+        });
+
+        var mdTemplate = document.querySelector('template#README');
+        element.set('markdown', mdTemplate.innerHTML);
+      });
+
+      test('element should load and render from markdownUrl', function (done) {
+
+        var element = fixture('simple');
+        expect(element.$._markdown.querySelectorAll('a')).to.be.empty;
+
+        element.addEventListener('oe-marked-render-complete', function (evt) { //eslint-disable-line no-unused-vars
+          expect(element.$._markdown.querySelectorAll('a')).to.not.be.empty;
+          var detailsLink = element.$._markdown.querySelectorAll('a[href="DETAILS.md"]');
+          expect(detailsLink).to.exist;
+
+          done();
+        });
+
+        element.set('markdownUrl', '_x/markdown/README.md');
+      });
+
+      test('Element should handle simple <a href="local.md" itself', function (done) {
+
+        var element = fixture('load-from-url');
+        var round = 0;
+        var detailsLink;
+        element.addEventListener('oe-marked-render-complete', function (evt) { //eslint-disable-line no-unused-vars
+          if (round == 0) {
+            //markdown rendered initially
+            expect(element.markdownUrl).to.equal('_x/markdown/README.md');
+            detailsLink = element.$._markdown.querySelector('a[href="DETAILS.md"]');
+            expect(detailsLink).to.exist;
+            MockInteractions.tap(detailsLink);
+            round++;
+          } else if (round == 1) {
+            //markdown re-rendered due to click on Details link
+            expect(element.markdownUrl).to.equal('_x/markdown/DETAILS.md');
+            var readmeLink = element.$._markdown.querySelector('a[href="README.md"]');
+            expect(readmeLink).to.exist;
+            MockInteractions.tap(readmeLink);
+            round++;
+          } else if (round == 2) {
+            //clicked on README again
+            expect(element.markdownUrl).to.equal('_x/markdown/README.md');
+            detailsLink = element.$._markdown.querySelector('a[href="DETAILS.md"]');
+            expect(detailsLink).to.exist;
+            done();
+          }
+        });
+
+      });
+
+    });
+
+  </script>
+
+
+</body>
+
+</html>

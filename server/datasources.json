@@ -1,0 +1,31 @@
+{
+  "db": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "mongodb://localhost:27017/commondb",
+    "database": "commondb",
+    "password": "admin",
+    "name": "db",
+    "connector": "mongodb",
+    "user": "admin",
+    "connectionTimeout": 50000
+  },
+  "appdb": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "mongodb://localhost:27017/appdb",
+    "database": "appdb",
+    "password": "admin",
+    "name": "appdb",
+    "connector": "mongodb",
+    "user": "admin",
+    "connectionTimeout": 50000
+  },
+  "gridfs_db": {
+    "host": "localhost",
+    "port": 27017,
+    "name": "gridfs_db",
+    "url": "mongodb://localhost:27017/gridfs_db",
+    "connector": "loopback-component-storage-mongo"
+  }
+}

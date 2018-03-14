@@ -1,0 +1,20 @@
+{
+  "name": "eviot",
+  "version": "1.0.0",
+  "description": "EV-IoT",
+  "author": "oe-cloud team",
+  "main": "server/server.js",
+  "dependencies": {
+    "loopback-component-storage-mongo": "git+https://github.com/raghav135/loopback-component-storage-mongo.git#master",
+    "oe-cloud": "^1.2.0",
+    "passport": "0.2.2",
+    "passport-facebook": "1.0.3",
+    "passport-google-oauth": "0.1.5",
+    "passport-jwt": "^2.0.0",
+    "passport-local": "1.0.0",
+    "passport-oauth2": "1.1.2",
+    "passport-saml": "0.15.0",
+    "passport-twitter": "1.0.3",
+    "sysmo": "^0.1.0"
+  }
+}

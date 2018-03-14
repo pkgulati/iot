@@ -1,0 +1,611 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../paper-styles/default-theme.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../iron-dropdown/iron-dropdown.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../oe-input-error/oe-input-error.html">
+<link rel="import" href="oe-datepicker-dlg.html">
+<link rel="import" href="../oe-i18n-msg/oe-i18n-msg.html">
+<link rel="import" href="../oe-field-behavior/oe-field-behavior.html">
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+
+<script src="../oe-utils/date-utils.js"></script>
+
+
+<!--
+An element to capture the date-time value.
+@demo demo/demo-oe-datetime.html
+-->
+<dom-module id="oe-datetime">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .date-button {
+        color: var(--secondary-text-color);
+        padding: 0;
+        margin: 0;
+        min-width: 0;
+      }
+
+      span.required {
+        vertical-align: bottom;
+        color: var(--paper-input-container-invalid-color, --paper-deep-orange-a700);
+      }
+
+      paper-input-container {
+        display: inline-block;
+        width: 100%;
+      }
+
+      input::-webkit-input-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+
+      input:-moz-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+
+      input::-moz-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+
+      input:-ms-input-placeholder {
+        color: var(--paper-input-container-color, --secondary-text-color);
+      }
+
+      #hour {
+        text-align: right;
+      }
+
+      .filler {
+        @apply (--layout-flex);
+      }
+
+      .dropdown-content{
+        min-height: 340px;
+        min-width: 300px;
+      }
+    </style>
+    <oe-datepicker-dlg value="{{dateValue}}" id="_picker" max=[[max]] min=[[min]]></oe-datepicker-dlg>
+    <paper-input-container no-label-float="[[noLabelFloat]]" always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]"
+      auto-validate$="[[autoValidate]]" disabled$="[[disabled]]" invalid="[[invalid]]">
+      <content select="[prefix]"></content>
+      <label hidden$="[[!label]]">
+                <oe-i18n-msg msgid=[[label]]>[[label]]</oe-i18n-msg>
+                <template is="dom-if" if={{required}}>
+                    <span class="required"> *</span>
+                </template>
+            </label>
+      <div class="layout horizontal flex center">
+        <input class="flex-8" is="iron-input" id="display" aria-labelledby$="[[_ariaLabelledBy]]" aria-describedby$="[[_ariaDescribedBy]]"
+          disabled$="[[disabled]]" invalid="{{invalid}}" prevent-invalid-input="[[preventInvalidInput]]" allowed-pattern="[[allowedPattern]]"
+          validator="[[validator]]" type$="[[type]]" pattern$="[[pattern]]" required$="[[required]]" autocomplete$="[[autocomplete]]"
+          autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" minlength$="[[minlength]]" maxlength$="[[maxlength]]" min$="[[min]]"
+          max$="[[max]]" step$="[[step]]" name$="[[name]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" list$="[[list]]"
+          size$="[[size]]" autocapitalize$="[[autocapitalize]]" autocorrect$="[[autocorrect]]" tabindex$="[[tabindex]]" autosave$="[[autosave]]"
+          results$="[[results]]" accept$="[[accept]]" multiple$="[[multiple]]">
+        <paper-button id="btnDatePicker" hidden$=[[hideIcon]] class="date-button" tabindex="-1" on-tap="_showDatePicker">
+          <iron-icon icon$="[[_computeIcon(dropdownMode)]]"></iron-icon>
+        </paper-button>
+        <span><b>/</b></span>
+        <input class="flex-1" is="iron-input" id="hour" aria-labelledby$="[[_computeAriaLabel(ariaLabelPrefix,'hourLabel')]]" required$="[[required]]"
+          maxlength="2" bind-value="{{hour:change}}" value={{_hoursDisplay(hour,2)}} placeholder="HH" allowed-pattern="[0-9]"
+          prevent-invalid-input type="tel" disabled$="[[disabled]]" invalid="{{invalid}}" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]"
+          readonly$="[[readonly]]">
+        <span><b>:</b></span>
+        <input class="flex-1" is="iron-input" id="minute" aria-labelledby$="[[_computeAriaLabel(ariaLabelPrefix,'minuteLabel')]]"
+          required$="[[required]]" maxlength="2" bind-value="{{minute:change}}" value={{_minutesDisplay(minute,2)}} placeholder="MM"
+          allowed-pattern="[0-9]" prevent-invalid-input type="tel" disabled$="[[disabled]]" invalid="{{invalid}}" inputmode$="[[inputmode]]"
+          readonly$="[[readonly]]">
+        <paper-button id="btnAMPM" class="date-button" suffix on-tap="_toggleAMPM">{{txtAMPM}}</paper-button>
+      </div>
+      <oe-input-error invalid={{invalid}} error-message={{errorMessage}}></oe-input-error>
+    </paper-input-container>
+    <iron-dropdown id="dropdown" horizontal-align="right" vertical-align="{{verticalAlign}}" vertical-offset="{{verticalOffset}}" no-auto-focus opened={{expand}}>
+      <paper-card tabindex="-1" class="dropdown-content layout vertical" disabled$="[[disabled]]">
+        <div class="layout vertical flex">
+          <oe-datepicker tabindex="-1" class="flex" id="datePicker" value="{{localValue}}" locale="[[locale]]" start-of-week="[[startOfWeek]]" disabled-days="[[disabledDays]]"
+            max=[[max]] min=[[min]]></oe-datepicker>
+          <div class="layout horizontal">
+            <div class="filler"></div>
+            <paper-button id="cancelBtn" on-tap="_onCancel">Cancel</paper-button>
+            <paper-button id="okBtn" on-tap="_onOK">OK</paper-button>
+          </div>
+        </div>
+      </paper-card>
+    </iron-dropdown>
+  </template>
+  <script>
+    Polymer({
+      is: 'oe-datetime',
+      properties: {
+
+        /* Initial/default value for the control */
+        init: {
+          type: String
+        },
+
+        /* Initial/default value for the control */
+        min: {
+          type: String
+        },
+
+        /* Initial/default value for the control */
+        max: {
+          type: String
+        },
+
+        /**
+         * The date component of time displayed.
+         */
+        dateValue: {
+          type: Date,
+          observer: '_dateValueChanged'
+        },
+
+        /**
+         * The hour component of the time displayed.
+         */
+        hour: {
+          type: Number
+        },
+
+        /**
+         * The minute component of the time displayed.
+         */
+        minute: {
+          type: Number
+        },
+
+        /**
+         * currently displayed value on AM/PM toggle
+         */
+        txtAMPM: {
+          type: String,
+          value: 'AM'
+        },
+        value: {
+          type: Date,
+          notify: true,
+          observer: '_valueChanged'
+        },
+        format: {
+          type: String,
+          value: 'DD MMM YYYY',
+          observer: '_formattingChanged'
+        },
+
+        ariaLabelPrefix: {
+          type: String
+        },
+        
+        /**
+         * Setting to true hides the calender icon in the control which open the datepicker dialog
+         */
+         hideIcon: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * Setting to true makes the datepicker open as a dropdown instead of a dialog
+         */
+        dropdownMode: {
+          type: Boolean,
+          value: false
+        },
+        verticalOffset: {
+          type: String,
+          value: 62
+        },
+        verticalAlign: {
+          type: String,
+          value: 'top'
+        },
+        /**
+         * Setting to true makes the datepicker open as a dropdown on focus of this element.
+         * This will work only if the oe-datetime component is in dropdown-mode.
+         */
+        openOnFocus:{
+          type: Boolean,
+          value: false
+        }
+
+      },
+      observers: [
+        '_computeValue(dateValue,hour,minute)'
+      ],
+      listeners: {
+        '_picker.oe-date-picked': '_datePicked',
+        'display.change': '_displayChanged',
+        'hour.change': '_onHourChange',
+        'minute.change': '_onMinuteChange',
+        'hour.keyup': '_onKeyup',
+        'minute.keyup': '_onKeyup',
+        'display.focus':'_focusHandle',
+        'datePicker.selection-double-click':'_onOK'
+      },
+      behaviors: [
+        Polymer.IronFormElementBehavior,
+        Polymer.PaperInputBehavior,
+        OEUtils.FieldBehavior
+      ],
+      _focusHandle: function () { // eslint-disable-line no-unused-vars
+        if(this.openOnFocus && this.dropdownMode && !this.expand){
+          Polymer.Base.async(function(){
+            this.set('expand',true);
+            this.set('localValue',this.dateValue || new Date());
+          }.bind(this),100)
+        }
+      },
+      _valueChanged: function (newValue, oldValue) { // eslint-disable-line no-unused-vars
+        if (newValue && !(newValue instanceof Date)) {
+          var v = new Date(newValue);
+          this.value = v;
+          newValue = v;
+        }
+
+        if ((newValue instanceof Date) && !isNaN(newValue.getTime())) {
+          this.hour = newValue.getHours();
+          this.minute = newValue.getMinutes();
+          this.dateValue = new Date(Date.UTC(newValue.getFullYear(), newValue.getMonth(), newValue.getDate()));
+        }
+
+        if (newValue == undefined || newValue === null) {
+          this.hour = undefined;
+          this.$.hour.value = '';
+          this.minute = undefined;
+          this.$.minute.value = '';
+          this.dateValue = undefined;
+        }
+
+        this.validate();
+      },
+      _computeValue: function (dVal, hVal, mVal) {
+        if (!this.value || this.value.getFullYear() != dVal.getUTCFullYear() || this.value.getMonth() != dVal.getUTCMonth() ||
+          this.value.getDate() != dVal.getUTCDate() || this.value.getHours() != hVal || this.value.getMinutes() !=
+          mVal) {
+          this.value = new Date(dVal.getUTCFullYear(), dVal.getUTCMonth(), dVal.getUTCDate(), hVal, mVal);
+        }
+      },
+      attached: function () {
+        if (this.max) {
+          var maxD = this._parseShorthand(this.max);
+          if (maxD) {
+            this.set('max', new Date(Date.UTC(maxD.getFullYear(), maxD.getMonth(), maxD.getDate())));
+          } else {
+            console.warn("Invalid 'max' date value", this.max);
+          }
+        }
+        this.set('expand',false);
+        this.set('localValue',new Date());
+        if (this.min) {
+          var minD = this._parseShorthand(this.min);
+          if (minD) {
+            this.set('min', new Date(Date.UTC(minD.getFullYear(), minD.getMonth(), minD.getDate())));
+          } else {
+            console.warn("Invalid 'min' date value", this.min);
+          }
+        }
+      },
+      _formattingChanged: function (newFormat, oldFormat) { // eslint-disable-line no-unused-vars
+        this.$.display.value = this._format(this.dateValue);
+      },
+      _parseShorthand: function (input) {
+
+        if (!input || input.trim().length == 0) return undefined;
+
+        //Remove non-alpha-numerics and make upper-case
+        var tuInput = input.replace(/[^a-zA-Z0-9]/g, '-').toUpperCase();
+
+        var retDate = undefined;
+
+        //reference for date calculation is today in user's timezone
+        //but represented as UTC.
+        //i.e. if entering '1d' at 2AM IST on 5th. It should calculate 6th as the date.
+        //but 6th 00:00:00Z in UTC timezone.
+        var mDate = new Date();
+        mDate = new Date(Date.UTC(mDate.getFullYear(), mDate.getMonth(), mDate.getDate()));
+
+        if (tuInput === 'T' || tuInput == 'TOD' || tuInput === 'TODAY') {
+          retDate = mDate;
+        } else if (tuInput == 'TOM') {
+          retDate = mDate.setUTCDate(mDate.getUTCDate() + 1);
+        } else if (tuInput[tuInput.length - 1] === 'D') {
+          retDate = this._calcDate(mDate, tuInput, 'days');
+        } else if (tuInput[tuInput.length - 1] === 'W') {
+          retDate = this._calcDate(mDate, tuInput, 'weeks');
+        } else if (tuInput[tuInput.length - 1] === 'M') {
+          retDate = this._calcDate(mDate, tuInput, 'months');
+        } else if (tuInput[tuInput.length - 1] === 'Q') {
+          retDate = this._calcDate(mDate, tuInput, 'quarters');
+        } else if (tuInput[tuInput.length - 1] === 'Y') {
+          retDate = this._calcDate(mDate, tuInput, 'years');
+        } else {
+          retDate = OEUtils.DateUtils.parse(tuInput);
+        }
+
+        return retDate;
+      },
+      _parseDecimal: function (input) {
+        if (!input || input.length === 0) {
+          return undefined;
+        }
+
+        var tmp = input;
+
+        var isInvalid = tmp.split('.').length > 2 || tmp.lastIndexOf('+') > 0 || tmp.lastIndexOf('-') > 0 || tmp.replace(
+          /[\+\-0-9\.]/g, '').length > 0;
+        if (isInvalid) {
+          return undefined;
+        }
+        return parseFloat(tmp);
+      },
+      _calcDate: function (mDate, tuInput, type) {
+        var retDate = undefined;
+        var topup = tuInput.length == 1 ? 1 : this._parseDecimal(tuInput.slice(0, tuInput.length - 1));
+        if (!isNaN(topup)) {
+          retDate = new Date(mDate.getTime());
+          switch (type) {
+            case 'days':
+              var newDay = retDate.getUTCDate() + topup;
+              retDate.setUTCDate(newDay);
+              break;
+
+            case 'weeks':
+              var newDay = retDate.getUTCDate() + 7 * topup; // eslint-disable-line no-redeclare
+              retDate.setUTCDate(newDay);
+              break;
+
+            case 'months':
+              var newMonth = retDate.getUTCMonth() + topup;
+              retDate.setUTCMonth(newMonth);
+              break;
+
+            case 'quarters':
+              var newMonth = retDate.getUTCMonth() + 3 * topup; // eslint-disable-line no-redeclare
+              retDate.setUTCMonth(newMonth);
+              break;
+
+            case 'years':
+              var newyear = retDate.getUTCFullYear() + topup;
+              retDate.setUTCFullYear(newyear);
+              break;
+
+            default:
+              break;
+          }
+        }
+        return retDate;
+      },
+      _format: function (dateVal) {
+        var retVal = '';
+        if (dateVal) {
+          retVal = OEUtils.DateUtils.format(dateVal, this.format);
+        }
+        return retVal;
+      },
+      _dateValueChanged: function (newValue, oldValue) { // eslint-disable-line no-unused-vars
+        if (newValue && !(newValue instanceof Date)) {
+          var v = new Date(newValue);
+          this.dateValue = v;
+          newValue = v;
+        }
+
+        if ((newValue instanceof Date) && !isNaN(newValue.getTime())) {
+          this.$.display.value = this._format(newValue);
+          this.validate();
+        }
+
+        if (newValue == undefined || newValue === null) {
+          this.$.display.value = '';
+          this.validate();
+        }
+      },
+      _displayChanged: function (e) { // eslint-disable-line no-unused-vars
+        var newstr = this.$.display.value;
+        var newDate = undefined;
+
+        newstr = newstr.trim();
+        if (newstr != '') {
+          newDate = this._parseShorthand(newstr);
+          if (!newDate) {
+            this.dateValue = undefined;
+            this.setValidity(false, 'dateFormat');
+            return;
+          }
+          if (this.hour === undefined) {
+            this.hour = 0;
+          }
+          if (this.minute === undefined) {
+            this.minute = 0;
+          }
+
+          this.set('dateValue', newDate);
+          this.$.display.value = this._format(newDate);
+        } else {
+          this.dateValue = undefined;
+          this.$.display.value = '';
+        }
+        this.validate();
+      },
+      _validate: function () {
+        return true;
+      },
+      _showDatePicker: function (e) { // eslint-disable-line no-unused-vars
+        if(!this.readonly && !this.disabled) {
+          if(this.dropdownMode){
+            if(!this.expand){
+              this.set('expand',true);
+              this.set('localValue',this.dateValue || new Date());
+            }
+          }else{
+            this.$._picker.open();
+          }
+        }
+      },
+      _onOK: function () {
+        this.set('dateValue', this.localValue);
+        this.fire('oe-date-picked', this.dateValue);
+        this._datePicked();
+        this.set('expand',false);
+      },
+      _onCancel: function () {
+        this.set('localValue', this.dateValue);
+        this.set('expand',false);
+      },
+      _computeIcon:function(dropdownMode){
+          return dropdownMode?"arrow-drop-down":"today";
+      },
+      _datePicked: function (e) { // eslint-disable-line no-unused-vars
+        if (this.hour === undefined) {
+          this.hour = 0;
+        }
+        if (this.minute === undefined) {
+          this.minute = 0;
+        }
+        this.$.hour.focus();
+        this.$.hour.select();
+        this.validate();
+      },
+      _hoursDisplay: function (h) {
+        if (h === 0 || h > 23) {
+          this.txtAMPM = 'AM';
+          return '12';
+        } else if (h > 12) {
+          this.txtAMPM = 'PM';
+          return this._pad(h - 12, 2);
+        } else if (h === 12) {
+          return '12';
+        } else {
+          //less than 12
+          return this._pad(h, 2);
+        }
+      },
+      _minutesDisplay: function (m) {
+        if (m <= 0 || m > 59) {
+          return '00';
+        } else {
+          return this._pad(m, 2);
+        }
+      },
+      _pad: function (num, size) {
+        var s = num + '';
+        while (s.length < size) {
+          s = '0' + s;
+        }
+        return s;
+      },
+      _onHourChange: function (e) {
+        var tHour = e.currentTarget.value;
+        if (!tHour || tHour === '') {
+          this.hour = 0;
+          e.currentTarget.value = '12';
+          this.txtAMPM = 'AM';
+        } else {
+          var newHour = parseInt(tHour);
+          if (newHour === 0 || newHour > 23) {
+            this.hour = 0;
+            e.currentTarget.value = '12';
+            this.txtAMPM = 'AM';
+          } else if (newHour > 12) {
+            this.hour = newHour;
+            this.txtAMPM = 'PM';
+            e.currentTarget.value = this._pad(newHour - 12, 2);
+          } else if (newHour === 12) {
+            this.hour = (this.txtAMPM === 'AM' ? 0 : 12);
+            e.currentTarget.value = this._pad(newHour, 2);
+          } else {
+            //less than 12
+            this.hour = (this.txtAMPM === 'AM' ? newHour : newHour + 12);
+            //don't change AM/PM
+            e.currentTarget.value = this._pad(newHour, 2);
+          }
+        }
+      },
+      _onMinuteChange: function (e) {
+        var tMinute = e.currentTarget.value;
+        if (!tMinute || tMinute === '') {
+          this.minute = 0;
+          e.currentTarget.value = '00';
+        } else {
+          var newMinute = parseInt(tMinute);
+          if (newMinute === 0 || newMinute > 59) {
+            this.minute = 0;
+            e.currentTarget.value = '00';
+          } else {
+            this.minute = newMinute;
+            e.currentTarget.value = this._pad(newMinute, 2);
+          }
+        }
+      },
+      _onKeyup: function (e) {
+        if (e.keyCode === 38 || e.keyCode === 40) {
+          var currentTarget = e.currentTarget;
+          var currentValue = currentTarget.value;
+          currentValue = currentValue ? parseInt(currentValue) : 0;
+          if (e.keyCode === 38) {
+            currentValue++;
+            if (currentValue > currentTarget.dataMax) {
+              currentValue = currentTarget.dataMin;
+            }
+          } else if (e.keyCode === 40) {
+            currentValue--;
+            if (currentValue < currentTarget.dataMin) {
+              currentValue = currentTarget.dataMax;
+            }
+          }
+          currentTarget.value = this._pad(currentValue, 2);
+
+          if (currentTarget === this.$.hour) {
+            this.hour = currentValue % 12;
+            if (this.txtAMPM === 'PM') {
+              this.hour += 12;
+            }
+          } else if (currentTarget === this.$.minute) {
+            this.minute = currentValue;
+          }
+
+          e.preventDefault();
+        }
+      },
+
+      _toggleAMPM: function () {
+        if (this.txtAMPM === 'AM') {
+          this.txtAMPM = 'PM';
+          if (this.hour != undefined) this.hour += 12;
+        } else if (this.txtAMPM === 'PM') {
+          this.txtAMPM = 'AM';
+          if (this.hour != undefined) this.hour -= 12;
+        }
+      },
+
+      /**
+       * Returns a reference to the input element.
+       */
+      get inputElement() {
+        return this.$.display;
+      },
+
+      _computeAriaLabel: function (prefixLabel, suffixLabel) {
+        return prefixLabel + ' ' + suffixLabel;
+      }
+    });
+
+  </script>
+</dom-module>

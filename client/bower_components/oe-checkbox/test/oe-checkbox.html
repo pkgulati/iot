@@ -1,0 +1,114 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+<!doctype html>
+<html>
+
+<head>
+
+  <title>oe-checkbox tests</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="../oe-checkbox.html">
+
+</head>
+
+<body>
+  <test-fixture id="basic">
+    <template>
+      <oe-checkbox id="check1" label="checkbox1" value="true"></oe-checkbox>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="unchecked">
+    <template>
+      <oe-checkbox id="check1" label="checkbox1" value="false" disabled="true"></oe-checkbox>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="testfield">
+    <template>
+      <oe-checkbox id="check1" field-id="test"></oe-checkbox>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('Basic', function () {
+
+      test('has value in "checkbox"', function () {
+        var el = fixture('basic');
+        assert.equal(el.getAttribute('value'), 'true', 'checkbox is checked');
+      });
+
+      test('has label in "checkbox"', function () {
+        var el = fixture('basic');
+        assert.isTrue(el.getAttribute('label') == 'checkbox1');
+      });
+
+      test('verify checkbox is unchecked', function () {
+        var el = fixture('unchecked');
+        assert.equal(el.getAttribute('value'), 'false', 'checkbox is unchecked');
+      });
+
+      test('disabled checkbox cannot be clicked', function (done) {
+        var el = fixture('unchecked');
+        var disabled = el.getAttribute('disabled');
+        MockInteractions.tap(el);
+        assert.equal(disabled, 'true', 'checkbox is disabled');
+        done();
+      });
+
+      test('verify checkbox via click', function (done) {
+        var el = fixture('basic');
+        el.addEventListener('click', function () {
+          var checkbox = el.querySelector('paper-checkbox');
+          assert.isTrue(el.getAttribute('value') == 'true');
+          assert.isTrue(checkbox.getAttribute('aria-checked') == 'true');
+          assert.isTrue(checkbox.checked);
+          done();
+        });
+        MockInteractions.tap(el);
+      });
+
+      test('toggle checkbox via click', function (done) {
+        // value is true here
+        var el = fixture('basic');
+        el.addEventListener('click', function () {
+          el.value = false;
+          assert.isFalse(el.value);
+          done();
+        });
+        MockInteractions.tap(el);
+      });
+
+      test('check-box has fieldid', function (done) {
+        var el = fixture('testfield');
+        assert.equal(el.fieldId, 'test');
+        assert.isFalse(el.value);
+        done();
+      });
+
+      test('check-box is always valid', function (done) {
+        var el = fixture('testfield');
+        el.addEventListener('oe-field-ok', function () {
+          assert.isFalse(el.invalid);
+          assert.isUndefined(el.errorMessage);
+          done();
+        });
+        el.fire('change');
+      });
+    });
+
+  </script>
+
+</body>
+
+</html>

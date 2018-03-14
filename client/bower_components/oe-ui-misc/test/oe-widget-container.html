@@ -1,0 +1,331 @@
+<!-- 
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+  <title>oe-widget-container test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../promise-polyfill/promise-polyfill.html">
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <script src="../../fakerest/dist/FakeRest.min.js"></script>
+  <link rel="import" href="../oe-widget-container.html">
+  <link rel="import" href="../../oe-data-table/oe-data-table.html">
+  <link rel="import" href="../../paper-card/paper-card.html">
+  <link rel="import" href="../demo/widgets/chat-bot.html">
+</head>
+
+<body>
+  <test-fixture id="oe-widget-container-fixture">
+    <template>
+      <div style="width: 500px; height: 500px;">
+        <oe-widget-container id="configWidget">
+          <chat-bot initial-message="Hello, I am your Travel Bot. Please tell me your travel plan." url="/message" title="Travel Bot"
+            name="chatbot" class="widget-element"></chat-bot>
+          <oe-data-table id="simple-table" label="Simple Table" name="datatable" class="widget-element"></oe-data-table>
+        </oe-widget-container>
+      </div>
+    </template>
+  </test-fixture>
+  <test-fixture id="basic-fixture">
+    <template>
+      <div style="width: 500px; height: 500px;">
+      <oe-widget-container>
+        <paper-card heading="Card 1" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+          <div class="card-content">
+            Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one
+            of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+            <paper-button>Explore!</paper-button>
+          </div>
+        </paper-card>
+        <paper-card heading="Card 2" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+          <div class="card-content">
+            Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one
+            of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+            <paper-button>Explore!</paper-button>
+          </div>
+        </paper-card>
+      </oe-widget-container>
+    </div>
+    </template>
+  </test-fixture>
+  <test-fixture id="name-fixture">
+    <template>
+      <oe-widget-container>
+        <paper-card name="card" heading="Card 1" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+          <div class="card-content">
+            Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one
+            of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+            <paper-button>Explore!</paper-button>
+          </div>
+        </paper-card>
+        <paper-card name="card" heading="Card 2" image="http://placehold.it/350x150/FFC107/000000" alt="Emmental">
+          <div class="card-content">
+            Emmentaler or Emmental is a yellow, medium-hard cheese that originated in the area around Emmental, Switzerland. It is one
+            of the cheeses of Switzerland, and is sometimes known as Swiss cheese.
+          </div>
+          <div class="card-actions">
+            <paper-button>Share</paper-button>
+            <paper-button>Explore!</paper-button>
+          </div>
+        </paper-card>
+      </oe-widget-container>
+    </template>
+  </test-fixture>
+  <script>
+    var element, testElement, server; // eslint-disable-line no-unused-vars
+
+    suite('oe-widget-container', function () {
+
+      setup(function () {
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
+        server.respondImmediately = true;
+
+        server.respondWith('POST', /.*\/.*/, function (req) {
+          req.respond(200, {
+            'Content-Type': 'text/html'
+          }, 'I am here to help you with travel plans');
+        });
+        var divContainer = fixture('oe-widget-container-fixture');
+        element = divContainer.querySelector('#configWidget');
+        var divBasicContainer = fixture('basic-fixture');
+        testElement = divBasicContainer.querySelector('oe-widget-container');
+        var dataTable = document.getElementById('simple-table');
+        dataTable.set('columns', [{
+          key: 'id',
+          label: 'Id',
+          type: 'number'
+        }, {
+          key: 'name',
+          label: 'Name',
+          type: 'string'
+        }]);
+
+        dataTable.set('items', [{
+          id: 1,
+          name: 'Admin'
+        }, {
+          id: 2,
+          name: 'Developer'
+        }, {
+          id: 3,
+          name: 'Designer'
+        }, {
+          id: 4,
+          name: 'Tester'
+        }]);
+      });
+
+      teardown(function () {
+        server.restore();
+      });
+
+      /*test('instantiating the element works', function(done) {
+          assert.equal(element.is, 'oe-widget-container');
+          assert.equal(element.columns, 4);
+          assert.equal(element.enableResize, true);
+          assert.equal(element.widgetMargin, 6);
+          expect(element.widgetConfig).to.be.empty;
+          done();
+      });
+      test('test to check isEmpty function', function(done) {
+          var obj = {};
+          assert.equal(element.isEmpty(obj), true);
+          obj = {
+              "name": "John"
+          };
+          assert.equal(element.isEmpty(obj), false);
+          done();
+      });
+      test('rename the name attribute if the names of two widgets are the same', function(done) {
+          var element = fixture('name-fixture');
+          flush(function() {
+              var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+              var nodeList = [].filter.call(gridsterNodes, function(item) {
+                  if (item.nodeType == Node.ELEMENT_NODE) {
+                      return true;
+                  }
+              });
+              flush(function() {
+                  assert.equal(nodeList[0].getAttribute('name'), "card");
+                  assert.equal(nodeList[1].getAttribute('name'), "card1");
+                  done();
+              });
+          });
+      });
+
+      test('test to check if the name is generated when the name is not set on the widget', function(done) {
+          flush(function() {
+              var gridsterNodes = Polymer.dom(testElement.$.contentElement).getDistributedNodes();
+              var nodeList = [].filter.call(gridsterNodes, function(item) {
+                  if (item.nodeType == Node.ELEMENT_NODE) {
+                      return true;
+                  }
+              });
+              flush(function() {
+                  assert.equal(nodeList[0].getAttribute('name'), "paper-card1");
+                  assert.equal(nodeList[1].getAttribute('name'), "paper-card2");
+                  done();
+              });
+          });
+      });
+
+      test('check if the oe-widget-container is initialized using the default config if widgetConfig is not set', function(done) {
+          flush(function() {
+              var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+              var nodeList = [].filter.call(gridsterNodes, function(item) {
+                  if (item.nodeType == Node.ELEMENT_NODE) {
+                      return true;
+                  }
+              });
+              flush(function() {
+                  assert.equal(nodeList[0].getAttribute('name'), "chatbot");
+                  assert.equal(nodeList[0].hidden, false);
+                  assert.equal(nodeList[0].getAttribute('data-sizex'), 1);
+                  assert.equal(nodeList[0].getAttribute('data-row'), 1);
+                  assert.equal(nodeList[0].getAttribute('data-col'), 1);
+                  done();
+              });
+          });
+      });*/
+      test('test to hide/show widgets from the settings menu', function (done) {
+        flush(function () {
+          var menu = Polymer.dom(element.root).querySelector('#settings');
+          MockInteractions.tap(menu, {
+            'emulateTouch': true
+          });
+          element.async(function () {
+            var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+            var nodeList = [].filter.call(gridsterNodes, function (item) {
+              if (item.nodeType == Node.ELEMENT_NODE) {
+                return true;
+              }
+            });
+            assert.equal(nodeList[0].getAttribute('name'), 'chatbot');
+            assert.equal(nodeList[0].classList.contains('hide-widget-element'), false);
+            var widgetcheck = Polymer.dom(element.root).querySelectorAll('#settings paper-checkbox');
+            assert.equal(widgetcheck.length, 2);
+            assert.equal(widgetcheck[0].checked, true);
+            MockInteractions.tap(widgetcheck[0], {
+              'emulateTouch': true
+            });
+            widgetcheck[0].fire('change');
+            element.async(function () {
+              assert.equal(widgetcheck[0].checked, false);
+              var saveConfig = Polymer.dom(element.root).querySelector('#saveConfig');
+              MockInteractions.tap(saveConfig, {
+                'emulateTouch': true
+              });
+              flush(function () {
+                assert.equal(menu.opened, false);
+                var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+                var nodeList = [].filter.call(gridsterNodes, function (item) {
+                  if (item.nodeType == Node.ELEMENT_NODE) {
+                    return true;
+                  }
+                });
+                assert.equal(nodeList[0].getAttribute('name'), 'chatbot');
+                assert.equal(nodeList[0].classList.contains('hide-widget-element'), true);
+                MockInteractions.tap(menu, {
+                  'emulateTouch': true
+                });
+                element.async(function () {
+                  var widgetcheck = Polymer.dom(element.root).querySelectorAll(
+                    '#settings paper-checkbox');
+                  assert.equal(widgetcheck.length, 2);
+                  assert.equal(widgetcheck[0].checked, false);
+                  MockInteractions.tap(widgetcheck[0], {
+                    'emulateTouch': true
+                  });
+                  widgetcheck[0].fire('change');
+                  element.async(function () {
+                    assert.equal(widgetcheck[0].checked, true);
+                    var saveConfig = Polymer.dom(element.root).querySelector(
+                      '#saveConfig');
+                    MockInteractions.tap(saveConfig, {
+                      'emulateTouch': true
+                    });
+                    flush(function () {
+                      assert.equal(menu.opened, false);
+                      var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+                      var nodeList = [].filter.call(gridsterNodes, function (item) {
+                        if (item.nodeType == Node.ELEMENT_NODE) {
+                          return true;
+                        }
+                      });
+                      assert.equal(nodeList[0].getAttribute('name'), 'chatbot');
+                      assert.equal(nodeList[0].classList.contains(
+                        'hide-widget-element'), false);
+                      done();
+                    });
+                  }, 100);
+                }, 100);
+              });
+            }, 100);
+          }, 100);
+        });
+      });
+      test('check if the oe-widget-container is initialized using the widgetConfig if set', function (done) {
+        element.set('widgetConfig', {
+          'widgetMargin': 32,
+          'columns': 4,
+          'enableResize': true,
+          'widgets': [{
+            'name': 'chatbot',
+            'hidden': false,
+            'width': 1,
+            'height': 2,
+            'row': 2,
+            'col': 2
+          }, {
+            'name': 'datatable',
+            'hidden': false,
+            'width': 2,
+            'height': 2,
+            'row': 1,
+            'col': 1
+          }]
+        });
+        flush(function () {
+          var gridsterNodes = Polymer.dom(element.$.contentElement).getDistributedNodes();
+          var nodeList = [].filter.call(gridsterNodes, function (item) {
+            if (item.nodeType == Node.ELEMENT_NODE) {
+              return true;
+            }
+          });
+          flush(function () {
+            assert.equal(nodeList[1].getAttribute('name'), 'datatable');
+            assert.equal(nodeList[1].hidden, false);
+            assert.equal(nodeList[1].getAttribute('data-sizex'), 2);
+            assert.equal(nodeList[1].getAttribute('data-sizey'), 2);
+            assert.equal(nodeList[1].getAttribute('data-row'), 1);
+            assert.equal(nodeList[1].getAttribute('data-col'), 1);
+            assert.equal(nodeList[0].getAttribute('data-sizex'), 1);
+            assert.equal(nodeList[0].getAttribute('data-sizey'), 2);
+            done();
+          });
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>

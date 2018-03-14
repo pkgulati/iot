@@ -1,0 +1,162 @@
+<!--
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="oe-document-data">
+
+    <template>
+         <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+        <style>
+        /* CSS rules for your element */
+        .no-display {
+            display: none;
+        }
+
+        </style>
+    
+        <div class="flex layout center horizontal">
+            <template is="dom-if" if="{{showInput}}">
+                <paper-input label=[[label]] id="input" value={{document.documentName}}></paper-input>
+            </template>
+            <template is="dom-if" if="{{!showInput}}">
+                <span on-tap="download">{{document.documentName}}</span>
+                <a id="downloadDocument" class="no-display" download="{{document.documentName}}" target="_new"></a>
+            </template>
+            <paper-button raised on-tap="openFile">BROWSE</paper-button>
+            <input id="fileBrowse" class="no-display" type="file" on-change="getFile">
+        </div>
+    </template>
+
+    <script>
+        // element registration
+        Polymer({
+            is: "oe-document-data",
+
+            // add properties and methods on the element's prototype
+            properties: {
+                "document": {
+                    "type": "Object",
+                    "notify": true
+                },
+                "documentId": {
+                    "type": "String",
+                    "observer": "documentSet"
+                },
+                "documentPostUrl": {
+                    "type": "String"
+                },
+                "documentParentAttribute": {
+                    "type": "String"
+                },
+                "parentId": {
+                    "type": "String"
+                },
+                "showInput": {
+                    "type": "Boolean",
+                    "value": true
+                }
+            },
+            documentSet: function() {
+                var self = this;
+                this.set('showInput', false);
+                // call to get documentName
+                if(self.documentPostUrl) {
+                    // need to get id of decision table element
+                    
+                    var parentId = this.parentId;
+                    
+                    var ajax = document.createElement("oe-ajax");
+                    ajax.contentType = "application/json";
+                    ajax.handleAs = "json";
+                    ajax.url = self.documentPostUrl + "/" + parentId + "?filter=%7B%22include%22%3A%7B%22relation%22%3A%22" + self.getAttribute("relationname") + "%22%2C%22scope%22%3A%7B%22fields%22%3A%5B%22documentName%22%5D%7D%7D%7D";
+                    ajax.method = "GET";
+                    ajax.headers["cache-control"] = "no-cache";
+                    ajax.addEventListener('response', function(event) {
+                        var res = event.detail.response;
+                        var documentName = res[self.getAttribute("relationname")]["documentName"];
+                        if(!self.document) {
+                            self.document = {};
+                        }
+                        self.set("document.documentName", documentName);
+                    });
+                    ajax.addEventListener('error', function(err) {
+                        console.log(err);
+                        self.fire("oe-show-error", "Error getting file data");
+                    });
+                    ajax.generateRequest();
+                }
+            },
+            openFile: function(event) {
+                this.$.fileBrowse.value = "";
+                this.querySelector("#fileBrowse").click();
+            },
+            getFile: function(event) {
+                var self = this;
+                var document = {};
+                this.file = event.target.files[0];
+                document.documentName = this.file.name;
+                var reader = new FileReader();
+                reader.readAsDataURL(this.file);
+                reader.onload = function(e) {
+                    document.documentData =  reader.result;
+                    self.set('document', document);
+                };
+                reader.onerror = function(error) {
+                    self.fire("oe-show-error", "Error reading file");
+                    console.log('Error: ', error);
+                };
+            },
+            download: function() {
+                // TODO 
+                // call to get documentData
+                var self = this;
+                // call to get documentName
+                if(self.documentPostUrl) {
+                    // need to get id of decision table element
+                    
+                    var parentId = self.domHost[self.documentParentAttribute]["id"];
+                    
+                    var ajax = document.createElement("oe-ajax");
+                    ajax.contentType = "application/json";
+                    ajax.handleAs = "json";
+                    ajax.url = self.documentPostUrl + "/" + parentId + "?filter=%7B%22include%22%3A%7B%22relation%22%3A%22" + self.getAttribute("relationname") + "%22%2C%22scope%22%3A%7B%22fields%22%3A%5B%22documentData%22%5D%7D%7D%7D";
+                    ajax.method = "GET";
+                    ajax.headers["cache-control"] = "no-cache";
+                    ajax.addEventListener('response', function(event) {
+                        var res = event.detail.response;
+                        var documentData = res[self.getAttribute("relationname")]["documentData"];
+                        self.set("document.documentData", documentData);
+                        self.querySelector("#downloadDocument").setAttribute("href", documentData);
+                        self.querySelector("#downloadDocument").click();
+                    });
+                    ajax.addEventListener('error', function(err) {
+                        console.log(err);
+                        self.fire("oe-show-error", "Error getting file data");
+                    });
+                    ajax.generateRequest();
+                }
+            },
+            showInput: function() {
+                var ret = true;
+                if (this.documentId) {
+                    ret = false;
+                }
+                return ret;
+            },
+            showLink: function() {
+                var ret = false;
+                if (this.documentId) {
+                    ret = true;
+                }
+                return ret;
+            }
+        });
+    </script>
+
+</dom-module>

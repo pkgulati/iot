@@ -1,0 +1,616 @@
+<!--
+  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+  Bangalore, India. All Rights Reserved.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="gridster.html">
+
+<!--
+`widget-manager`
+Widget to rearrange elements within the container
+
+@demo demo/demo-widget-manager.html 
+-->
+<dom-module id="widget-manager">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .container {
+        position: relative;
+        display: block;
+      }
+
+      .gridster {
+        width: 100%;
+        height: 100%;
+      }
+
+      .widget-element-dropdown {
+        padding: 16px;
+      }
+
+      .widget-manager-options {
+        position: absolute;
+        right: 0;
+        top: 0;
+        color: var(--primary-color);
+        z-index: 100;
+      }
+
+      .widget-manager-options paper-menu-button {
+        padding: 0;
+        visibility: hidden;
+      }
+
+      .widget-manager-options:hover paper-menu-button {
+        visibility: visible;
+      }
+
+      .gridster::content .widget-element:hover {
+        outline: 1px dotted #c0c0c0;
+      }
+
+      .gridster::content .hide-widget-element {
+        display: none;
+      }
+
+      .gridster .hide-widget-element {
+        display: none;
+      }
+
+    </style>
+<!--    <iron-media-query query="(max-width: 600px)" query-matches="{{_query1Matches}}"></iron-media-query>-->
+    <div class="container" id="container">
+      <div class="widget-manager-options">
+        <paper-menu-button no-overlap horizontal-align="right" id="settings">
+          <paper-icon-button icon="settings" class="dropdown-trigger"></paper-icon-button>
+          <div class="dropdown-content">
+            <div class="widget-element-dropdown">
+              <div class="widget-element-list">
+                <template is="dom-repeat" items="{{_gridConfig.widgets}}">
+                  <paper-item>
+                    <paper-checkbox checked="{{!item.hidden}}">{{item.name}}</paper-checkbox>
+                  </paper-item>
+                </template>
+              </div>
+              <paper-button on-tap="_saveConfig">SAVE</paper-button>
+            </div>
+          </div>
+        </paper-menu-button>
+      </div>
+      <template is="dom-repeat" items={{config.media}}>
+        <iron-media-query query="[[item.query]]" query-matches="{{item.matches}}"></iron-media-query>
+      </template>
+      <div id="thegridster" class="gridster">
+        <content id="contentElement"></content>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'widget-manager',
+      properties: {
+
+        /**
+         * Widget Configuration
+         */
+        config: {
+          type: Object,
+          observer: '_configChanged'
+        },
+
+        /**
+         * The number of columns to create.
+         */
+        columns: {
+          type: Number,
+          value: 4
+        },
+
+        /**
+         * resizing mode 
+         * 'all' enables resizing for all widgets, 
+         * 'none' disables resizing for all widgets
+         * 'explicit' enables resizing only for widgets having data-enable-resizing attribute
+         */
+        resize: {
+          type: String,
+          value: 'all'
+        },
+
+        /**
+         * Boolean flag to enable dragging of widgets.
+         */
+        enableDragging: {
+          type: Boolean,
+          value: false,
+          observer: '_enableDraggingChanged'
+        },
+
+        /**
+         * Margin between the widgets
+         */
+        widgetMargin: {
+          type: Number,
+          value: 6
+        },
+
+        /**
+         * auto arrange the rows and cols based on available space
+         */
+        autoArrange: {
+          type: Boolean,
+          value: false
+        },
+        _configFromDom: {
+          type: Object
+        }
+      },
+      behaviors: [Polymer.IronResizableBehavior],
+      observers: ['_mediaChanged(config.media.*)'],
+      listeners: {
+        'iron-resize': 'render'
+      },
+      render: function() {
+        var self = this;
+        this.debounce('configure-widget-container', function() {
+          var width = self.offsetWidth;
+          self.set('baseWidgetSize', Math.floor(
+            (width - (self.columns * (2 * self.widgetMargin))) / self.columns
+          ));
+
+          if (self.gridster) self.gridster.destroy(false);
+          var gridster = $(self.$.thegridster); // eslint-disable-line no-undef
+          self.gridster = gridster.gridster({
+            widget_selector: '.widget-element:not(.hide-widget-element)',
+            widget_margins: [self.widgetMargin, self.widgetMargin],
+            min_cols: 1,
+            max_cols: self.columns,
+            widget_base_dimensions: [self.baseWidgetSize, self.baseWidgetSize],
+            resize: {
+              enabled: (self.resize !== 'none'),
+              start: self._handleResizeStart.bind(self),
+              resize: self._handleResize.bind(self),
+              stop: self._handleResizeStop.bind(self)
+            },
+            draggable: {
+              start: self._handleDragStart.bind(self),
+              drag: self._handleDrag.bind(self),
+              stop: self._handleDragStop.bind(self)
+            }
+          }).data('gridster');
+
+          if (self.enableDragging) {
+            self.gridster.enable();
+          } else {
+            self.gridster.disable();
+          }
+        });
+      },
+      _configChanged: function(newVal, oldVal) { // eslint-disable-line no-unused-vars
+        var self = this;
+        Polymer.Base.async(function() {
+          if (newVal) {
+            self.set('columns', newVal.columns || self.columns);
+            self.set('widgetMargin', newVal.widgetMargin || self.widgetMargin);
+            self.set('resize', newVal.resize || self.resize);
+            self.set('widgets', self._getMergedWidgets(newVal.widgets||[]));
+          } else {
+            self.set('widgets', self._getMergedWidgets([]));
+          }
+
+          self._setAttributesOnNodes();
+          self.render();
+        });
+      },
+      _mediaChanged: function(data) {
+        var path = data.path.split('.');
+        if(path.pop()==='matches') {
+          if(!this._origConfig) {
+            this._origConfig = this.config;
+          }
+          var newConfig = JSON.parse(JSON.stringify(this._origConfig));
+          newConfig.media = this._origConfig.media;
+          
+          if(data.value === true) {
+            var matchingMedia = this.get(path.join('.'));
+            Object.assign(newConfig, matchingMedia.config);
+          }
+          this.set('config', newConfig);
+        }
+      },
+      _enableDraggingChanged: function(newVal, oldVal) {
+        if (this.gridster)
+          if (newVal) {
+            this.gridster.enable();
+          } else {
+            this.gridster.disable();
+          }
+      },
+      _getMergedWidgets: function(widgetsConfig) {
+        var self = this;
+
+        /* Clone the domConfig in retWidgets */
+        var retWidgets = [];
+        self._configFromDom && self._configFromDom.widgets && self._configFromDom.widgets.forEach(function(item) {
+          retWidgets.push({
+            node: item.node,
+            conf: Object.assign({}, item.conf)
+          });
+        });
+
+        var allWidgetNodes = Polymer.dom(self.$.contentElement).getDistributedNodes();
+        /* Override the config values on dom-config-clone for each found node */
+        widgetsConfig && widgetsConfig.forEach(function(wConf) {
+          if (wConf && wConf.selector) {
+            var widgetNodes = [].filter.call(allWidgetNodes, function(n) {
+              return (n.nodeType === Node.ELEMENT_NODE) && n.matches(wConf.selector);
+            });
+
+            [].forEach.call(widgetNodes, function(node) {
+              var item = retWidgets.find(function(i) {
+                return i.node === node;
+              });
+
+              if (item) {
+                item.conf = Object.assign(item.conf, wConf);
+                item.conf.selector = undefined;
+              } else {
+                item = {
+                  node: node,
+                  conf: Object.assign({}, wConf)
+                }
+                item.conf.selector = undefined;
+                retWidgets.push(item);
+              }
+            });
+          }
+        });
+        return retWidgets;
+      },
+      _setAttributesOnNodes: function() {
+        //  var widgetNodes = Polymer.dom(this.$.contentElement).querySelectorAll(wConf.selector);
+        var self = this;
+        var widgetConfig = self.widgets;
+
+        var width = self.offsetWidth;
+        self.set('baseWidgetSize', Math.floor(
+          (width - (self.columns * (2 * self.widgetMargin))) / self.columns
+        ));
+        
+        widgetConfig && widgetConfig.forEach(function(item) {
+          var node = item.node;
+          var wConf = item.conf;
+          node.classList.add('widget-element');
+
+          var sizeX = wConf.sizeX || 1;
+          var sizeY = wConf.sizeY;// || wConf._sizeY; /* specified one or last calculated one */
+          if (!sizeY && (wConf._sizeYBaseSize !== self.baseWidgetSize)) {
+            var height = node.offsetHeight;
+            console.log(self.columns, self.offsetWidth, height, self.baseWidgetSize, self.widgetMargin);
+            if (height > ((self.baseWidgetSize) + (2 * self.widgetMargin))) {
+              sizeY = Math.ceil(height / self.baseWidgetSize);              
+              wConf.minSizeY = sizeY;
+              wConf._sizeYBaseSize = self.baseWidgetSize;
+            }
+          }
+
+          /* Make sure it is within specified bounds */
+          if (wConf.minSizeX && sizeX < wConf.minSizeX) {
+            sizeX = wConf.minSizeX;
+          }
+          if (wConf.maxSizeX && sizeX > wConf.maxSizeX) {
+            sizeX = wConf.maxSizeX;
+          }
+          if (wConf.minSizeY && sizeY < wConf.minSizeY) {
+            sizeY = wConf.minSizeY;
+          }
+          if (wConf.maxSizeY && sizeY < wConf.maxSizeY) {
+            sizeY = wConf.maxSizeY;
+          }
+          if (sizeX > self.columns) {
+            sizeX = self.columns;
+          }
+
+          /* Store the calculated sizes */
+          wConf._sizeX = sizeX;
+          wConf._sizeY = sizeY;
+
+          node.setAttribute('data-sizex', sizeX);
+          node.setAttribute('data-sizey', sizeY);
+          wConf.row && node.setAttribute('data-row', wConf.row);
+          wConf.col && node.setAttribute('data-col', wConf.col);
+
+          wConf.minSizeX ?
+            node.setAttribute('data-min-sizex', wConf.minSizeX) : node.removeAttribute('data-min-sizex');
+          wConf.minSizeY ?
+            node.setAttribute('data-min-sizey', wConf.minSizeY) : node.removeAttribute('data-min-sizey');
+          wConf.maxSizeX ?
+            node.setAttribute('data-max-sizex', wConf.maxSizeX) : node.removeAttribute('data-max-sizex');
+          wConf.maxSizeY ?
+            node.setAttribute('data-max-sizey', wConf.maxSizeY) : node.removeAttribute('data-max-sizey');
+
+          if (self.resize === 'explicit' && !wConf.enableResize) {
+            node.setAttribute('data-min-sizex', sizeX);
+            node.setAttribute('data-min-sizey', sizeY);
+            node.setAttribute('data-max-sizex', sizeX);
+            node.setAttribute('data-max-sizey', sizeY);
+          }
+          if (wConf.hidden) {
+            node.classList.add('hide-widget-element');
+          } else {
+            node.classList.remove('hide-widget-element');
+          }
+        });
+
+        if (widgetConfig && self.autoArrange) {
+          widgetConfig.sort(function(item1, item2) {
+            if (item2.conf.hidden) {
+              return -1;
+            } else if (item1.conf.hidden && !item2.conf.hidden) {
+              return 1;
+            } else {
+              if (item1.conf.row && !item2.conf.row) {
+                return -1;
+              } else if (!item1.conf.row && item2.conf.row) {
+                return 1;
+              } else if (item1.conf.row !== item2.conf.row) {
+                return (item1.conf.row - item2.conf.row);
+              } else {
+                return (item1.conf.col - item2.conf.col);
+              }
+            }
+          });
+
+          var matrix = [];
+
+          widgetConfig.forEach(function(item) {
+            var done = false;
+            var sR = 0;
+            var sC = 0;
+
+            /* Move forward the filled space */
+            while (matrix[sR] && matrix[sR][sC] === true) {
+              sC++;
+              if (sC >= self.columns) {
+                sC = 0;
+                sR++;
+              }
+            }
+
+            while (!done) {
+              /* If Required: extend the matrix by adding more rows */
+              for (var i = 0; i < sR + item.conf._sizeY; i++) {
+                if (!matrix[i]) {
+                  matrix[i] = new Array(self.columns);
+                }
+              }
+
+              /* does it fit at sR,sC ?*/
+              var fits = true;
+              for (var ir = 0; fits && ir < item.conf._sizeY; ir++) {
+                for (var ic = 0; fits && ic < item.conf._sizeX; ic++) {
+                  fits = (sC + ic < self.columns) && (matrix[sR + ir][sC + ic] === undefined);
+                }
+              }
+
+              if (fits) {
+                for (var ir = 0; ir < item.conf._sizeY; ir++) {
+                  for (var ic = 0; ic < item.conf._sizeX; ic++) {
+                    matrix[sR + ir][sC + ic] = true;
+                  }
+                }
+                item.node.setAttribute('data-row', sR + 1);
+                item.node.setAttribute('data-col', sC + 1);
+                done = true;
+              } else {
+                /* does not fit at sR,sC */
+                sC++;
+                if (sC >= self.columns) {
+                  sC = 0;
+                  sR++;
+                }
+              }
+            }
+          });
+        }
+
+      },
+      attached: function() {
+        var self = this;
+        Polymer.Base.async(function() {
+          self._observer =
+            Polymer.dom(self.$.contentElement).observeNodes(function(info) { // eslint-disable-line no-unused-vars
+              /* Extract configuration from distributed DOM */
+              var domConfig = self._extractDomConfig();
+              self.set('_configFromDom', domConfig);
+              self.set('widgets', self._getMergedWidgets([]));
+              self.refresh();
+            });
+        }, 1)
+      },
+      refresh: function() {
+        this._setAttributesOnNodes();
+        this.render();
+      },
+      _asInt: function(val) {
+        if (val && typeof val !== 'number') {
+          return Number.parseInt(val);
+        } else {
+          return undefined;
+        }
+      },
+      _extractDomConfig: function() {
+        var self = this;
+        var domConfig = {
+          widgets: []
+        };
+        domConfig.columns = self.columns; /* if attribute was set we already have it in self.columns */
+        domConfig.resize = self.resize;
+        domConfig.widgetMargin = self.widgetMargin;
+
+        var widgetNodes = Polymer.dom(self.$.contentElement).getDistributedNodes();
+        [].forEach.call(widgetNodes, function(node) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            domConfig.widgets.push({
+              node: node,
+              conf: {
+                hidden: (node.getAttribute('hidden') ? true : false) || (node.classList.contains('hide-widget-element') ? true : false),
+
+                row: self._asInt(node.getAttribute('data-row')),
+                col: self._asInt(node.getAttribute('data-col')),
+                sizeX: self._asInt(node.getAttribute('data-sizex')),
+                sizeY: self._asInt(node.getAttribute('data-sizey')),
+
+                minSizeX: self._asInt(node.getAttribute('data-min-sizex')),
+                minSizeY: self._asInt(node.getAttribute('data-min-sizey')),
+                maxSizeX: self._asInt(node.getAttribute('data-max-sizex')),
+                maxSizeY: self._asInt(node.getAttribute('data-max-sizey')),
+                enableResize: node.hasAttribute('data-enable-resize')
+              }
+            });
+          }
+        });
+        return domConfig;
+      },
+      _getQuerySelector: function(node) {
+        var selector = node.getAttribute('selector');
+        if (!selector) {
+          var id = node.getAttribute('id');
+          selector = id ? (node.nodeName + "#" + id) : node.nodeName;
+          var name = node.getAttribute('name');
+          selector += (name ? '[name=' + name + ']' : '')
+        }
+        return selector;
+      },
+      _handleDragStart: function(event, ui) {
+        this.debounce('widget-drag-start', function() {
+          this.fire('widget-drag-start', {
+            target: this,
+            ui: ui
+          });
+        });
+      },
+      _handleDrag: function(event, ui) {
+        this.debounce('widget-drag', function() {
+          this.fire('widget-drag', {
+            target: this,
+            ui: ui
+          });
+        });
+      },
+      _handleDragStop: function(event, ui) {
+        
+        /* Extract the new position of widget and update the config in this.widgets */
+        var item = this.widgets.find(function(i) {
+          return i.node === ui.$player[0];
+        });
+
+        if(item && item.conf) {
+          item.conf.row = this._asInt(item.node.getAttribute('data-row'));
+          item.conf.col = this._asInt(item.node.getAttribute('data-col'));          
+        }
+
+        this.debounce('widget-drag-stop', function() {
+          if (this.autoArrange) {
+            this.refresh(true);
+          }
+          this.fire('widget-drag-stop', {
+            target: this,
+            ui: ui
+          });
+        }, 200);
+      },
+      _handleResizeStart: function(event, ui, widget) {
+        this.debounce('widget-resize-start', function() {
+          this.fire('widget-resize-start', {
+            target: this,
+            ui: ui,
+            widget: widget
+          });
+        });
+      },
+      _handleResize: function(event, ui, widget) {
+        this.debounce('widget-resize', function() {
+          this.fire('widget-resize', {
+            target: this,
+            ui: ui,
+            widget: widget
+          });
+        });
+      },
+      _handleResizeStop: function(event, ui, widget) {
+        
+        /* Extract the new size of widget and update the config in this.widgets array */
+        var item = this.widgets.find(function(i) {
+          return i.node === widget[0];
+        });
+
+        if(item && item.conf) {
+          item.conf.sizeX = this._asInt(item.node.getAttribute('data-sizex'));
+          item.conf.sizeY = this._asInt(item.node.getAttribute('data-sizey'));          
+        }
+        this.debounce('widget-resize-stop', function() {
+          if (this.autoArrange) {
+            this.refresh();
+          }
+          this.fire('widget-resize-stop', {
+            target: this,
+            ui: ui,
+            widget: widget
+          });
+        }, 200);
+      },
+      _saveConfig: function() {
+        var self = this;
+        this.$.settings.opened = false;
+        self._gridConfig.widgets.forEach(function(obj) {
+          var selector = '*[name="' + obj.name + '"]';
+          var elem = self.querySelector(selector);
+          if (obj.hidden) {
+            elem.classList.add('hide-widget-element');
+          } else {
+            elem.classList.remove('hide-widget-element');
+          }
+        });
+        this.configureGrid();
+        this.render();
+      },
+
+      _query1MatchesChanged: function(newVal, oldVal) {
+
+        console.log('Query Matches Changed', newVal, oldVal);
+        if (this._configFromDom)
+          if (newVal) {
+            this.set('config', {
+              columns: 2
+            });
+          } else {
+            this.set('config', {
+              columns: 5
+            });
+          }
+      }
+    });
+
+  </script>
+</dom-module>
