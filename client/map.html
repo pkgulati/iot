@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: new google.maps.LatLng(13.00, 77.65)
+//          mapTypeId: 'terrain'
+        });
+      }
+
+      var xhr1 = new XMLHttpRequest(); 
+      xhr1.onreadystatechange = function() { 
+        if (this.status == 200 && this.readyState == 4) 
+        { 
+            locations = JSON.parse(this.responseText); 
+            render(locations);
+      }};
+
+      function fetch() {
+        xhr1.open('GET', "/api/Locations", true); 
+        xhr1.send();
+      }
+      var infoWindows = [];
+      function render(results) {
+        infoWindows.forEach(function(m) {m.setMap(null);});
+        infoWindows = [];
+        for (var i = 0; i < results.length; i++) {
+          var latLng = new google.maps.LatLng(results[i].latitude,results[i].longitude);
+
+/*          var marker = new google.maps.Marker({
+            position: latLng,
+            map: map
+          });
+*/         
+          var sec = results[i].time;
+          var seconds = new Date().getTime()/1000 - sec;
+
+          var days = Math.floor(seconds / (3600*24));
+          seconds  -= days*3600*24;
+          var hrs   = Math.floor(seconds / 3600);
+          seconds  -= hrs*3600;
+          var mnts = Math.floor(seconds / 60);
+          seconds  -= mnts*60;
+          t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + seconds.toFixed(0)+"s";
+
+          var infowindow = new google.maps.InfoWindow({
+            content: "<B>name:<font color='green'> " +  results[i].name  +  "</font><BR>time: <font color='red'>" + t + " ago</font></B>",
+            position: latLng
+          });
+          infoWindows.push(infowindow);
+          infowindow.open(map);
+        }
+      }
+
+      fetch();
+
+    setInterval(fetch, 5000);
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap">
+    </script>
+  </body>
+</html>
