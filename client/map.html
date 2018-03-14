@@ -60,10 +60,13 @@
           seconds  -= hrs*3600;
           var mnts = Math.floor(seconds / 60);
           seconds  -= mnts*60;
-          t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + seconds.toFixed(0)+"s";
+ //         t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + seconds.toFixed(0)+"s";
+          t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"");
+//          t = (days!=0?days+"d<br>":"<br>")+(hrs!=0?hrs+"h<br>":"<br>") + (mnts!=0?mnts+"m<br>":"<br>") + seconds.toFixed(0)+"s";
 
           var infowindow = new google.maps.InfoWindow({
-            content: "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"' width='50%'></font><BR><font color='red'>" + t + " ago</font></B>",
+//            content: "<table><tr><td><img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'></td><td><B><font color='red'>" + t + " ago</font></B></td></tr></table>",
+            content: "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='red'>" + t + " ago</font></B>",
             position: latLng
           });
           infoWindows.push(infowindow);
