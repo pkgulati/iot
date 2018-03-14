@@ -1,0 +1,6 @@
+{
+	"name": "Location",
+	"base": "PersistedModel",
+	"description": "Stores location data",
+	"properties": {}
+}
