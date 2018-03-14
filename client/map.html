@@ -63,7 +63,7 @@
           t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + seconds.toFixed(0)+"s";
 
           var infowindow = new google.maps.InfoWindow({
-            content: "<B>name:<font color='green'> " +  results[i].name  +  "</font><BR>time: <font color='red'>" + t + " ago</font></B>",
+            content: "<B><font color='green'> " +  results[i].name  +  "</font><BR><font color='red'>" + t + " ago</font></B>",
             position: latLng
           });
           infoWindows.push(infowindow);
