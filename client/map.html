@@ -56,14 +56,14 @@
         border-radius: 5px;
         font-family: sans-serif;
         overflow-y: auto;
-        max-height: 60px;
+        max-height: 80px;
         box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
       }
 
     </style>
     
   </head>
-  <body>
+  <body onLoad=fetch();>
     <div id="map"></div>
     <script>
       var map;
@@ -94,7 +94,6 @@
           var pixelOffset = document.createElement('div');
           pixelOffset.classList.add('popup-bubble-anchor');
           pixelOffset.appendChild(content);
-
           this.anchor = document.createElement('div');
           this.anchor.classList.add('popup-tip-anchor');
           this.anchor.appendChild(pixelOffset);
@@ -175,9 +174,18 @@
             map: map
           });
 */         
+          var CSECS = 18000;
           var sec = results[i].time;
           var seconds = new Date().getTime()/1000 - sec;
-
+          var R = Number((255 - (255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
+          R = R.toString(16);
+          R = (R.length==1?"0":"") + R;
+          var G = Number(((255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
+          G = G.toString(16);
+          G = (G.length==1?"0":"") + G;
+          var B = "00";
+          var RGB = "#" + R + G + B;
+          console.log(results[i].name, R.toString(16),G.toString(16), B);
           var days = Math.floor(seconds / (3600*24));
           seconds  -= days*3600*24;
           var hrs   = Math.floor(seconds / 3600);
@@ -188,7 +196,9 @@
           var infowindow;
           var popup;
           var dv = document.createElement('div');
-          dv.innerHTML = "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='red'>" + t + " ago</font></B>";
+          dv.style.backgroundColor = RGB;
+          console.log("Set color");
+          dv.innerHTML = "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='white'>" + t + " ago</font></B>";
 
           if(!currentPopups[results[i].name]) {
             popup = new Popup(new google.maps.LatLng(results[i].latitude, results[i].longitude), dv);
@@ -205,6 +215,7 @@
       }
 
       fetch();
+      
 
     setInterval(fetch, 5000);
 
