@@ -66,14 +66,18 @@
   <body onLoad=fetch();>
     <div id="map"></div>
     <script>
-      var map;
+      var map, feInt, cyInt;
       function initMap() {
         definePopupClass();
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 12,
           center: new google.maps.LatLng(13.00, 77.65)
-//          mapTypeId: 'terrain'
         });
+
+        map.addListener('drag', function() {
+          clearInterval(cyInt);
+        });
+
       }
 
 
@@ -150,7 +154,6 @@
         };
       }
 
-      currentInfoWindows = {};
       currentPopups = {};
       var xhr1 = new XMLHttpRequest(); 
       xhr1.onreadystatechange = function() { 
@@ -161,31 +164,31 @@
       }};
 
       function fetch() {
-        box();
         xhr1.open('GET', "/redApi/locationData/?t=" + new Date().getTime(), true); 
         xhr1.send();
       }
       function render(results) {
+        var bounds = new google.maps.LatLngBounds();
         for (var i = 0; i < results.length; i++) {
           var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+          bounds.extend(latLng);
 
 /*          var marker = new google.maps.Marker({
             position: latLng,
             map: map
           });
 */         
-          var CSECS = 18000;
+          var CSECS = 7200;
           var sec = results[i].time;
           var seconds = new Date().getTime()/1000 - sec;
-          var R = Number((255 - (255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
-          R = R.toString(16);
-          R = (R.length==1?"0":"") + R;
-          var G = Number(((255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
-          G = G.toString(16);
-          G = (G.length==1?"0":"") + G;
-          var B = "00";
-          var RGB = "#" + R + G + B;
-          console.log(results[i].name, R.toString(16),G.toString(16), B);
+          var A = Number((255 - (255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
+          var color = A<128?"black":"white";
+          A = A.toString(16);
+          A = (A.length==1?"0":"") + A;
+          var B = Number(((255 * (seconds<CSECS?seconds:CSECS)/CSECS)).toFixed(0));
+          B = B.toString(16);
+          B = (B.length==1?"0":"") + B;
+          var RGB = "#" + B + B + "FF";
           var days = Math.floor(seconds / (3600*24));
           seconds  -= days*3600*24;
           var hrs   = Math.floor(seconds / 3600);
@@ -194,39 +197,72 @@
           seconds  -= mnts*60;
           t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + ((days==0 && hrs==0 && mnts==0) ? seconds.toFixed(0) +"s ": "");
           var infowindow;
-          var popup;
+          var popup, c;
           var dv = document.createElement('div');
           dv.style.backgroundColor = RGB;
-          console.log("Set color");
-          dv.innerHTML = "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='white'>" + t + " ago</font></B>";
-
+          dv.innerHTML = "<CENTER><img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='"+ color +"'>" + t + " ago</font></B></CENTER>";
           if(!currentPopups[results[i].name]) {
-            popup = new Popup(new google.maps.LatLng(results[i].latitude, results[i].longitude), dv);
+            popup = new Popup(latLng, dv);
             popup.setMap(map);
-            currentPopups[results[i].name] = popup;
+
+            currentPopups[results[i].name] = {};
+            currentPopups[results[i].name].popup = popup;
+            currentPopups[results[i].name].latLng = latLng;
+            if(results[i].accuracy) {
+                c = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 1,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: latLng,
+                radius: results[i].accuracy
+              });
+              currentPopups[results[i].name].circle = c;
+            }
+
           } else {
-            popup = currentPopups[results[i].name];
+            popup = currentPopups[results[i].name].popup;
+            c = currentPopups[results[i].name].circle;
+            if(c) { c.setCenter(latLng); c.setRadius(results[i].accuracy); }
+            if(!c && results[i].accuracy) {
+              c = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 1,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: latLng,
+                radius: results[i].accuracy
+              });
+              currentPopups[results[i].name].circle = c;
+            }
             popup.setMap(null);
-            popup = new Popup(new google.maps.LatLng(results[i].latitude, results[i].longitude), dv);
+            popup = new Popup(latLng, dv);
             popup.setMap(map);
-            currentPopups[results[i].name] = popup;
+            currentPopups[results[i].name].popup = popup;
+            
           }
         }
+//        map.panToBounds(bounds);
       }
+    
+    var cy = 0;
+    function cycle() {
+      var names = Object.keys(currentPopups);
+      currentLatLng = currentPopups[names[cy++]].latLng;
+      if(cy>names.length - 1) cy=0;
+      console.log(currentLatLng);
+      map.setZoom(14);
+      map.panTo(currentLatLng);
+    }
 
-      fetch();
-      
+    feInt = setInterval(fetch, 5000);
+    cyInt = setInterval(cycle, 5000);
 
-    setInterval(fetch, 5000);
-
-    function box() {
-/*      var info = document.getElementById('myinfo');
-      var x=300; //we clicked here
-      var y=300;
-      info.style.left=x+'px';
-      info.style.top=y+'px';
-      info.style.display='block';
-    */    }
+ 
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap">
