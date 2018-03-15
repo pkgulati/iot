@@ -26,7 +26,7 @@
 //          mapTypeId: 'terrain'
         });
       }
-
+      currentInfoWindows = {};
       var xhr1 = new XMLHttpRequest(); 
       xhr1.onreadystatechange = function() { 
         if (this.status == 200 && this.readyState == 4) 
@@ -36,13 +36,10 @@
       }};
 
       function fetch() {
-        xhr1.open('GET', "/redApi/locationData", true); 
+        xhr1.open('GET', "/redApi/locationData/?t=" + new Date().getTime(), true); 
         xhr1.send();
       }
-      var infoWindows = [];
       function render(results) {
-        infoWindows.forEach(function(m) {m.setMap(null);});
-        infoWindows = [];
         for (var i = 0; i < results.length; i++) {
           var latLng = new google.maps.LatLng(results[i].latitude,results[i].longitude);
 
@@ -60,17 +57,22 @@
           seconds  -= hrs*3600;
           var mnts = Math.floor(seconds / 60);
           seconds  -= mnts*60;
- //         t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + seconds.toFixed(0)+"s";
-          t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"");
-//          t = (days!=0?days+"d<br>":"<br>")+(hrs!=0?hrs+"h<br>":"<br>") + (mnts!=0?mnts+"m<br>":"<br>") + seconds.toFixed(0)+"s";
-
-          var infowindow = new google.maps.InfoWindow({
-//            content: "<table><tr><td><img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'></td><td><B><font color='red'>" + t + " ago</font></B></td></tr></table>",
-            content: "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='red'>" + t + " ago</font></B>",
-            position: latLng
-          });
-          infoWindows.push(infowindow);
-          infowindow.open(map);
+          t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + ((days==0 && hrs==0 && mnts==0) ? seconds.toFixed(0) +"s ": "");
+          var infowindow;
+          if(!currentInfoWindows[results[i].name]) {
+            infowindow = new google.maps.InfoWindow({
+              content: "<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='red'>" + t + " ago</font></B>",
+              position: latLng
+            });
+            currentInfoWindows[results[i].name] = infowindow;
+            infowindow.open(map);
+          } else {
+            infowindow = currentInfoWindows[results[i].name];
+            infowindow.setContent("<img src='/images/"+ results[i].name +".jpg' alt='"+ results[i].name  +"'><BR><B><font color='red'>" + t + " ago</font></B>");
+            infowindow.setPosition(latLng);
+          }
+          
+          
         }
       }
 
