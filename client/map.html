@@ -7,7 +7,7 @@
   <body onLoad='fetch(); setMe();' >
     <div id="map"></div>
     <div id="content"></div>
-    <center><div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'></div></center>
+    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp;&nbsp;&nbsp; (Right-click on the map and select <B>"I am here"</B> to set your location)</div>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap"></script>
     <script src="/js/popup.js"></script>
