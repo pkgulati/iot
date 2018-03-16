@@ -70,7 +70,6 @@
     <script>
       var currentPopups = {};
       var socket = io();
-      console.log(socket);
       socket.on('connect', function(msg){
         console.log('Connected to WS');
       });
@@ -212,7 +211,6 @@
           var mnts = Math.floor(seconds / 60);
           seconds  -= mnts*60;
           t = (days!=0?days+"d ":"")+(hrs!=0?hrs+"h ":"") + (mnts!=0?mnts+"m ":"") + ((days==0 && hrs==0 && mnts==0) ? seconds.toFixed(0) +"s ": "");
-          var infowindow;
           var popup, c;
           var dv = document.createElement('div');
           dv.style.backgroundColor = RGB;
@@ -224,6 +222,7 @@
             currentPopups[results[i].name] = {};
             currentPopups[results[i].name].popup = popup;
             currentPopups[results[i].name].latLng = latLng;
+            currentPopups[results[i].name].dbrec = results[i];
             if(results[i].accuracy) {
                 c = new google.maps.Circle({
                 strokeColor: '#FF0000',
@@ -274,7 +273,14 @@
       map.panTo(currentLatLng);
     }
 
-//    feInt = setInterval(fetch, 5000);
+    function refresh() {
+      var data = Object.keys(currentPopups).map(function(o) {
+        return(currentPopups[o].dbrec);
+      });
+      render(data);
+    }
+
+    feInt = setInterval(refresh, 5000);
     cyInt = setInterval(cycle, 5000);
 
  
