@@ -60,12 +60,12 @@ function render(results) {  // results --> Array [time (sec since 1/1/1970) , la
     var sec = results[i].time;  // in seconds from 1/1/1970
     var seconds = new Date().getTime() / 1000 - sec; // time elapsed since this location, in sec
     var R = Number(((255 * (seconds < CSECS ? seconds : CSECS) / CSECS)).toFixed(0));  // Get a number between 0 and 255 as elapsed time varies from 0 to CSECS.
+    var textcolor = R > 128 ? "black" : "white";  // flip color for better contrast
     R = R.toString(16);   // convert to HEX
     R = (R.length == 1 ? "0" : "") + R; // pad HEX with 0 if required
     G = R;  // Green and Red to be same for Blue to fade to White
     B = "FF";  // Blue to be 255 always for Blue to fade to White
     var RGB = "#" + R + G + B;  // put RGB together
-    var textcolor = R > 128 ? "black" : "white";  // flip color for better contrast
     
 
     // Calculate 'time ago' for displaying in marker
