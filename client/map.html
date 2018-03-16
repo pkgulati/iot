@@ -59,6 +59,29 @@
         max-height: 80px;
         box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
       }
+      .context_menu{
+	background-color:white;
+	border:1px solid gray;
+}
+.context_menu_item{
+	padding:3px 6px;
+}
+.context_menu_item:hover{
+	background-color:#CCCCCC;
+}
+.context_menu_separator{
+	background-color:gray;
+	height:1px;
+	margin:0;
+	padding:0;
+}
+#clearDirectionsItem, #getDirectionsItem{
+	display:none;
+}
+/*	end styles for the ContextMenu	*/
+#map_container{
+	height:100%;
+}
 
     </style>
     
@@ -301,7 +324,7 @@
         { label:'I am here', id:'menu_option1', 
           className: 'menu_item', eventName:'option1_clicked' }
       ],
-      pixelOffset: new google.maps.Point(10, -5),
+      pixelOffset: new google.maps.Point(0, 0),
       zIndex: 5
     };
     var contextMenu = new ContextMenu(map, contextMenuOptions);
