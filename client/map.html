@@ -259,6 +259,7 @@
             popup.setMap(map);
             currentPopups[results[i].name].popup = popup;
             currentPopups[results[i].name].dbrec = results[i];
+            currentPopups[results[i].name].latLng = latLng;
           }
         }
 //        map.panToBounds(bounds);
