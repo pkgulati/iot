@@ -329,7 +329,9 @@
     google.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
       contextMenu.show(mouseEvent.latLng, map);
     });
-
+    google.maps.event.addListener(map, 'touchend', function(mouseEvent) {
+      contextMenu.show(mouseEvent.latLng, map);
+    });
   </script>  
     <div id="content"></div>
     <center><div>I am <input type='text' id='me'></div></center>
