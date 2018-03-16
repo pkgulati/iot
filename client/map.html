@@ -65,6 +65,21 @@
   </head>
   <body onLoad=fetch();>
     <div id="map"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script>
+      var currentPopups = {};
+      var socket = io();
+      console.log(socket);
+      socket.on('connect', function(msg){
+        console.log('Connected to WS');
+      });
+      socket.on('message1', function(msg){
+        console.log(msg);
+        render([msg]);
+      });
+    </script>
+
     <script>
       var map, feInt, cyInt;
       function initMap() {
@@ -154,7 +169,7 @@
         };
       }
 
-      currentPopups = {};
+
       var xhr1 = new XMLHttpRequest(); 
       xhr1.onreadystatechange = function() { 
         if (this.status == 200 && this.readyState == 4) 
@@ -255,12 +270,11 @@
       var names = Object.keys(currentPopups);
       currentLatLng = currentPopups[names[cy++]].latLng;
       if(cy>names.length - 1) cy=0;
-      console.log(currentLatLng);
       map.setZoom(14);
       map.panTo(currentLatLng);
     }
 
-    feInt = setInterval(fetch, 5000);
+//    feInt = setInterval(fetch, 5000);
     cyInt = setInterval(cycle, 5000);
 
  
