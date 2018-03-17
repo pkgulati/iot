@@ -64,21 +64,6 @@ function initMap() {
   controlDiv.appendChild(controlUI);
   controlDiv.index = 1;
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(controlDiv);
-
-  var controlDiv2 = document.createElement('div');
-  controlDiv2.style.paddingTop = '0px';
-  var controlUI2 = document.getElementById('nameholder');
-  controlDiv2.appendChild(controlUI2);
-  controlDiv2.index = 1;
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv2);
-
-  var controlDiv3 = document.createElement('div');
-  controlDiv3.style.paddingTop = '0px';
-  var controlUI3 = document.getElementById('msg');
-  controlDiv3.appendChild(controlUI3);
-  controlDiv3.index = 1;
-  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv3);
-
 }
 
 function showLocation() {
@@ -104,12 +89,8 @@ function showLocation() {
   function centerMyLocation(p) {
     console.log('Centering..');
     if(!myLocation) {
-      var msgDiv = document.getElementById('msg');
       var txt = "<B>Location is not available. Check Browser's Location Permissions</B>";
-      msgDiv.style.backgroundColor = '#FF0000FF';
-      msgDiv.style.color = '#FFFFFFFF';
-      msgDiv.innerHTML = txt;
-      setInterval(function() {msgDiv.innerHTML = ""; msgDiv.style.backgroundColor = '#FFFFFF00';}, 5000);
+      showMessage(txt, "#FF0000FF");
       return false;
     }
     if(p) clearInterval(cyInt);
@@ -117,6 +98,29 @@ function showLocation() {
     map.setCenter(myLocation);
     map.setZoom(15);
     return true;
+}
+
+var msgdisplaying = false;
+function showMessage(txt, bgcolor, persistent) {
+  msgdisplaying = true;
+  if(txt===1) txt = "User's location set to GPS position (Blue Dot)";
+  if(txt===2) txt = "User's location set to Map Center (Red Cross-Hairs)";
+  if(txt===3) txt = "Sets User Location to GPS Position (Blue Dot)";
+  if(txt===4) txt = "Sets User Location to Map Center (Red Cross-Hairs)";
+  if(txt===5) txt = "Centers map on GPS Position (Blue Dot)";
+  if(txt===6) txt = "Centered map on GPS Position (Blue Dot)";
+  txt = "<B>" + txt + "</B>";
+  var msgDiv = document.getElementById('msg');
+  msgDiv.style.backgroundColor = bgcolor; 
+  msgDiv.style.color = '#FFFFFFFF'; msgDiv.innerHTML = txt;
+  if(bgcolor === "#00000000") msgdisplaying = false;
+  if(!persistent) {
+    setTimeout(function() {
+      msgDiv.innerHTML = "&nbsp;"; 
+      msgDiv.style.backgroundColor = '#FFFFFF00';
+      msgdisplaying = false;
+    }, 5000);
+  }
 }
 
 
@@ -154,7 +158,7 @@ function setMe() {
     document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg";
     document.getElementById("locToCenter").src = "/images/locToCentergrey.jpg";
   }
-  document.getElementById('nameholder').innerHTML = "<B>" + me + "</B>";
+  document.getElementById('nameholder').innerHTML = "<B>User: " + me + "</B>";
 }
 
 // Render location array data on map. Creates new markers for each new name, 
@@ -260,12 +264,12 @@ function refresh() {
     return (currentData[o].dbrec);
   });
   render(data);
-  setMe();
 }
 
 function setMapCenterAsMyLocation() {
   var mapCenter = map.getCenter();
-  setLocationNow(mapCenter.lat(), mapCenter.lng());
+  var resp = setLocationNow(mapCenter.lat(), mapCenter.lng());
+  return resp;
 }
 
 function setLocationNow(lat, lng) {
@@ -274,16 +278,18 @@ function setLocationNow(lat, lng) {
     var div = document.getElementById("nameholder");
     div.style.backgroundColor = '#FF0000FF';
     div.style.color = '#FFFFFFFF';
-    setInterval(function() {document.getElementById("nameholder").style.backgroundColor = '#00000000'; div.style.color = '#000000FF';}, 3000);
-    return;
+    setTimeout(function() {
+      document.getElementById("nameholder").style.backgroundColor = '#00000000'; 
+      div.style.color = '#000000FF';
+    }, 5000);
+    return false;
   }
   var xhr2 = new XMLHttpRequest();
   xhr2.onreadystatechange = function () { };
   var u = "/api/Locations/loc/?url=" + name + "/https://@" + lat + "," + lng + ",";
-  console.log(u);
   xhr2.open('GET', u, true);
   xhr2.send();
-  return 0;
+  return true;
 }
 
 // refresh and cycle every 5 seconds
