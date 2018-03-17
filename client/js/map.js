@@ -72,6 +72,13 @@ function initMap() {
   controlDiv2.index = 1;
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv2);
 
+  var controlDiv3 = document.createElement('div');
+  controlDiv3.style.paddingTop = '5px';
+  var controlUI3 = document.getElementById('msg');
+  controlDiv3.appendChild(controlUI3);
+  controlDiv3.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv3);
+
 }
 
 function showLocation() {
@@ -97,28 +104,18 @@ function showLocation() {
   function centerMyLocation(p) {
     console.log('Centering..');
     if(!myLocation) {
-      var msgDiv = document.getElementById('nameholder');
-      var txt1 = msgDiv.innerHTML;
-      var txt2 = txt1 + "<BR>" + "Location is not available. Check Browser's Location Permissions";
-      msgDiv.innerHTML = txt2;
-      setInterval(function() {msgDiv.innerHTML = txt1;}, 5000);
+      var msgDiv = document.getElementById('msg');
+      var txt = "Location is not available. Check Browser's Location Permissions";
+      msgDiv.style.backgroundColor = '#FF0000FF';
+      msgDiv.innerHTML = txt;
+      setInterval(function() {msgDiv.innerHTML = ""; msgDiv.style.backgroundColor = '#FFFFFF00';}, 5000);
       return;
     }
     if(p) clearInterval(cyInt);
     var latLng = new google.maps.LatLng(myLocation.lat, myLocation.lng);
     map.setCenter(myLocation);
     map.setZoom(15);
-  }
-
-  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-                          'Error: The Geolocation service failed.' :
-                          'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
-  
 }
-
 
 
 // WebSocket connection check
