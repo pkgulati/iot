@@ -96,6 +96,14 @@ function showLocation() {
 
   function centerMyLocation(p) {
     console.log('Centering..');
+    if(!myLocation) {
+      var msgDiv = document.getElementById('nameholder');
+      var txt1 = msgDiv.innerHTML;
+      var txt2 = txt1 + "<BR>" + "Location is not available. Check Browser's Location Permissions";
+      msgDiv.innerHTML = txt2;
+      setInterval(function() {msgDiv.innerHTML = txt1;}, 5000);
+      return;
+    }
     if(p) clearInterval(cyInt);
     var latLng = new google.maps.LatLng(myLocation.lat, myLocation.lng);
     map.setCenter(myLocation);
