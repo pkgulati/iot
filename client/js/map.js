@@ -1,5 +1,7 @@
 // Global vars
-var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {}, centered = false;
+var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {},
+UNKNOWN = "UNKNOWN USER (To set user, add #Name in URL)"; 
+centered = false, me=UNKNOWN;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
 
@@ -62,6 +64,14 @@ function initMap() {
   controlDiv.appendChild(controlUI);
   controlDiv.index = 1;
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(controlDiv);
+
+  var controlDiv2 = document.createElement('div');
+  controlDiv2.style.paddingTop = '5px';
+  var controlUI2 = document.getElementById('nameholder');
+  controlDiv2.appendChild(controlUI2);
+  controlDiv2.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv2);
+
 }
 
 function showLocation() {
@@ -128,8 +138,8 @@ function fetch() {
 
 // Set ny name from addressbar anchor value into text box
 function setMe() {
-  var me = window.location.href.split("#").length>1?window.location.href.split("#")[1]:"";
-  document.getElementById('me').value = me;
+  me = window.location.href.split("#").length>1?window.location.href.split("#")[1]:UNKNOWN;
+  document.getElementById('nameholder').innerHTML = me;
 }
 
 // Render location array data on map. Creates new markers for each new name, 
@@ -235,6 +245,7 @@ function refresh() {
     return (currentData[o].dbrec);
   });
   render(data);
+  setMe();
 }
 
 function setMapCenterAsMyLocation() {
@@ -243,13 +254,11 @@ function setMapCenterAsMyLocation() {
 }
 
 function setLocationNow(lat, lng) {
-  console.log('In setLocation()');
-  var name = (document.getElementById('me').value).trim();
-  var name2 = window.location.href.split("#").length>1?window.location.href.split("#")[1]:"";
-  if (name == '' && name2 == '') { alert('Who are you? (See bottom of map!)'); return -1; }
-  if(name=='') {
-    document.getElementById('me').value = name2;
-    name = name2;
+  var name = me;
+  if(!name || name.trim() ==='' || name===UNKNOWN) {
+    document.getElementById("nameholder").style.backgroundColor = 'red';
+    setInterval(function() {document.getElementById("nameholder").style.backgroundColor = 'white';}, 3000);
+    return;
   }
   var xhr2 = new XMLHttpRequest();
   xhr2.onreadystatechange = function () { };

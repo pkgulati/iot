@@ -5,15 +5,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <meta name="viewport" content="width=device-width">
   </head>
-  <body onLoad='fetch(); setMe(); showLocation();' >
+  <body onLoad='fetch(); showLocation();' >
     <div id="map"></div>
     <div id="content"></div>
     <div id='inputs'>
-    <P>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'></P> 
-    <p><input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'></p>  
-    <p><input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'></p>
-    <p><input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'></p>
+      <p><input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>  
+      <input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'>
+      <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'></p>
     </div>
+    <div id='nameholder'>UNKNOWN USER (To set user, add #Name in URL)</div> 
+
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap"></script>
     <script src="/js/popup.js"></script>
