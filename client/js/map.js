@@ -56,6 +56,11 @@ function initMap() {
     map: map,
   });
 
+  var controlDiv = document.createElement('div');
+  var controlUI = document.getElementById('inputs');
+  controlDiv.appendChild(controlUI);
+  controlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(controlDiv);
 }
 
 function showLocation() {
