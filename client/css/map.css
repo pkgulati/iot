@@ -1,7 +1,7 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
        #map {
-        height: 95%;
+        height: 93%;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
@@ -88,7 +88,7 @@
 
       #inputs{
         background-color:lightblue;
-        height:35px;
+        height: 6%;
         padding-left: 10px;
-        padding-top: 10px;
+        padding-top: 15px;
       }
