@@ -35,10 +35,10 @@ function initMap() {
   //myLocationMarker.setAnchor(new google.maps.Point(5,5));
 
   myLocationCircle = new google.maps.Circle({
-    strokeColor: '#0000FF',
+    strokeColor: '#0080FF',
     strokeOpacity: 0.8,
     strokeWeight: 1,
-    fillColor: '#0000FF',
+    fillColor: '#0080FF',
     fillOpacity: 0.35,
     map: map,
     radius: 100

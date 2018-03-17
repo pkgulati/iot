@@ -3,14 +3,15 @@
   <head>
     <link rel="stylesheet" href="/css/map.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <meta name="viewport" content="width=device-width">
   </head>
   <body onLoad='fetch(); setMe(); showLocation();' >
     <div id="map"></div>
     <div id="content"></div>
-    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp;&nbsp;&nbsp; 
-    <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'>&nbsp;&nbsp;&nbsp;&nbsp;  
-    <input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;  
-    <input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'>
+    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp; 
+    <input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>&nbsp;&nbsp;  
+    <input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'>  
     <P>To set your location, either use the <B>"Set my location ..."</B> buttons OR right-click on the map and select <B>"I am here"</B></P>
     </div>
     <script src="/js/map.js"></script>
