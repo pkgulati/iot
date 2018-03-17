@@ -8,10 +8,11 @@
   <body onLoad='fetch(); setMe(); showLocation();' >
     <div id="map"></div>
     <div id="content"></div>
-    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp; 
-    <input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>&nbsp;&nbsp;  
-    <input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'>
+    <div id='inputs'>
+    <P>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'></P> 
+    <p><input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'></p>  
+    <p><input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'></p>
+    <p><input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'></p>
     </div>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap"></script>
