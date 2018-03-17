@@ -1,6 +1,6 @@
 // Global vars
 var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {},
-UNKNOWN = "UNKNOWN USER (To set user, add #Name in URL)"; 
+UNKNOWN = "<B>UNKNOWN USER (To set user, add #Name in URL)</B>"; 
 centered = false, me=UNKNOWN;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
@@ -105,8 +105,9 @@ function showLocation() {
     console.log('Centering..');
     if(!myLocation) {
       var msgDiv = document.getElementById('msg');
-      var txt = "Location is not available. Check Browser's Location Permissions";
+      var txt = "<B>Location is not available. Check Browser's Location Permissions</B>";
       msgDiv.style.backgroundColor = '#FF0000FF';
+      msgDiv.style.color = '#FFFFFFFF';
       msgDiv.innerHTML = txt;
       setInterval(function() {msgDiv.innerHTML = ""; msgDiv.style.backgroundColor = '#FFFFFF00';}, 5000);
       return;
@@ -144,7 +145,7 @@ function fetch() {
 // Set ny name from addressbar anchor value into text box
 function setMe() {
   me = window.location.href.split("#").length>1?window.location.href.split("#")[1]:UNKNOWN;
-  document.getElementById('nameholder').innerHTML = me;
+  document.getElementById('nameholder').innerHTML = "<B>" + me + "</B>";
 }
 
 // Render location array data on map. Creates new markers for each new name, 
@@ -261,8 +262,10 @@ function setMapCenterAsMyLocation() {
 function setLocationNow(lat, lng) {
   var name = me;
   if(!name || name.trim() ==='' || name===UNKNOWN) {
-    document.getElementById("nameholder").style.backgroundColor = 'red';
-    setInterval(function() {document.getElementById("nameholder").style.backgroundColor = 'white';}, 3000);
+    var div = document.getElementById("nameholder");
+    div.style.backgroundColor = '#FF0000FF';
+    div.style.color = '#FFFFFFFF';
+    setInterval(function() {document.getElementById("nameholder").style.backgroundColor = '#00000000'; div.style.color = '#000000FF';}, 3000);
     return;
   }
   var xhr2 = new XMLHttpRequest();
