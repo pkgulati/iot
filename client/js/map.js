@@ -66,14 +66,14 @@ function initMap() {
   map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(controlDiv);
 
   var controlDiv2 = document.createElement('div');
-  controlDiv2.style.paddingTop = '5px';
+  controlDiv2.style.paddingTop = '0px';
   var controlUI2 = document.getElementById('nameholder');
   controlDiv2.appendChild(controlUI2);
   controlDiv2.index = 1;
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv2);
 
   var controlDiv3 = document.createElement('div');
-  controlDiv3.style.paddingTop = '5px';
+  controlDiv3.style.paddingTop = '0px';
   var controlUI3 = document.getElementById('msg');
   controlDiv3.appendChild(controlUI3);
   controlDiv3.index = 1;
