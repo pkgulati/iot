@@ -110,12 +110,13 @@ function showLocation() {
       msgDiv.style.color = '#FFFFFFFF';
       msgDiv.innerHTML = txt;
       setInterval(function() {msgDiv.innerHTML = ""; msgDiv.style.backgroundColor = '#FFFFFF00';}, 5000);
-      return;
+      return false;
     }
     if(p) clearInterval(cyInt);
     var latLng = new google.maps.LatLng(myLocation.lat, myLocation.lng);
     map.setCenter(myLocation);
     map.setZoom(15);
+    return true;
 }
 
 
@@ -144,7 +145,15 @@ function fetch() {
 
 // Set ny name from addressbar anchor value into text box
 function setMe() {
-  me = window.location.href.split("#").length>1?window.location.href.split("#")[1]:UNKNOWN;
+  if(window.location.href.split("#").length>1) {
+    me = window.location.href.split("#")[1];
+    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
+    document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
+  } else {
+    me = UNKNOWN;
+    document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg";
+    document.getElementById("locToCenter").src = "/images/locToCentergrey.jpg";
+  }
   document.getElementById('nameholder').innerHTML = "<B>" + me + "</B>";
 }
 

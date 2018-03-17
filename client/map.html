@@ -9,9 +9,9 @@
     <div id="map"></div>
     <div id="content"></div>
     <div id='inputs'>
-      <p> <input type="image" src="/images/locToGPS.jpg" height="50px" alt='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;   
-        <input type="image" src="/images/locToCenter.jpg" height="50px" alt='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'> &nbsp;&nbsp;&nbsp;&nbsp; 
-        <input type="image" src="/images/goToGPS.jpg"     height="50px" alt='Go to my GPS Position' onClick='centerMyLocation(1);'> 
+      <p> <input id="locToGPS" type="image" src="/images/locToGPSgrey.jpg" height="50px" alt='Set my location to GPS' onClick='centerMyLocation(1) && setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;   
+        <input id="locToCenter" type="image" src="/images/locToCentergrey.jpg" height="50px" alt='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'> &nbsp;&nbsp;&nbsp;&nbsp; 
+        <input id="goToGPS" type="image" src="/images/goToGPS.jpg"     height="50px" alt='Go to my GPS Position' onClick='centerMyLocation(1);'> 
       </p>
     </div>
     <div id='nameholder'><B>UNKNOWN USER (To set user, add #Name in URL)</B></div> 
