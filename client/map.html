@@ -4,10 +4,12 @@
     <link rel="stylesheet" href="/css/map.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
   </head>
-  <body onLoad='fetch(); setMe();' >
+  <body onLoad='fetch(); setMe(); showLocation();' >
     <div id="map"></div>
     <div id="content"></div>
-    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp;&nbsp;&nbsp; (Right-click on the map and select <B>"I am here"</B> to set your location)</div>
+    <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp;&nbsp;&nbsp; (Right-click on the map and select <B>"I am here"</B> to set your location)
+    &nbsp;&nbsp;&nbsp;&nbsp; <input type='button' value='Go to my location' onClick='centerMyLocation(1);'>&nbsp;&nbsp;&nbsp;&nbsp;  <input type='button' value='Set map center as my location' onClick='setMapCenterAsMyLocation();'>
+    </div>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap"></script>
     <script src="/js/popup.js"></script>

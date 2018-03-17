@@ -1,20 +1,103 @@
 // Global vars
-var map, feInt, cyInt, cy = 0, currentData = {};
+var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {}, centered = false;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
 
 // init Google Map
 function initMap() {
+  var mapCenter = new google.maps.LatLng(13.00, 77.65);
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
-    center: new google.maps.LatLng(13.00, 77.65)
+    center: mapCenter
   });
 
   // Stop centering markers after a drag operation
   map.addListener('drag', function () {
     clearInterval(cyInt);
   });
+
+  map.addListener('bounds_changed', function () {
+    chMarker.setPosition(this.getCenter());
+  });
+
+  var icon = {
+    url: "/images/blue-dot.png", // url
+//    scaledSize: new google.maps.Size(50, 50), // scaled size
+    origin: new google.maps.Point(0,0), // set origin
+    anchor: new google.maps.Point(5, 5) // anchor (center of 10x10 icon image)
+};
+
+  myLocationMarker = new google.maps.Marker({
+    icon: icon,
+    height: '20px',
+    map: map,
+  });
+  //myLocationMarker.setAnchor(new google.maps.Point(5,5));
+
+  myLocationCircle = new google.maps.Circle({
+    strokeColor: '#0000FF',
+    strokeOpacity: 0.8,
+    strokeWeight: 1,
+    fillColor: '#0000FF',
+    fillOpacity: 0.35,
+    map: map,
+    radius: 100
+  });
+
+  var chIcon = {
+    url: "/images/crosshairs.png", // url
+    scaledSize: new google.maps.Size(100, 100), // scaled size
+    origin: new google.maps.Point(0,0), // set origin
+    anchor: new google.maps.Point(50, 50) // anchor (center of 10x10 icon image)
+};
+
+  chMarker = new google.maps.Marker({
+    icon: chIcon,
+    map: map,
+  });
+
 }
+
+function showLocation() {
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        myLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        myLocationMarker.setPosition(myLocation);
+        myLocationCircle.setCenter(myLocation);
+        if(!centered) centerMyLocation();
+        centered = true;
+//        map.setCenter(pos);
+      }, function() {
+//        handleLocationError(true, infoWindow, map.getCenter());
+      });
+    } else {
+      // Browser doesn't support Geolocation
+//      handleLocationError(false, infoWindow, map.getCenter());
+    }
+  }
+
+  function centerMyLocation(p) {
+    console.log('Centering..');
+    if(p) clearInterval(cyInt);
+    var latLng = new google.maps.LatLng(myLocation.lat, myLocation.lng);
+    map.setCenter(myLocation);
+    map.setZoom(15);
+  }
+
+  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+                          'Error: The Geolocation service failed.' :
+                          'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(map);
+  
+}
+
+
 
 // WebSocket connection check
 socket.on('connect', function (msg) {
@@ -150,6 +233,30 @@ function refresh() {
   render(data);
 }
 
+function setMapCenterAsMyLocation() {
+  var mapCenter = map.getCenter();
+  setLocationNow(mapCenter.lat(), mapCenter.lng());
+}
+
+function setLocationNow(lat, lng) {
+  console.log('In setLocation()');
+  var name = (document.getElementById('me').value).trim();
+  var name2 = window.location.href.split("#").length>1?window.location.href.split("#")[1]:"";
+  if (name == '' && name2 == '') { alert('Who are you? (See bottom of map!)'); return -1; }
+  if(name=='') {
+    document.getElementById('me').value = name2;
+    name = name2;
+  }
+  var xhr2 = new XMLHttpRequest();
+  xhr2.onreadystatechange = function () { };
+  var u = "/api/Locations/loc/?url=" + name + "/https://@" + lat + "," + lng + ",";
+  console.log(u);
+  xhr2.open('GET', u, true);
+  xhr2.send();
+  return 0;
+}
+
 // refresh and cycle every 5 seconds
 feInt = setInterval(refresh, 5000);
 cyInt = setInterval(cycle, 5000);
+setInterval(showLocation, 5000);

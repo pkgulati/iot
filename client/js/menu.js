@@ -20,19 +20,7 @@ google.maps.event.addListener(contextMenu, 'menu_item_selected',
 
       case 'option1_clicked':
         console.log(latLng);
-        var xhr2 = new XMLHttpRequest();
-        xhr2.onreadystatechange = function () { };
-        var me = (document.getElementById('me').value).trim();
-        var me2 = window.location.href.split("#").length>1?window.location.href.split("#")[1]:"";
-        if (me == '' && me2 == '') { alert('Who are you? (See bottom of map!)'); break; }
-        if(me=='') {
-          document.getElementById('me').value = me2;
-          me = me2;
-        }
-        var u = "/api/Locations/loc/?url=" + me + "/https://@" + latLng.lat() + "," + latLng.lng() + ",";
-        console.log(u);
-        xhr2.open('GET', u, true);
-        xhr2.send();
+        setLocationNow(latLng.lat(), latLng.lng());
         break;
       default:
         console.log('default_clicked');
@@ -43,3 +31,4 @@ google.maps.event.addListener(contextMenu, 'menu_item_selected',
 google.maps.event.addListener(map, 'rightclick', function (mouseEvent) {
   contextMenu.show(mouseEvent.latLng, map);
 });
+
