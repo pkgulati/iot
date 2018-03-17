@@ -112,12 +112,12 @@ function showMessage(txt, bgcolor, persistent) {
   txt = "<B>" + txt + "</B>";
   var msgDiv = document.getElementById('msg');
   msgDiv.style.backgroundColor = bgcolor; 
-  msgDiv.style.color = '#FFFFFFFF'; msgDiv.innerHTML = txt;
-  if(bgcolor === "#00000000") msgdisplaying = false;
+  msgDiv.style.color = '#FFFFFF'; msgDiv.innerHTML = txt;
+  if(bgcolor === "#FFFFFF") msgdisplaying = false;
   if(!persistent) {
     setTimeout(function() {
       msgDiv.innerHTML = "&nbsp;"; 
-      msgDiv.style.backgroundColor = '#FFFFFF00';
+      msgDiv.style.backgroundColor = '#FFFFFF';
       msgdisplaying = false;
     }, 5000);
   }
