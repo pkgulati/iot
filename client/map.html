@@ -11,8 +11,7 @@
     <div id='inputs'>I am <input type='text' id='me' onChange='window.location.href = window.location.href.split("#")[0] + "#" + this.value'>&nbsp;&nbsp; 
     <input type='button' value='Set my location to GPS' onClick='centerMyLocation(1); setMapCenterAsMyLocation();'>&nbsp;&nbsp;  
     <input type='button' value='Set my location to Map Center' onClick='setMapCenterAsMyLocation();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'>  
-    <P>To set your location, either use the <B>"Set my location ..."</B> buttons OR right-click on the map and select <B>"I am here"</B></P>
+    <input type='button' value='Go to my GPS location' onClick='centerMyLocation(1);'>
     </div>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDufSgXwPtrxiwSBQVTsyCdjRoqzWlulp0&callback=initMap"></script>

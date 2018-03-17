@@ -57,6 +57,7 @@ function initMap() {
   });
 
   var controlDiv = document.createElement('div');
+  controlDiv.style.paddingBottom = '25px';
   var controlUI = document.getElementById('inputs');
   controlDiv.appendChild(controlUI);
   controlDiv.index = 1;
