@@ -70,13 +70,11 @@ function showLocation() {
         myLocationCircle.setCenter(myLocation);
         if(!centered) centerMyLocation();
         centered = true;
-//        map.setCenter(pos);
       }, function() {
-//        handleLocationError(true, infoWindow, map.getCenter());
+        console.log("Check Browser Location Permissions");
       });
     } else {
-      // Browser doesn't support Geolocation
-//      handleLocationError(false, infoWindow, map.getCenter());
+      console.log("Browser doesn't support Geolocation");
     }
   }
 
