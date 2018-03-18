@@ -118,7 +118,7 @@ function showMessage(div, txt, color, bgcolor, persistent) {
   if(!persistent) {
     setTimeout(function() {
       msgDiv.innerHTML = "&nbsp;"; 
-      msgDiv.style.backgroundColor = '#FFFFFF';
+      msgDiv.style.backgroundColor = 'rgba(255,255,255,0.0)';
       msgdisplaying = false;
     }, 5000);
   }
@@ -285,7 +285,7 @@ function setLocationNow(lat, lng) {
     // }, 5000);
     showMessage("nameholder", "User: " + UNKNOWN, 'white', 'red', 1);
     setTimeout(function() {
-      showMessage("nameholder", "User: " + UNKNOWN, 'black', '#00000000', 1);
+      showMessage("nameholder", "User: " + UNKNOWN, 'black', 'rgba(255,255,255,0.0)', 1);
       }, 5000);
     return false;
   }
