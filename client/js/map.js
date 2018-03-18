@@ -70,12 +70,15 @@ function showLocation() {
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
+        console.log(position.coords);
         myLocation = {
           lat: position.coords.latitude,
-          lng: position.coords.longitude
+          lng: position.coords.longitude,
+          acc: position.coords.accuracy
         };
         myLocationMarker.setPosition(myLocation);
         myLocationCircle.setCenter(myLocation);
+        myLocationCircle.setRadius(myLocation.acc);
         if(!centered) centerMyLocation();
         centered = true;
         if(me!==UNKNOWN) document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
