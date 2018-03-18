@@ -1,6 +1,6 @@
 // Global vars
 var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {},
-UNKNOWN = "<B>UNKNOWN USER (To set user, add #Name in URL)</B>"; 
+UNKNOWN = "<B>UNKNOWN (To set user, add #Name in URL)</B>"; 
 centered = false, me=UNKNOWN;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
@@ -101,7 +101,7 @@ function showLocation() {
 }
 
 var msgdisplaying = false;
-function showMessage(txt, bgcolor, persistent) {
+function showMessage(div, txt, color, bgcolor, persistent) {
   msgdisplaying = true;
   if(txt===1) txt = "User's location set to GPS position (Blue Dot)";
   if(txt===2) txt = "User's location set to Map Center (Red Cross-Hairs)";
@@ -110,10 +110,10 @@ function showMessage(txt, bgcolor, persistent) {
   if(txt===5) txt = "Centers map on GPS Position (Blue Dot)";
   if(txt===6) txt = "Centered map on GPS Position (Blue Dot)";
   txt = "<B>" + txt + "</B>";
-  div = bgcolor==='darkgreen'?'msg':'help';
   var msgDiv = document.getElementById(div);
   msgDiv.style.backgroundColor = bgcolor; 
-  msgDiv.style.color = '#FFFFFF'; msgDiv.innerHTML = txt;
+  msgDiv.style.color = color; 
+  msgDiv.innerHTML = txt;
   if(bgcolor === "#FFFFFF") msgdisplaying = false;
   if(!persistent) {
     setTimeout(function() {
@@ -276,13 +276,17 @@ function setMapCenterAsMyLocation() {
 function setLocationNow(lat, lng) {
   var name = me;
   if(!name || name.trim() ==='' || name===UNKNOWN) {
-    var div = document.getElementById("nameholder");
-    div.style.backgroundColor = '#FF0000FF';
-    div.style.color = '#FFFFFFFF';
+    // var div = document.getElementById("nameholder");
+    // div.style.backgroundColor = '#FF0000FF';
+    // div.style.color = '#FFFFFFFF';
+    // setTimeout(function() {
+    //   document.getElementById("nameholder").style.backgroundColor = '#00000000'; 
+    //   div.style.color = '#000000FF';
+    // }, 5000);
+    showMessage("nameholder", "User: " + UNKNOWN, 'white', 'red', 1);
     setTimeout(function() {
-      document.getElementById("nameholder").style.backgroundColor = '#00000000'; 
-      div.style.color = '#000000FF';
-    }, 5000);
+      showMessage("nameholder", "User: " + UNKNOWN, 'black', '#00000000', 1);
+      }, 5000);
     return false;
   }
   var xhr2 = new XMLHttpRequest();
