@@ -10,7 +10,8 @@ function initMap() {
   var mapCenter = new google.maps.LatLng(13.00, 77.65);
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
-    center: mapCenter
+    center: mapCenter,
+    streetViewControl: false
   });
 
   // Stop centering markers after a drag operation
