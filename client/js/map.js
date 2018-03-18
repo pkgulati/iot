@@ -78,9 +78,11 @@ function showLocation() {
         myLocationCircle.setCenter(myLocation);
         if(!centered) centerMyLocation();
         centered = true;
+        if(me!==UNKNOWN) document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
       }, function() {
         console.log("Check Browser Location Permissions");
       });
+      
     } else {
       console.log("Browser doesn't support Geolocation");
     }
@@ -90,7 +92,7 @@ function showLocation() {
     console.log('Centering..');
     if(!myLocation) {
       var txt = "<B>Location is not available. Check Browser's Location Permissions</B>";
-      showMessage(txt, "#FF0000FF");
+      showMessage("msg", txt, "white", "red");
       return false;
     }
     if(p) clearInterval(cyInt);
@@ -147,21 +149,28 @@ function fetch() {
   xhr1.send();
 
 }
-
+var msgIndex = 0;
+var msgs = ["Please enter a Username", "Kindly enter a non-whitespace Username", "Blank Username is not allowed!", "Seriously?", "Ha! I think you are just testing me :)"];
 // Set ny name from addressbar anchor value into text box
 function setMe(value) {
-  if(value!==undefined && value.trim()==='') {return false;}
+  if(value!==undefined && value.trim()==='') {
+    showMessage("validation", msgs[msgIndex++], "white", "red");
+    if(msgIndex>msgs.length - 1) msgIndex=0;
+    return false;
+  }
   if(value!==undefined) { me = value; }
   else if(window.location.href.split("#").length>1 && window.location.href.split("#")[1].trim() !== '') { me = window.location.href.split("#")[1]; } 
   if(me===UNKNOWN) {
     document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg";
     document.getElementById("locToCenter").src = "/images/locToCentergrey.jpg";
   } else {
-    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
+//    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
     document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
     window.location.href = window.location.href.split("#")[0] + "#" + me;
   }
   document.getElementById('nameholder').innerHTML = "<B>User: " + me + "</B>";
+  if(me!==UNKNOWN) showMessage("msg", "Username set to " + me, "white", "green");
+  else showMessage("msg", "Username is " + me, "white", "red");
   return true;
 }
 
