@@ -90,16 +90,34 @@
         background-color:rgba(173, 216, 230, 0);
         height: 6%;
         padding-left: 0px;
+        
       }
       .button {
-        background-color: #4CAF50;
-        border: none;
-        color: white;
+        display: inline-block;
         padding: 5px 15px;
+        font-size: 14px;
+        cursor: pointer;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
-        font-size: 14px;
-        margin: 4px 2px;
-        cursor: pointer;
-    }
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 2px;
+        margin-top: 5px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      }
+      
+      .button:hover {background-color: #3e8e41}
+      
+      .button:active {
+        background-color: #3e8e41;
+        transform: translateY(2px);
+      }
+
+      .imgbtn {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+      }      
+      .imgbtn:active {
+        transform: translateY(3px);
+      }      
