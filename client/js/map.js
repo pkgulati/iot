@@ -106,7 +106,7 @@ function showLocation() {
   function centerMyLocation(p) {
     console.log('Centering..');
     if(!myLocation) {
-      var txt = "<B>Location is not available. Check Browser's Location Permissions</B>";
+      var txt = "<B>Location is unavailable. Check Browser Settings</B>";
       showMessage("msg", txt, "white", "red");
       return false;
     }
