@@ -1,6 +1,6 @@
 // Global vars
 var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {},
-UNKNOWN = "<B>UNKNOWN (To set user, add #Name in URL)</B>"; 
+UNKNOWN = "<B>UNKNOWN</B>"; 
 centered = false, me=UNKNOWN;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
@@ -149,17 +149,20 @@ function fetch() {
 }
 
 // Set ny name from addressbar anchor value into text box
-function setMe() {
-  if(window.location.href.split("#").length>1) {
-    me = window.location.href.split("#")[1];
-    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
-    document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
-  } else {
-    me = UNKNOWN;
+function setMe(value) {
+  if(value!==undefined && value.trim()==='') {return false;}
+  if(value!==undefined) { me = value; }
+  else if(window.location.href.split("#").length>1 && window.location.href.split("#")[1].trim() !== '') { me = window.location.href.split("#")[1]; } 
+  if(me===UNKNOWN) {
     document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg";
     document.getElementById("locToCenter").src = "/images/locToCentergrey.jpg";
+  } else {
+    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
+    document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
+    window.location.href = window.location.href.split("#")[0] + "#" + me;
   }
   document.getElementById('nameholder').innerHTML = "<B>User: " + me + "</B>";
+  return true;
 }
 
 // Render location array data on map. Creates new markers for each new name, 
@@ -276,13 +279,6 @@ function setMapCenterAsMyLocation() {
 function setLocationNow(lat, lng) {
   var name = me;
   if(!name || name.trim() ==='' || name===UNKNOWN) {
-    // var div = document.getElementById("nameholder");
-    // div.style.backgroundColor = '#FF0000FF';
-    // div.style.color = '#FFFFFFFF';
-    // setTimeout(function() {
-    //   document.getElementById("nameholder").style.backgroundColor = '#00000000'; 
-    //   div.style.color = '#000000FF';
-    // }, 5000);
     showMessage("nameholder", "User: " + UNKNOWN, 'white', 'red', 1);
     setTimeout(function() {
       showMessage("nameholder", "User: " + UNKNOWN, 'black', 'rgba(255,255,255,0.0)', 1);
@@ -296,6 +292,19 @@ function setLocationNow(lat, lng) {
   xhr2.send();
   return true;
 }
+
+function keypressed(inputField, event) {
+  if(event.keyCode == 13) {
+    if(setMe(inputField.value))
+    {
+      document.getElementById('nameinput').style.display='none'; 
+      document.getElementById('name').style.display='block';
+    }
+  } else if(event.keyCode == 27) {
+    document.getElementById('nameinput').style.display='none'; 
+    document.getElementById('name').style.display='block';
+  }
+};
 
 // refresh and cycle every 5 seconds
 feInt = setInterval(refresh, 5000);
