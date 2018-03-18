@@ -20,7 +20,7 @@
       </div>
       <div id='msg'>&nbsp;</div>
       <div id="nameinput" style="display:none;">
-        <input id='username' type='text' placeholder='Enter Username' onKeyUp="keypressed(this, event)">&nbsp;&nbsp;
+        <input id='username' type='text' placeholder='Enter name' onKeyUp="keypressed(this, event)" size="8">&nbsp;&nbsp;
         <input type='button' value='OK' onClick="setMe(document.getElementById('username').value) && function() {document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';}()">&nbsp;&nbsp;
         <input type='button' value='Cancel' onClick="document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';">
       </div>
