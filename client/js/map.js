@@ -164,7 +164,7 @@ function fetch() {
 
 }
 var msgIndex = 0;
-var msgs = ["Please enter a Username", "Kindly enter a non-whitespace Username", "Blank Username is not allowed!", "Seriously?", "Ha! I think you are just testing me :)"];
+var msgs = ["&nbsp;&nbsp;Please enter a Username", "&nbsp;&nbsp;Kindly enter a non-whitespace Username", "&nbsp;&nbsp;Blank Username is not allowed!", "&nbsp;&nbsp;Seriously?", "&nbsp;&nbsp;Ha! I think you are just testing me :)"];
 // Set ny name from addressbar anchor value into text box
 function setMe(value) {
   if(value!==undefined && value.trim()==='') {

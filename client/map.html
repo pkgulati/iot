@@ -11,21 +11,23 @@
     <div id='inputs'>
       <div id="controls" style="display:none;">
         <div id='help'>&nbsp;</div>
+        <div id='validation'>&nbsp;</div>
+        <div id='msg'>&nbsp;</div>
         <p> <input id="locToGPS" type="image" src="/images/locToGPSgrey.jpg" height="50px" alt='Set my location to GPS' onClick='centerMyLocation(1) && setMapCenterAsMyLocation() && showMessage("msg", 1, "white", "darkgreen");' onmouseover='showMessage("help", 3, "white", "blue", 1);' onmouseout='showMessage("help", "&nbsp;", "white", "rgba(255,255,255,0.0)", 1);'>&nbsp;&nbsp;&nbsp;&nbsp;   
           <input id="locToCenter" type="image" src="/images/locToCentergrey.jpg" height="50px" alt='Set my location to Map Center' onClick='setMapCenterAsMyLocation() && showMessage("msg", 2, "white", "darkgreen");' onmouseover='showMessage("help", 4, "white", "blue", 1);' onmouseout='showMessage("help", "&nbsp;", "white", "rgba(255,255,255,0.0)", 1);'> &nbsp;&nbsp;&nbsp;&nbsp; 
           <input id="goToGPS" type="image" src="/images/goToGPSgrey.jpg"     height="50px" alt='Go to my GPS Position' onClick='centerMyLocation(1) && showMessage("msg", 6, "white", "darkgreen");' onmouseover='showMessage("help", 5, "white", "blue", 1);' onmouseout='showMessage("help", "&nbsp;", "white", "rgba(255,255,255,0.0)", 1);'> 
         </p>
         <div id="name">
-          <span id='nameholder'><B>User: UNKNOWN</B></span>&nbsp;&nbsp;
           <span><input type='button' value="Set User" class="button" onClick="document.getElementById('name').style.display='none'; document.getElementById('nameinput').style.display='block'; if(me!==UNKNOWN) document.getElementById('username').value=me; document.getElementById('username').focus();"></span> 
+          &nbsp;&nbsp;<span id='nameholder'><B>User: UNKNOWN</B></span>
         </div>
-        <div id='msg'>&nbsp;</div>
+        
         <div id="nameinput" style="display:none;">
           <input id='username' type='text' placeholder='Enter Username' onKeyUp="keypressed(this, event)" size="10">&nbsp;&nbsp;
           <input type='button' value='OK' class="button" onClick="setMe(document.getElementById('username').value) && function() {document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';}()">&nbsp;&nbsp;
           <input type='button' value='Cancel' class="button" onClick="document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';">
         </div>
-        <div id='validation'>&nbsp;</div>
+        
       </div>
       <div id="controlbtn"><input type="button" value="Show Controls" class="button" onClick="if(this.value==='Show Controls') {this.value='Hide Controls'; document.getElementById('controls').style.display='block';} else {this.value='Show Controls'; document.getElementById('controls').style.display='none';};"></div>
     </div>
