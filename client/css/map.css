@@ -91,3 +91,15 @@
         height: 6%;
         padding-left: 0px;
       }
+      .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 5px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }

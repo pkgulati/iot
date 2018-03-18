@@ -17,17 +17,17 @@
         </p>
         <div id="name">
           <span id='nameholder'><B>User: UNKNOWN</B></span>&nbsp;&nbsp;
-          <span><input type='button' value="Set User" onClick="document.getElementById('name').style.display='none'; document.getElementById('nameinput').style.display='block'; if(me!==UNKNOWN) document.getElementById('username').value=me; document.getElementById('username').focus();"></span> 
+          <span><input type='button' value="Set User" class="button" onClick="document.getElementById('name').style.display='none'; document.getElementById('nameinput').style.display='block'; if(me!==UNKNOWN) document.getElementById('username').value=me; document.getElementById('username').focus();"></span> 
         </div>
         <div id='msg'>&nbsp;</div>
         <div id="nameinput" style="display:none;">
           <input id='username' type='text' placeholder='Enter Username' onKeyUp="keypressed(this, event)" size="10">&nbsp;&nbsp;
-          <input type='button' value='OK' onClick="setMe(document.getElementById('username').value) && function() {document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';}()">&nbsp;&nbsp;
-          <input type='button' value='Cancel' onClick="document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';">
+          <input type='button' value='OK' class="button" onClick="setMe(document.getElementById('username').value) && function() {document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';}()">&nbsp;&nbsp;
+          <input type='button' value='Cancel' class="button" onClick="document.getElementById('nameinput').style.display='none'; document.getElementById('name').style.display='block';">
         </div>
         <div id='validation'>&nbsp;</div>
       </div>
-      <div id="controlbtn"><input type="button" value = "Show Controls" onClick="if(this.value==='Show Controls') {this.value='Hide Controls'; document.getElementById('controls').style.display='block';} else {this.value='Show Controls'; document.getElementById('controls').style.display='none';};"></div>
+      <div id="controlbtn"><input type="button" value="Show Controls" class="button" onClick="if(this.value==='Show Controls') {this.value='Hide Controls'; document.getElementById('controls').style.display='block';} else {this.value='Show Controls'; document.getElementById('controls').style.display='none';};"></div>
     </div>
      
      
