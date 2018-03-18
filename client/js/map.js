@@ -110,7 +110,8 @@ function showMessage(txt, bgcolor, persistent) {
   if(txt===5) txt = "Centers map on GPS Position (Blue Dot)";
   if(txt===6) txt = "Centered map on GPS Position (Blue Dot)";
   txt = "<B>" + txt + "</B>";
-  var msgDiv = document.getElementById('msg');
+  div = bgcolor==='darkgreen'?'msg':'help';
+  var msgDiv = document.getElementById(div);
   msgDiv.style.backgroundColor = bgcolor; 
   msgDiv.style.color = '#FFFFFF'; msgDiv.innerHTML = txt;
   if(bgcolor === "#FFFFFF") msgdisplaying = false;
