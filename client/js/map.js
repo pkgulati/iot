@@ -67,6 +67,7 @@ function initMap() {
 }
 
 function showLocation() {
+    myLocation = null;
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
@@ -79,14 +80,25 @@ function showLocation() {
         myLocationMarker.setPosition(myLocation);
         myLocationCircle.setCenter(myLocation);
         myLocationCircle.setRadius(myLocation.acc);
+        myLocationMarker.setMap(map);
+        myLocationCircle.setMap(map);
         if(!centered) centerMyLocation();
         centered = true;
-        if(me!==UNKNOWN) document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
+        document.getElementById("goToGPS").src = "/images/goToGPS.jpg";   
+        if(me!==UNKNOWN) { 
+          document.getElementById("locToGPS").src = "/images/locToGPS.jpg"; 
+        }
       }, function() {
+        document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg"; 
+        document.getElementById("goToGPS").src = "/images/goToGPSgrey.jpg";
+        myLocationMarker.setMap(null);
+        myLocationCircle.setMap(null);
         console.log("Check Browser Location Permissions");
       });
       
     } else {
+      document.getElementById("locToGPS").src = "/images/locToGPSgrey.jpg"; 
+      document.getElementById("goToGPS").src = "/images/goToGPSgrey.jpg";   
       console.log("Browser doesn't support Geolocation");
     }
   }
