@@ -196,6 +196,7 @@ function render(results) {  // results --> Array [time (sec since 1/1/1970) , la
   //  var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < results.length; i++) {
     if (!results[i].name) continue;  // Skip if data has no name
+    if(results[i].name==='Anirudh' && me!=='Ajith') continue;
     var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
 //    bounds.extend(latLng);
 
