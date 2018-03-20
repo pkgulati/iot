@@ -335,6 +335,18 @@ function keypressed(inputField, event) {
   }
 };
 
+function toggleHelp(p) {
+  var elements = document.getElementsByClassName('child2');
+  var newDisplay = 'none';
+  if(elements[0].style.display !== 'table-cell') newDisplay = 'table-cell'; 
+  if(p===1) newDisplay = 'table-cell'; 
+  else if(p===0) newDisplay = 'none'; 
+  for(var i=0; i<elements.length; i++) {
+    elements[i].style.display = newDisplay;
+  }
+}
+
+
 // refresh and cycle every 5 seconds
 feInt = setInterval(refresh, 5000);
 cyInt = setInterval(cycle, 5000);

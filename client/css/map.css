@@ -106,10 +106,10 @@
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
       }
       
-      .button:hover {background-color: #3e8e41}
+      .button:hover {background-color: #ffe9a0}
       
       .button:active {
-        background-color: #3e8e41;
+        background-color: rgb(255, 186, 83);
         transform: translateY(2px);
       }
 
@@ -154,7 +154,7 @@
         height: 50px;
       }
       .child2 {
-        display: table-cell;
+        display: none;
         vertical-align: middle;
         padding-right: 10px;
         padding-left: 10px;
@@ -185,6 +185,12 @@
         padding: 10px 5px;
         margin: 8px 0;
         box-sizing: border-box;
-    }
+      }
       
-      
+      body.inputs.controls.imgdiv.hidehelp div {
+        display: none;
+      }
+
+      body.showhelp div {
+        display: table-cell;
+      }
