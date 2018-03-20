@@ -170,6 +170,7 @@ var msgIndex = 0;
 var msgs = ["&nbsp;&nbsp;Please enter a Username", "&nbsp;&nbsp;Kindly enter a non-whitespace Username", "&nbsp;&nbsp;Blank Username is not allowed!", "&nbsp;&nbsp;Seriously?", "&nbsp;&nbsp;Ha! I think you are just testing me :)"];
 // Set ny name from addressbar anchor value into text box
 function setMe(value) {
+  console.log("setMe called");
   if(value!==undefined && value.trim()==='') {
     showMessage("validation", msgs[msgIndex++], "white", "red");
     if(msgIndex>msgs.length - 1) msgIndex=0;
