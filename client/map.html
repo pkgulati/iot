@@ -14,6 +14,7 @@
         &nbsp;&nbsp;<span id="nameholder">User: UNKNOWN</span>
       </div>
       <div id="controls" style="display:none;">
+        <div id='msg'  class="message">&nbsp;</div>
         <div id="name">
             <div class="imgdiv">
               <div class="child1"><input type="image" class="imgbtn" src="/images/user.png" height="50px" alt='Set User' onClick="document.getElementById('name').style.display='none'; document.getElementById('nameinput').style.display='block'; if(me!==UNKNOWN) document.getElementById('username').value=me; document.getElementById('username').focus();"></div>
@@ -37,9 +38,6 @@
           <div class="child1"><input id="goToGPS" type="image" class="imgbtn" src="/images/goToGPSgrey.jpg"     height="50px" alt='Go to my GPS Position' onClick='centerMyLocation(1) && showMessage("msg", 3, "white", "darkgreen");'></div> 
           <div class="child2"><div class="textlabel">Centers map on GPS Position (Blue Dot)</div></div>
         </div>  
-       
-        <div id='validation' class="message">&nbsp;</div>
-        <div id='msg'  class="message">&nbsp;</div>        
       </div>
     </div>
      

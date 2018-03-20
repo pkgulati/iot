@@ -172,7 +172,7 @@ var msgs = ["&nbsp;&nbsp;Please enter a Username", "&nbsp;&nbsp;Kindly enter a n
 function setMe(value) {
   console.log("setMe called");
   if(value!==undefined && value.trim()==='') {
-    showMessage("validation", msgs[msgIndex++], "white", "red");
+    showMessage("msg", msgs[msgIndex++], "white", "red");
     if(msgIndex>msgs.length - 1) msgIndex=0;
     return false;
   }
@@ -308,7 +308,7 @@ function setLocationNow(lat, lng) {
   var name = me;
   if(!name || name.trim() ==='' || name===UNKNOWN) {
     showMessage("nameholder", "User: " + UNKNOWN, 'white', 'red', 1);
-    showMessage("validation", "User is not set. Please set user.", "white", "red");
+    showMessage("msg", "User is not set. Please set user.", "white", "red");
     setTimeout(function() {
       showMessage("nameholder", "User: " + UNKNOWN, 'black', 'lightgrey', 1);
       }, 5000);
