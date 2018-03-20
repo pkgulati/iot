@@ -92,7 +92,7 @@
         padding-left: 0px;
         
       }
-      .button {
+      .button, .button1 {
         display: inline-block;
         padding: 10px 15px;
         font-size: 14px;
@@ -116,10 +116,65 @@
         transform: translateY(2px);
       }
 
+      .button1 {
+        width: 120px;
+      }
+      .button {
+        width: 75px;
+      }
+
       .imgbtn {
         cursor: pointer;
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
       }      
       .imgbtn:active {
         transform: translateY(3px);
-      }      
+      }
+      .imgdiv {
+        display: block;
+        margin-top: 10px;
+        display: table;
+        height: 25px;
+      } 
+
+      .child1 {
+        display: table-cell;
+        vertical-align: middle;
+        padding-right: 10px;
+        height: 25px;
+      }
+      .child2 {
+        display: table-cell;
+        vertical-align: middle;
+        padding-right: 10px;
+        padding-left: 10px;
+        height: 25px;
+      }
+      .textlabel {
+        background-color: lightgrey;
+        color:black;
+        padding: 7px 7px;
+        font-weight: bold;
+      }
+
+      .message {
+        padding: 7px 7px;
+        font-size: 14px;
+        font-weight: bold;
+        width: 350px;
+      }
+
+      #nameholder {
+        background-color: lightgrey;
+        color:black;
+        padding: 7px 7px;
+        font-weight: bold;
+      }
+      input[type=text] {
+        width: 120px;
+        padding: 10px 5px;
+        margin: 8px 0;
+        box-sizing: border-box;
+    }
+      
+      

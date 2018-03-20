@@ -11,7 +11,11 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: mapCenter,
-    streetViewControl: false
+    streetViewControl: false,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+      position: google.maps.ControlPosition.TOP_RIGHT
+    }
   });
 
   // Stop centering markers after a drag operation
@@ -60,11 +64,12 @@ function initMap() {
   });
 
   var controlDiv = document.createElement('div');
-  controlDiv.style.paddingBottom = '10px';
+  controlDiv.style.paddingTop = '20px';
+  controlDiv.style.paddingLeft = '30px';
   var controlUI = document.getElementById('inputs');
   controlDiv.appendChild(controlUI);
   controlDiv.index = 1;
-  map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(controlDiv);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(controlDiv);
 }
 
 function showLocation() {
@@ -106,7 +111,7 @@ function showLocation() {
   function centerMyLocation(p) {
     console.log('Centering..');
     if(!myLocation) {
-      var txt = "<B>Location is unavailable. Check Browser Settings</B>";
+      var txt = "Location is unavailable. Check Browser Settings";
       showMessage("msg", txt, "white", "red");
       return false;
     }
@@ -122,10 +127,7 @@ function showMessage(div, txt, color, bgcolor, persistent) {
   msgdisplaying = true;
   if(txt===1) txt = "User's location set to GPS position (Blue Dot)";
   if(txt===2) txt = "User's location set to Map Center (Red Cross-Hairs)";
-  if(txt===3) txt = "Sets User Location to GPS Position (Blue Dot)";
-  if(txt===4) txt = "Sets User Location to Map Center (Red Cross-Hairs)";
-  if(txt===5) txt = "Centers map on GPS Position (Blue Dot)";
-  if(txt===6) txt = "Centered map on GPS Position (Blue Dot)";
+  if(txt===3) txt = "Centered map on GPS Position (Blue Dot)";
   txt = "<B>" + txt + "</B>";
   var msgDiv = document.getElementById(div);
   msgDiv.style.backgroundColor = bgcolor; 
@@ -183,7 +185,7 @@ function setMe(value) {
     document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
     window.location.href = window.location.href.split("#")[0] + "#" + me;
   }
-  document.getElementById('nameholder').innerHTML = "<B>User: " + me + "</B>";
+  document.getElementById('nameholder').innerHTML = "User: " + me;
   if(me!==UNKNOWN) showMessage("msg", "Username set to " + me, "white", "green");
   else showMessage("msg", "Username is " + me, "white", "red");
   return true;
@@ -305,8 +307,9 @@ function setLocationNow(lat, lng) {
   var name = me;
   if(!name || name.trim() ==='' || name===UNKNOWN) {
     showMessage("nameholder", "User: " + UNKNOWN, 'white', 'red', 1);
+    showMessage("validation", "User is not set. Please set user.", "white", "red");
     setTimeout(function() {
-      showMessage("nameholder", "User: " + UNKNOWN, 'black', 'rgba(255,255,255,0.0)', 1);
+      showMessage("nameholder", "User: " + UNKNOWN, 'black', 'lightgrey', 1);
       }, 5000);
     return false;
   }
