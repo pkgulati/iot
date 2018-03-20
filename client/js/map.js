@@ -64,8 +64,8 @@ function initMap() {
   });
 
   var controlDiv = document.createElement('div');
-  controlDiv.style.paddingTop = '20px';
-  controlDiv.style.paddingLeft = '30px';
+  controlDiv.style.paddingTop = '0px';
+  controlDiv.style.paddingLeft = '5px';
   var controlUI = document.getElementById('inputs');
   controlDiv.appendChild(controlUI);
   controlDiv.index = 1;
