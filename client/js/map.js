@@ -65,6 +65,7 @@ function initMap() {
 
   var controlDiv = document.createElement('div');
   controlDiv.style.paddingTop = '0px';
+  controlDiv.style.pointerEvents = 'none';
   controlDiv.style.paddingLeft = '5px';
   var controlUI = document.getElementById('inputs');
   controlDiv.appendChild(controlUI);

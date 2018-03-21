@@ -145,6 +145,7 @@
       #nameinput {
         margin-top: 10px;
         height: 50px;
+        pointer-events: all;
       } 
 
       .child1 {
@@ -152,6 +153,7 @@
         vertical-align: middle;
         padding-right: 10px;
         height: 50px;
+        pointer-events: all;
       }
       .child2 {
         display: none;
