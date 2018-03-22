@@ -10,7 +10,7 @@ function initMap() {
   var mapCenter = new google.maps.LatLng(13.00, 77.65);
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
-    center: mapCenter,
+//    center: mapCenter,
     streetViewControl: false,
     mapTypeControlOptions: {
       style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -20,7 +20,7 @@ function initMap() {
 
   // Stop centering markers after a drag operation
   map.addListener('drag', function () {
-    clearInterval(cyInt);
+//    clearInterval(cyInt);
   });
 
   map.addListener('bounds_changed', function () {
@@ -88,7 +88,7 @@ function showLocation() {
         myLocationCircle.setRadius(myLocation.acc);
         myLocationMarker.setMap(map);
         myLocationCircle.setMap(map);
-        if(!centered) centerMyLocation();
+//        if(!centered) centerMyLocation();
         centered = true;
         document.getElementById("goToGPS").src = "/images/goToGPS.jpg";   
         if(me!==UNKNOWN) { 
@@ -116,7 +116,7 @@ function showLocation() {
       showMessage("msg", txt, "white", "red");
       return false;
     }
-    if(p) clearInterval(cyInt);
+//    if(p) clearInterval(cyInt);
     var latLng = new google.maps.LatLng(myLocation.lat, myLocation.lng);
     map.setCenter(myLocation);
     map.setZoom(15);
@@ -169,6 +169,8 @@ function fetch() {
 }
 var msgIndex = 0;
 var msgs = ["&nbsp;&nbsp;Please enter a Username", "&nbsp;&nbsp;Kindly enter a non-whitespace Username", "&nbsp;&nbsp;Blank Username is not allowed!", "&nbsp;&nbsp;Seriously?", "&nbsp;&nbsp;Ha! I think you are just testing me :)"];
+
+
 // Set ny name from addressbar anchor value into text box
 function setMe(value) {
   console.log("setMe called");
@@ -193,16 +195,24 @@ function setMe(value) {
   return true;
 }
 
+
+function showAll() {
+  var bounds = new google.maps.LatLngBounds();
+  Object.keys(currentData).forEach(function(name) {
+    var latLng = currentData[name].latLng;
+    bounds.extend(latLng);
+    map.fitBounds(bounds); 
+  });
+}
+  
 // Render location array data on map. Creates new markers for each new name, 
 // updates position and time for existing markers. 
 function render(results) {  // results --> Array [time (sec since 1/1/1970) , latitude (number), longitude (number), name, accuracy (m), type (GPS, NET, URL)]]
   var popup, c;
-  //  var bounds = new google.maps.LatLngBounds();
   for (var i = 0; i < results.length; i++) {
     if (!results[i].name) continue;  // Skip if data has no name
     if(results[i].name==='Anirudh' && me!=='Ajith') continue;
     var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-//    bounds.extend(latLng);
 
     // Calculation of marker color based on recency. 0 sec implies Blue, CSECS sec implies White.
     var CSECS = 7200;  // Seconds at the end of which marker color turns white 
@@ -279,7 +289,7 @@ function render(results) {  // results --> Array [time (sec since 1/1/1970) , la
       currentData[results[i].name].latLng = latLng;
     }
   }
-  //        map.panToBounds(bounds);
+  
 }
 
 // center the next marker when called
@@ -291,12 +301,15 @@ function cycle() {
   map.panTo(currentLatLng);
 }
 
+var shown = false;
 // refresh times for all markers (using existing client data (no server call))
 function refresh() {
   var data = Object.keys(currentData).map(function (o) {
     return (currentData[o].dbrec);
   });
   render(data);
+  if(!shown) showAll();
+  shown = true;
 }
 
 function setMapCenterAsMyLocation() {
@@ -350,5 +363,5 @@ function toggleHelp(p) {
 
 // refresh and cycle every 5 seconds
 feInt = setInterval(refresh, 5000);
-cyInt = setInterval(cycle, 5000);
+//cyInt = setInterval(cycle, 5000);
 setInterval(showLocation, 5000);
