@@ -94,7 +94,52 @@ module.exports = function locFn(Location) {
 				if(!name) return cb("No name was specified", null);
 				Location.remove({name: name}, options.ctx, function del(err, data) {
 					cb(err, data);
+					refreshClients();
 				});
 			};
+
+			Location.remoteMethod('deletelastlocation', {
+				description: 'Deletes last Location for specified Name',
+				accessType: 'WRITE',
+				accepts: [{
+					arg: 'name',
+					type: 'string',
+					description: 'name whose last location is to be deleted',
+					http: {
+					source: 'query'
+					}
+				}
+				],
+				http: {
+					verb: 'GET',
+					path: '/deletelastlocation'
+				},
+				returns: {
+					type: 'object',
+					root: true
+				}
+				});
+		
+		
+				Location.deletelastlocation = function loc(name, options, cb) {
+					if(!name) return cb("No name was specified", null);
+					Location.findOne({where: {name: name}, order: 'time DESC', limit: 1}, options.ctx, function del(err, data) {
+						if(data && data.id) {
+							Location.remove({id: data.id}, options.ctx, function del(err, data) {
+								refreshClients();
+									return cb(err, data);
+							});
+					  } else {
+							return cb(err, data);
+						}
+					});
+				};
+	
+        function refreshClients() {
+					var sockets = Location.app.skts;
+					sockets.forEach(function(socket) {
+						socket.emit('refresh', {});
+					});
+				}
 
 }

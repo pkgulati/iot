@@ -1,7 +1,7 @@
 // Global vars
 var map, myLocationMarker, myLocationCircle, chMarker, myLocation, feInt, cyInt, cy = 0, currentData = {},
 UNKNOWN = "<B>UNKNOWN</B>"; 
-centered = false, me=UNKNOWN;
+centered = false, me=UNKNOWN, trails = [];
 var socket = io();
 var xhr1 = new XMLHttpRequest();
 var xhr3 = new XMLHttpRequest();
@@ -148,17 +148,31 @@ function showMessage(div, txt, color, bgcolor, persistent) {
 
 xhr3.onreadystatechange = function () {
   if (this.status == 200 && this.readyState == 4) {
+    trails.forEach(function(p) {
+      p.setMap(null);
+      p = null;
+    });
+    Object.keys(currentData).forEach(function(name) {
+      var popup = currentData[name].popup;
+      popup.setMap(null);
+      popup = null;
+    });
+    fetch();
+    trails = [];
     trackData = JSON.parse(this.responseText);
     trackData.forEach(function(data) {
       var trackcoords = data.track.map(function(o) {return {lat: o.latitude,lng: o.longitude};});
-      var path = new google.maps.Polyline({
-        path: trackcoords,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map: map
-      });
+      if(trackcoords && trackcoords.length > 0) {
+        var path = new google.maps.Polyline({
+          path: trackcoords,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+          map: map
+        });
+        trails.push(path);
+      }
     });
   }
 };
@@ -174,6 +188,14 @@ socket.on('message1', function (msg) {
   xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime(), true);
   xhr3.send();
 });
+
+socket.on('refresh', function (msg) {
+  console.log('Refreshing on deletelast');
+  fetch();
+  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime(), true);
+  xhr3.send();
+});
+
 
 // Get server data and render on first-time load of page
 function fetch() {
