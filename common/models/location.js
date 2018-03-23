@@ -64,5 +64,37 @@ module.exports = function locFn(Location) {
 		Location.upsert(data, options.ctx, function upd(err, data) {
 			cb(err, data);
 		  });
-	  };
+		};
+		
+
+		Location.remoteMethod('deletebyname', {
+			description: 'Deletes Locations with specified Name',
+			accessType: 'WRITE',
+			accepts: [{
+				arg: 'name',
+				type: 'string',
+				description: 'name to be deleted',
+				http: {
+				source: 'query'
+				}
+			}
+			],
+			http: {
+				verb: 'GET',
+				path: '/deletebyname'
+			},
+			returns: {
+				type: 'object',
+				root: true
+			}
+			});
+	
+	
+			Location.deletebyname = function loc(name, options, cb) {
+				if(!name) return cb("No name was specified", null);
+				Location.remove({name: name}, options.ctx, function del(err, data) {
+					cb(err, data);
+				});
+			};
+
 }

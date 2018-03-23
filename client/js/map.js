@@ -4,6 +4,7 @@ UNKNOWN = "<B>UNKNOWN</B>";
 centered = false, me=UNKNOWN;
 var socket = io();
 var xhr1 = new XMLHttpRequest();
+var xhr3 = new XMLHttpRequest();
 
 // init Google Map
 function initMap() {
@@ -90,7 +91,7 @@ function showLocation() {
         myLocationCircle.setMap(map);
 //        if(!centered) centerMyLocation();
         centered = true;
-        document.getElementById("goToGPS").src = "/images/goToGPS.jpg";   
+        if(document.getElementById("goToGPS")) document.getElementById("goToGPS").src = "/images/goToGPS.jpg";   
         if(me!==UNKNOWN) { 
           document.getElementById("locToGPS").src = "/images/locToGPS.jpg"; 
         }
@@ -110,7 +111,6 @@ function showLocation() {
   }
 
   function centerMyLocation(p) {
-    console.log('Centering..');
     if(!myLocation) {
       var txt = "Location is unavailable. Check Browser Settings";
       showMessage("msg", txt, "white", "red");
@@ -131,19 +131,37 @@ function showMessage(div, txt, color, bgcolor, persistent) {
   if(txt===3) txt = "Centered map on GPS Position (Blue Dot)";
   txt = "<B>" + txt + "</B>";
   var msgDiv = document.getElementById(div);
-  msgDiv.style.backgroundColor = bgcolor; 
-  msgDiv.style.color = color; 
-  msgDiv.innerHTML = txt;
-  if(bgcolor === "#FFFFFF") msgdisplaying = false;
-  if(!persistent) {
-    setTimeout(function() {
-      msgDiv.innerHTML = "&nbsp;"; 
-      msgDiv.style.backgroundColor = 'rgba(255,255,255,0.0)';
-      msgdisplaying = false;
-    }, 5000);
+  if(msgDiv) {
+    msgDiv.style.backgroundColor = bgcolor; 
+    msgDiv.style.color = color; 
+    msgDiv.innerHTML = txt;
+    if(bgcolor === "#FFFFFF") msgdisplaying = false;
+    if(!persistent) {
+      setTimeout(function() {
+        msgDiv.innerHTML = "&nbsp;"; 
+        msgDiv.style.backgroundColor = 'rgba(255,255,255,0.0)';
+        msgdisplaying = false;
+      }, 5000);
+    }
   }
 }
 
+xhr3.onreadystatechange = function () {
+  if (this.status == 200 && this.readyState == 4) {
+    trackData = JSON.parse(this.responseText);
+    trackData.forEach(function(data) {
+      var trackcoords = data.track.map(function(o) {return {lat: o.latitude,lng: o.longitude};});
+      var path = new google.maps.Polyline({
+        path: trackcoords,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        map: map
+      });
+    });
+  }
+};
 
 // WebSocket connection check
 socket.on('connect', function (msg) {
@@ -153,10 +171,13 @@ socket.on('connect', function (msg) {
 socket.on('message1', function (msg) {
   console.log(msg);
   render([msg]);
+  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime(), true);
+  xhr3.send();
 });
 
 // Get server data and render on first-time load of page
 function fetch() {
+  console.log("Fetch called");
   xhr1.onreadystatechange = function () {
     if (this.status == 200 && this.readyState == 4) {
       locations = JSON.parse(this.responseText);
@@ -173,7 +194,6 @@ var msgs = ["&nbsp;&nbsp;Please enter a Username", "&nbsp;&nbsp;Kindly enter a n
 
 // Set ny name from addressbar anchor value into text box
 function setMe(value) {
-  console.log("setMe called");
   if(value!==undefined && value.trim()==='') {
     showMessage("msg", msgs[msgIndex++], "white", "red");
     if(msgIndex>msgs.length - 1) msgIndex=0;
@@ -186,10 +206,22 @@ function setMe(value) {
     document.getElementById("locToCenter").src = "/images/locToCentergrey.jpg";
   } else {
 //    document.getElementById("locToGPS").src = "/images/locToGPS.jpg";
-    document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
+    a = setInterval(function() {
+      if(document.getElementById("locToCenter") != null) {
+        document.getElementById("locToCenter").src = "/images/locToCenter.jpg";
+        clearInterval(a);
+      }
+    }, 500);
     window.location.href = window.location.href.split("#")[0] + "#" + me;
   }
-  document.getElementById('nameholder').innerHTML = "User: " + me;
+
+  b = setInterval(function() {
+    if(document.getElementById('nameholder') != null) {
+      document.getElementById('nameholder').innerHTML = "User: " + me;
+      clearInterval(b);
+    }
+  }, 500);
+
   if(me!==UNKNOWN) showMessage("msg", "Username set to " + me, "white", "green");
   else showMessage("msg", "Username is " + me, "white", "red");
   return true;
