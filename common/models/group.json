@@ -1,0 +1,6 @@
+{
+	"name": "Group",
+	"base": "PersistedModel",
+	"description": "Stores people names vs admin name",
+	"properties": {}
+}

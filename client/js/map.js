@@ -185,14 +185,14 @@ socket.on('connect', function (msg) {
 socket.on('message1', function (msg) {
   console.log(msg);
   render([msg]);
-  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime(), true);
+  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime() + "&u=" + me, true);
   xhr3.send();
 });
 
 socket.on('refresh', function (msg) {
   console.log('Refreshing on deletelast');
   fetch();
-  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime(), true);
+  xhr3.open('GET', "/redApi/trackData/?t=" + new Date().getTime() + "&u=" + me, true);
   xhr3.send();
 });
 
@@ -206,7 +206,7 @@ function fetch() {
       render(locations);
     }
   };
-  xhr1.open('GET', "/redApi/locationData/?t=" + new Date().getTime(), true);
+  xhr1.open('GET', "/redApi/locationData/?t=" + new Date().getTime() + "&u=" + me, true);
   xhr1.send();
 
 }
@@ -265,7 +265,7 @@ function render(results) {  // results --> Array [time (sec since 1/1/1970) , la
   var popup, c;
   for (var i = 0; i < results.length; i++) {
     if (!results[i].name) continue;  // Skip if data has no name
-    if(results[i].name==='Anirudh' && me!=='Ajith') continue;
+//    if(results[i].name==='Anirudh' && me!=='Ajith') continue;
     var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
 
     // Calculation of marker color based on recency. 0 sec implies Blue, CSECS sec implies White.
