@@ -25,6 +25,10 @@
         "dataSource": "db",
         "public": true
     },    
+    "FCM" : {
+        "public": true,
+        "dataSource" : "transient"
+    },
     "Data" : {
         "dataSource": "db",
         "public": true

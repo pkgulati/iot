@@ -5,6 +5,7 @@
   "author": "oe-cloud team",
   "main": "server/server.js",
   "dependencies": {
+    "firebase-admin": "^5.11.0",
     "loopback-component-storage-mongo": "git+https://github.com/raghav135/loopback-component-storage-mongo.git#master",
     "oe-cloud": "^1.2.0",
     "passport": "0.2.2",

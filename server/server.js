@@ -4,6 +4,7 @@ var loopback = oeApp.loopback;
 var app = loopback();
 var options = oeApp.options;
 
+
 // apphome is used by oe-cloud to know application server directory
 // as of now it used for picking providers.json
 app.locals.apphome = __dirname;
