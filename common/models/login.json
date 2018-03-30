@@ -5,7 +5,7 @@
     "plural" : "login",
 	"description": "To login",
 	"properties": {
-        "user" : {
+        "email" : {
             "type" : "String",
             "id" : true,
             "required" : true
