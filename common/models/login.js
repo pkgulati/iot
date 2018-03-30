@@ -44,7 +44,8 @@ module.exports = function(Login) {
             defaultError.statusCode = 401;
             defaultError.code = 'LOGIN_FAILED';
             defaultError.retriable = false;
-            return cb(defaultError, null);
+            err.additionalMessage = "Could not automatically sign in";
+            return cb(err, null);
           }
           console.log("newUser created ", newUser.id, newUser.username);
           UserModel.login(data, options, cb);
