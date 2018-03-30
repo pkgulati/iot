@@ -289,5 +289,9 @@
     "Lock": {
         "public": false,
         "dataSource": "db"
+    },
+    "Login" : {
+        "public": true,
+        "dataSource": "transient"
     }
 }

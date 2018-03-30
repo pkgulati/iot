@@ -1,6 +1,7 @@
 {
 	"name": "FCM",
-	"base": "Model",
+    "base": "Model",
+    "idInjection": false,
 	"description": "To Test FCM",
 	"properties": {
         "title" : {

@@ -21,18 +21,23 @@ module.exports = function(FCM) {
   FCM.push = function(data, options, cb) {
     var registrationToken =
       "fdNtFqRlQDE:APA91bHoiv6Ubp8nQ6sSl1Iu7raDznLfK9kpQ_QtwhguHpKISvoQGF2ImS1SKciYzAjHk635onR0DjqP5kiAUvt-al019LgbhXAgWknHsQ6h9bpmgvgkYBTMF8PoXB5eIb-yjcs3dyE5";
-    // See documentation on defining a message payload.
-    var message = {
-      notification: {
-        title: "Portugal vs. Denmark",
-        body: "great match!"
-      },
-      data: {
-        score: "850",
-        time: "2:45"
-      },
+      var message = {
       token: registrationToken
     };
+
+    if (data.title && data.body) {
+        message.notification = {
+            title : data.title,
+            body : data.body
+        }
+    }
+    if (data.data) {
+        message.data = data.data
+    } 
+
+    if (!message.data && !message.notification) {
+        return (new Error('Either notification details or data must be given'), null);
+    }
 
     admin
       .messaging()
