@@ -6,8 +6,7 @@ module.exports = function(FCM) {
     process.env.HOME,
     "fcmkey/serviceAccountKey.json"
   );
-  console.log(serviceKeyPath);
-
+ 
   var serviceAccount = require(serviceKeyPath);
 
   admin.initializeApp({
@@ -15,8 +14,6 @@ module.exports = function(FCM) {
     projectId: "myteam-8d547",
     databaseURL: "https://myteam-8d547.firebaseio.com"
   });
-
-  console.log(admin.app().name);
 
   FCM.push = function(data, options, cb) {
     var registrationToken =

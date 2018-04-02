@@ -4,21 +4,30 @@ var async = require('async');
 module.exports = function(UserModel) {
   
     UserModel.createContacts = function(user, options, cb) {
+        var userId = (typeof user.id === 'String') ? user.id : user.id.toString();
         var filter = {
             where : {
                 team : user.team,
-                userId : { neq : user.id}
+                id : { neq : userId}
             }
         };
         var ContactModel = loopback.getModelByType('Contact');
         UserModel.find(filter, options, function(err, list) {
+            console.log('users in team ', list.length);
             async.mapSeries(list, function(cuser, done) {
-                var contact = {
-                    userId : user.id,
-                    contactId : cuser.id,
-                    name : cuser.name
-                };
-                ContactModel.create(contact, options, function(err, dbrec){
+                var contacts = [
+                    {
+                        userId : user.id,
+                        contactId : cuser.id,
+                        name : cuser.username
+                    },
+                    {
+                        userId : cuser.id,
+                        contactId : user.id,
+                        name : user.username
+                    }
+                ];
+                ContactModel.create(contacts, options, function(err, dbrec){
                     done(err, dbrec);
                 });
             }, function(err, allrecs) {
@@ -28,7 +37,7 @@ module.exports = function(UserModel) {
     };
 
     UserModel.observe('after save', function (ctx, next) {
-		if (ctx.isNewInstance) {
+		if (ctx.isNewInstance && ctx.instance.team) {
             UserModel.createContacts(ctx.instance, ctx.options, function(err, contacts){
                 console.log('contacts created ', contacts);
                 next();

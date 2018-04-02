@@ -7,27 +7,41 @@
         "validateUpsert": true
     },
     "properties": {
-        "phone" : {
-            "type" : "String"
+        "phone": {
+            "type": "String"
         },
-        "team" : {
-            "type" : "String"
+        "team": {
+            "type": "String"
         }
     },
-    "acls" : [
+    "relations": {
+        "contacts": {
+            "type": "hasMany",
+            "model": "Contact",
+            "foreignKey": "userId"
+        }
+    },
+    "acls": [
         {
             "principalType": "ROLE",
             "principalId": "$everyone",
             "permission": "ALLOW",
             "property": "userlogin",
             "accessType": "*"
-          },
-          {
+        },
+        {
             "principalType": "ROLE",
             "principalId": "$everyone",
             "permission": "ALLOW",
             "property": "signup",
             "accessType": "*"
-          }
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "accessType": "READ",
+            "property": "__get__contacts"
+        }
     ]
 }
