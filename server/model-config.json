@@ -43,7 +43,7 @@
     },
     "BaseUser": {
         "dataSource": "db",
-        "public": true
+        "public": false
     },
     "dev": {
         "dataSource": "db",
@@ -290,8 +290,20 @@
         "public": false,
         "dataSource": "db"
     },
-    "Login" : {
+    "AppUser" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "Dashboard" : {
         "public": true,
         "dataSource": "transient"
+    },
+    "Contact" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "Login" : {
+        "public": true,
+        "dataSource": "db"
     }
 }

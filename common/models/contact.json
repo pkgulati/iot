@@ -1,0 +1,22 @@
+{
+    "name": "Contact",
+    "plural": "contacts",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "userId" : {
+            "type" : "String"
+        },
+        "contactId" : {
+            "type" : "String"
+        },
+        "name" : {
+            "type" : "String"
+        }
+    },
+    "acls" : [
+       
+    ]
+}

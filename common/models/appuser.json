@@ -1,0 +1,33 @@
+{
+    "name": "AppUser",
+    "plural": "Users",
+    "base": "BaseUser",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "phone" : {
+            "type" : "String"
+        },
+        "team" : {
+            "type" : "String"
+        }
+    },
+    "acls" : [
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "userlogin",
+            "accessType": "*"
+          },
+          {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "signup",
+            "accessType": "*"
+          }
+    ]
+}
