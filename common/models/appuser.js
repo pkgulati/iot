@@ -85,6 +85,13 @@ module.exports = function(UserModel) {
    
   };
 
+  UserModel.fetchtokens = function (options, cb) {
+      var TokenModel = loopback.getModelByType('AccessToken');
+      TokenModel.find({}, options, function(err, list) {
+        return cb(err, list);
+      });
+  };
+
   UserModel.remoteMethod("signup", {
     description: "Signup",
     accessType: "WRITE",
@@ -105,5 +112,22 @@ module.exports = function(UserModel) {
       root: true
     }
   });
+
+  UserModel.remoteMethod("fetchtokens", {
+    description: "debugc801",
+    accessType: "READ",
+    accepts: [
+       
+    ],
+    http: {
+      verb: "GET",
+      path: "/debugc801"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
 
 };

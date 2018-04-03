@@ -42,6 +42,13 @@
             "permission": "ALLOW",
             "accessType": "READ",
             "property": "__get__contacts"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "fetchtokens",
+            "accessType": "*"
         }
     ]
 }
