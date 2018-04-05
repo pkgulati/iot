@@ -27,6 +27,10 @@ oeApp.boot(app, options, function () {
   app.start();
 });
 
+app.get('/apk', function (req, res) {
+  res.sendFile('app-debug.apk', { root: path.join(__dirname, '../../apk/') });
+});
+
 app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
