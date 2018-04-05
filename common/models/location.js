@@ -25,9 +25,9 @@ module.exports = function locFn(Location) {
 	});
 
 	Location.observe('after save', function(ctx, next) {
-		if(ctx.instance && ctx.instance.userId) {
+		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
 				var UserInfoModel = loopback.getModelByType("UserInfo");
-				var filter = {where : {id : ctx.instance.userId}};
+				var filter = {where : {id : ctx.options.ctx.userId}};
         UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
 						if (userInfo) {
 							var now = new Date();
@@ -36,7 +36,7 @@ module.exports = function locFn(Location) {
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude
 							}, ctx.options, function(err, dbresult){
-								console.log('update of userinfo ', err, dbresult);
+								console.log('update of userinfo ', err, dbresult.name);
 								// ignore error  
 								next();
 							});
@@ -46,6 +46,8 @@ module.exports = function locFn(Location) {
 							next();
 						}
 			  });
+		} else {
+			next();
 		}
 	});
 
