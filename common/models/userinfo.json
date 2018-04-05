@@ -1,0 +1,30 @@
+{
+	"name": "UserInfo",
+    "base": "PersistedModel",
+    "idInjection": false,
+    "plural" : "UserInfo",
+	"description": "System maintained inormation about user",
+	"properties": {
+        "name" : {
+            "type" : "String"
+        },
+        "latitude" : {
+            "type" : "Number"
+        },
+        "longitude" : {
+            "type" : "Number"
+        },
+        "lastLocationTime" : {
+            "type" : "Date"
+        },
+        "accuracy" : {
+            "type" : "Number"
+        },
+        "status" : {
+            "type" : "String"
+        },
+        "image" : {
+            "type" : "String"
+        }
+    }
+}

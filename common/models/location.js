@@ -1,3 +1,5 @@
+loopback = require('loopback');
+
 module.exports = function locFn(Location) {
 	Location.observe('before save', function locBeforeSaveFn(ctx, next) {
 		if(ctx.instance && ctx.instance.loc) {
@@ -20,6 +22,31 @@ module.exports = function locFn(Location) {
 			
 		}
 		next();
+	});
+
+	Location.observe('after save', function(ctx, next) {
+		if(ctx.instance && ctx.instance.userId) {
+				var UserInfoModel = loopback.getModelByType("UserInfo");
+				var filter = {where : {id : ctx.instance.userId}};
+        UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
+						if (userInfo) {
+							var now = new Date();
+							userInfo.updateAttributes({
+								lastLocationTime : ctx.instance.time || now,
+								latitude: ctx.instance.latitude,
+								longitude : ctx.instance.longitude
+							}, ctx.options, function(err, dbresult){
+								console.log('update of userinfo ', err, dbresult);
+								// ignore error  
+								next();
+							});
+						}
+						else {
+							// ?? create??
+							next();
+						}
+			  });
+		}
 	});
 
 	Location.remoteMethod('loc', {

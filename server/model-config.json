@@ -305,5 +305,9 @@
     "Login" : {
         "public": true,
         "dataSource": "db"
+    },
+    "UserInfo" : {
+        "public": true,
+        "dataSource": "db"
     }
 }

@@ -3,7 +3,15 @@ var path = require('path');
 var loopback = oeApp.loopback;
 var app = loopback();
 var options = oeApp.options;
+var os = require('os');
 
+var hostName = os.hostname().toString();
+
+if (hostName.startsWith('BLR')) {
+  process.env.DEFAULT_PASSWORD = 'team987';
+};
+
+//  = ''
 
 // apphome is used by oe-cloud to know application server directory
 // as of now it used for picking providers.json

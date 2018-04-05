@@ -49,6 +49,20 @@
             "permission": "ALLOW",
             "property": "fetchtokens",
             "accessType": "*"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "find",
+            "accessType": "*"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "mycontactsinfo",
+            "accessType": "READ"
         }
     ]
 }

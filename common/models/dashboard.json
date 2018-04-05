@@ -1,9 +1,0 @@
-{
-	"name": "Dashboard",
-    "base": "Model",
-    "idInjection": false,
-    "plural" : "dashboard",
-	"description": "To fetch Dashboard details",
-	"properties": {
-    }
-}
