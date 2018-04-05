@@ -294,10 +294,6 @@
         "public": true,
         "dataSource": "db"
     },
-    "Dashboard" : {
-        "public": true,
-        "dataSource": "transient"
-    },
     "Contact" : {
         "public": true,
         "dataSource": "db"
@@ -307,7 +303,7 @@
         "dataSource": "db"
     },
     "UserInfo" : {
-        "public": true,
+        "public": false,
         "dataSource": "db"
     }
 }
