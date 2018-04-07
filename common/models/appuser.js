@@ -18,12 +18,12 @@ module.exports = function(UserModel) {
           var contacts = [
             {
               userId: user.id,
-              contactId: cuser.id,
+              contactUserId: cuser.id,
               name: cuser.username
             },
             {
               userId: cuser.id,
-              contactId: user.id,
+              contactUserId: user.id,
               name: user.username
             }
           ];
@@ -119,7 +119,7 @@ module.exports = function(UserModel) {
         var UserInfoModel = loopback.getModelByType("UserInfo");
         ContactModel.find(filter, options, function(err, list) {
             async.mapSeries(list, function(contact, done) {
-                UserInfoModel.findById(contact.contactId, options, function(err, dbinfo){
+                UserInfoModel.findById(contact.contactUserId, options, function(err, dbinfo){
                     done(null, dbinfo);
                 }); 
             }, function(err, results) {
@@ -176,4 +176,73 @@ module.exports = function(UserModel) {
       root: true
     }
   });
+
+  UserModel.remoteMethod("createContacts", {
+    description: "create default contacts for gven user ",
+    accessType: "WRITE",
+    accepts: [
+        {
+            arg: "userId",
+            type: "String",
+            description: "User Id",
+            http: { source: "query" }
+          }
+    ],
+    http: {
+      verb: "POST",
+      path: "/createcontacts"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
+  UserModel.prototype.registerDevice = function(token, options, cb) {
+    var response = [];
+    if (!options.ctx.userId) {
+        return cb(null, response);
+    }
+   
+    var UserInfoModel = loopback.getModelByType("UserInfo");
+    UserInfoModel.findById(options.ctx.userId, options, function(err, userInfo){
+        if (userInfo) {
+            userInfo.updateAttributes({
+                deviceToken : token
+            }, options, function(err, dbresult){
+                console.log('update of registrationToken  ', err, dbresult.name, token);
+                // ignore error  
+                cb(null, dbresult);
+            });
+        }
+        else {
+            cb(null, {});
+        }
+        });
+    };
+
+
+  UserModel.remoteMethod("registerDevice", {
+    description: "create default contacts for gven user ",
+    accessType: "WRITE",
+    isStatic: false,
+    accepts: [
+        {
+            arg: "token",
+            type: "String",
+            description: "registrationToken",
+            http: { source: "query" }
+          }
+    ],
+    http: {
+      verb: "POST",
+      path: "/registerdevice"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
+
 };

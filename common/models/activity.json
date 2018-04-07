@@ -1,0 +1,23 @@
+{
+	"name": "Activity",
+    "base": "PersistedModel",
+    "idInjection": false,
+	"description": "",
+    "properties": {
+        "type" : {
+            "type" : "String"
+        },
+        "text" : {
+            "type" : "String"
+        },
+        "data" : {
+            "type" : "Object"
+        },
+        "userId" : {
+            "type" : "String"
+        },
+        "time" : {
+            "type" : "Date"
+        }
+    }
+}

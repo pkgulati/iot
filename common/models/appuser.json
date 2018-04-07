@@ -63,6 +63,20 @@
             "permission": "ALLOW",
             "property": "mycontactsinfo",
             "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "createcontacts",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "registerDevice",
+            "accessType": "WRITE"
         }
     ]
 }
