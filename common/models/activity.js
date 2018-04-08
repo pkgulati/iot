@@ -2,11 +2,9 @@ var loopback = require("loopback");
 
 module.exports = function(Activity) {
 
-  var sendMessage = function(ctx, next) {
-    // TODO - Validate whether contact is user allowed contact
-    var contactId = ctx.instance.data.contactId;
+  var sendMessageToUser = function(ctx, userId, next) {
     var UserInfoModel = loopback.getModel("UserInfo");
-    UserInfoModel.findById(contactId, ctx.options, function(err, userinfo){
+    UserInfoModel.findById(userId, ctx.options, function(err, userinfo){
         if (err) {
             return next(err);
         }
@@ -25,6 +23,33 @@ module.exports = function(Activity) {
               }
         };
         FCM.push(message, ctx.options, next);
+      });
+    };
+
+    var sendMessage = function(ctx, next) {
+    // TODO - Validate whether contact is user allowed contact
+    var contactId = ctx.instance.data.contactId;
+    var ContactModel = loopback.getModel("Contact");
+    ContactModel.findById(contactId, ctx.options, function(err, contact){
+        if (err) {
+            return next(err);
+        }
+        if (!contact) {
+            return next();
+        }
+        if (contact.contactUserIds) {
+            contact.contactUserIds.foreach(function(userId){
+                sendMessageToUser(ctx, userId, function(){
+                    console.log('send message');
+                });
+                next();
+            });
+        }
+        else if (contact.contactId){
+            sendMessageToUser(ctx, contact.contactId, next);
+        } else {
+            next();
+        }
     });
   };
 

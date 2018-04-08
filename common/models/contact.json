@@ -9,8 +9,8 @@
         "userId" : {
             "type" : "String"
         },
-        "contactUserId" : {
-            "type" : "String"
+        "contactUserIds" : {
+            "type" : "[String]"
         },
         "group" : {
             "type" : "Boolean",
