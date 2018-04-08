@@ -15,48 +15,24 @@ module.exports = function(FCM) {
     databaseURL: "https://myteam-8d547.firebaseio.com"
   });
 
-  FCM.push = function(data, options, cb) {
-    var registrationToken =
-      "fdNtFqRlQDE:APA91bHoiv6Ubp8nQ6sSl1Iu7raDznLfK9kpQ_QtwhguHpKISvoQGF2ImS1SKciYzAjHk635onR0DjqP5kiAUvt-al019LgbhXAgWknHsQ6h9bpmgvgkYBTMF8PoXB5eIb-yjcs3dyE5";
-      var message = {
-      token: registrationToken
-    };
-
-    if (data.title && data.body) {
-        message.notification = {
-            title : data.title,
-            body : data.body
-        }
-    }
-    if (data.data) {
-        message.data = data.data
-    } 
-
-    if (!message.data && !message.notification) {
-        return (new Error('Either notification details or data must be given'), null);
-    }
-
+  FCM.push = function(message, options, cb) {
+    
     admin
-      .messaging()
-      .send(message)
-      .then(response => {
-        // Response is a message ID string.
-        console.log("Successfully sent message:", response);
-      })
-      .catch(error => {
-        console.log("Error sending message:", error);
-      });
-
-    // Send a message to the device corresponding to the provided
-    // registration token.
-    // admin.messaging().send(message, function(error, response) {
-    //   if (error) {
-    //     console.log("Error sending message:", error);
-    //   } else {
-    //     console.log("Successfully sent message:", response);
-    //   }
-    //   cb(error, response);
-    // });
+    .messaging()
+    .send(message)
+    .then(function(response) {
+      // Response is a message ID string.
+      console.log("Successfully sent message:", response);
+      cb(null, response);
+    },
+    function(error){
+      console.log("Error sent message:", error);
+      cb(error, null);
+    })
+    .catch(function(error) {
+      console.log("Error sending message:", error);
+      cb(error, null);
+    });
   };
 
   FCM.remoteMethod("push", {
