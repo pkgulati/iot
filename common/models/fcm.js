@@ -1,5 +1,6 @@
 var admin = require("firebase-admin");
 var path = require("path");
+var loopback = require('loopback');
 
 module.exports = function(FCM) {
   var serviceKeyPath = path.join(
@@ -55,4 +56,32 @@ module.exports = function(FCM) {
       root: true
     }
   });
+
+  FCM.ulist = function(options, cb) {
+      var AuthSession = loopback.getModelByType('AuthSession');
+      AuthSession.find({}, options, function(err, list){
+        var result = [];
+        list.forEach(function(token) {
+          result.push({token:token.id, userId: token.userId, username:token.username});
+        });
+        cb(err, result);
+      });
+  };
+
+  FCM.remoteMethod("ulist", {
+    description: "for demo",
+    accessType: "READ",
+    accepts: [
+    ],
+    http: {
+      verb: "GET",
+      path: "/ulist"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
+
 };

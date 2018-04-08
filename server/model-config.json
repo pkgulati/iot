@@ -39,7 +39,7 @@
     },
     "AuthSession": {
         "dataSource": "db",
-        "public": true
+        "public": false
     },
     "BaseUser": {
         "dataSource": "db",
