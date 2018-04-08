@@ -1,0 +1,35 @@
+{
+    "name": "TeamMember",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "teamName" : {
+            "type" : "String",
+            "required" : true
+        },
+        "teamId" : {
+            "type" : "String",
+            "required" : true
+        },
+        "memberUserId" : {
+            "type" : "String",
+            "required" : true
+        },
+        "disable" : {
+            "type" : "Boolean",
+            "default" : false
+        }
+    },
+    "relations": {
+        "information": {
+            "type": "hasOne",
+            "model": "UserInfo",
+            "foreignKey": "memberUserId"
+        }
+    },
+    "acls" : [
+       
+    ]
+}

@@ -21,17 +21,17 @@
         "dataSource": "db",
         "public": true
     },
-    "Group": {
+    "Team": {
         "dataSource": "db",
         "public": true
-    },    
+    }, 
+    "TeamMember": {
+        "dataSource": "db",
+        "public": true
+    },
     "FCM" : {
         "public": true,
         "dataSource" : "transient"
-    },
-    "Data" : {
-        "dataSource": "db",
-        "public": true
     },
     "Admin": {
         "dataSource": "transient",
@@ -307,6 +307,14 @@
         "dataSource": "db"
     },
     "Activity" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "UserRegistration" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "DeviceRegistration" : {
         "public": true,
         "dataSource": "db"
     }

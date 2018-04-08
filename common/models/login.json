@@ -12,6 +12,9 @@
         },
         "password" : {
             "type" : "String"
+        },
+        "deviceToken" : {
+            "type" : "String"
         }
     }
 }

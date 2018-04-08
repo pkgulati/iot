@@ -9,15 +9,18 @@
         "userId" : {
             "type" : "String"
         },
-        "contactUserIds" : {
-            "type" : "[String]"
-        },
-        "group" : {
-            "type" : "Boolean",
-            "default" : false
+        "contactUserId" : {
+            "type" : "String"
         },
         "name" : {
             "type" : "String"
+        }
+    },
+    "relations": {
+        "information": {
+            "type": "hasOne",
+            "model": "UserInfo",
+            "foreignKey": "contactUserId"
         }
     },
     "acls" : [

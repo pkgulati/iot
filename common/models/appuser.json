@@ -12,6 +12,9 @@
         },
         "team": {
             "type": "String"
+        },
+        "deviceToken" : {
+            "type" : "String"
         }
     },
     "relations": {
@@ -77,6 +80,13 @@
             "permission": "ALLOW",
             "property": "registerDevice",
             "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "find",
+            "accessType": "READ"
         }
     ]
 }

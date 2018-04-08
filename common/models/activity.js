@@ -8,6 +8,9 @@ module.exports = function(Activity) {
         if (err) {
             return next(err);
         }
+        if (!userinfo) {
+            return(next());
+        }
         if (!userinfo.deviceToken) {
             return(next());
         }
@@ -37,19 +40,7 @@ module.exports = function(Activity) {
         if (!contact) {
             return next();
         }
-        if (contact.contactUserIds) {
-            contact.contactUserIds.foreach(function(userId){
-                sendMessageToUser(ctx, userId, function(){
-                    console.log('send message');
-                });
-                next();
-            });
-        }
-        else if (contact.contactId){
-            sendMessageToUser(ctx, contact.contactId, next);
-        } else {
-            next();
-        }
+        sendMessageToUser(ctx, contact.contactUserId, next);
     });
   };
 

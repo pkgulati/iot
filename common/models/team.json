@@ -1,0 +1,27 @@
+{
+    "name": "Team",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "ownerId" : {
+            "type" : "String",
+            "required" : true
+        },
+        "name" : {
+            "type" : "String",
+            "required" : true
+        }
+    },
+    "relations": {
+        "members": {
+            "type": "hasMany",
+            "model": "TeamMember",
+            "foreignKey": "userId"
+        }
+    },
+    "acls" : [
+       
+    ]
+}
