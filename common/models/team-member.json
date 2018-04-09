@@ -24,7 +24,7 @@
     },
     "relations": {
         "information": {
-            "type": "hasOne",
+            "type": "belongsTo",
             "model": "UserInfo",
             "foreignKey": "memberUserId"
         }

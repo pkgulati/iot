@@ -18,9 +18,10 @@
     },
     "relations": {
         "information": {
-            "type": "hasOne",
+            "type": "belongsTo",
             "model": "UserInfo",
-            "foreignKey": "contactUserId"
+            "primaryKey" : "id",
+            "foreignKey" : "contactUserId"
         }
     },
     "acls" : [

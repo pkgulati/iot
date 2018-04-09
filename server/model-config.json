@@ -303,7 +303,7 @@
         "dataSource": "db"
     },
     "UserInfo" : {
-        "public": false,
+        "public": true,
         "dataSource": "db"
     },
     "Activity" : {
