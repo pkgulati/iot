@@ -50,7 +50,7 @@ module.exports = function locFn(Location) {
 								longitude : ctx.instance.longitude,
 								name : ctx.options.ctx.userName,
 								accuracy : ctx.instance.accuracy
-							}, options, function(err, dbresult){
+							}, ctx.options, function(err, dbresult){
 								console.log('userinfo created ', err, dbresult.name);
 								next();
 							});
