@@ -18,48 +18,48 @@ module.exports = function (app) {
     }
 
     var users = [{
-            username: 'Ajith',
+            username: 'ajith',
             email: 'ajith@iot.ajith.com',
             password: password,
             team : 'oecloud',
             image : '/images/Ajith.jpg'
         },
         {
-            username: 'Arun',
+            username: 'arun',
             email: 'arun@iot.ajith.com',
             password: password,
             team : 'oecloud',
             image : '/images/Arun.jpg'
         },
         {
-            username: 'Rohit',
+            username: 'rohit',
             email: 'rohit@iot.ajith.com',
             password: password,
             team : 'oecloud',
             image : '/images/Arun.jpg'
         },
         {
-            username: 'Atul',
+            username: 'atul',
             email: 'atul@iot.ajith.com',
             password: password,
             team : 'oecloud',
             image : '/images/Atul.jpg'
         },
         {
-            username: 'Praveen',
+            username: 'praveen',
             email: 'praveen@iot.ajith.com',
             password: password,
             team : 'oecloud',
             image : '/images/Praveen.jpg'
         },
         {
-            username: 'Shashi',
+            username: 'shashi',
             email: 'shashi@iot.ajith.com',
             password: password,
             image : '/documents/images/Shashi.jpg'
         },
         {
-            username: 'Anirudh',
+            username: 'anirudh',
             email: 'anirudh@iot.ajith.com',
             password: password,
             image : '/documents/images/Anirudh.jpg'
