@@ -14,6 +14,10 @@ module.exports = function(Contact) {
           console.log('user not found for id ', contactUserId);
           return cb();
       }
+      if (!user.deviceToken) {
+        console.log('deviceToken not set for ', contactUserId);
+        return cb();
+      }
       var FCM = loopback.getModel("FCM");
       var userId = options.ctx.userId.toString();
       var message = {
@@ -25,6 +29,7 @@ module.exports = function(Contact) {
           text: "Please send latest information"
         }
       };
+      console.log('send message ', message);
       FCM.push(message, options, cb);
     });
   };
