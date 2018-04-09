@@ -28,13 +28,14 @@ module.exports = function locFn(Location) {
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
-        UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
+        		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
 						if (userInfo) {
 							var now = new Date();
 							userInfo.updateAttributes({
 								lastLocationTime : ctx.instance.time || now,
 								latitude: ctx.instance.latitude,
-								longitude : ctx.instance.longitude
+								longitude : ctx.instance.longitude,
+								accuracy : ctx.instance.accuracy
 							}, ctx.options, function(err, dbresult){
 								console.log('update of userinfo ', err, dbresult.name);
 								// ignore error  
@@ -42,8 +43,18 @@ module.exports = function locFn(Location) {
 							});
 						}
 						else {
-							// ?? create??
-							next();
+							UserInfoModel.create({
+								id : ctx.options.ctx.userId,
+								lastLocationTime : ctx.instance.time || now,
+								latitude: ctx.instance.latitude,
+								longitude : ctx.instance.longitude,
+								name : ctx.options.ctx.userName,
+								accuracy : ctx.instance.accuracy
+							}, options, function(err, dbresult){
+								console.log('userinfo created ', err, dbresult.name);
+								next();
+							});
+							
 						}
 			  });
 		} else {
