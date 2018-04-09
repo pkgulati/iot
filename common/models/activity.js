@@ -3,21 +3,18 @@ var loopback = require("loopback");
 module.exports = function(Activity) {
 
   var sendMessageToUser = function(ctx, userId, next) {
-    var UserInfoModel = loopback.getModel("UserInfo");
-    UserInfoModel.findById(userId, ctx.options, function(err, userinfo){
+    var UserModel = loopback.getModel("User");
+    UserModel.findById(userId, ctx.options, function(err, user){
         if (err) {
             return next(err);
         }
-        if (!userinfo) {
-            return(next());
-        }
-        if (!userinfo.deviceToken) {
+        if (!user) {
             return(next());
         }
         var FCM = loopback.getModel("FCM");
         var userId = ctx.options.ctx.userId.toString();
         var message = {
-              token: userinfo.deviceToken,
+              token: user.deviceToken,
               data : {
                 type: "InformationUpdateRequest",
                 user : userId,

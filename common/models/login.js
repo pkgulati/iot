@@ -18,7 +18,16 @@ module.exports = function(Login) {
     options.ctx.tenantId = "default";
     var UserModel = loopback.getModelByType('BaseUser');
     UserModel.login(credentials, options, function(err, res){
-      console.log('post login');
+      console.log('post login ', data.user);
+      if (!err && data.deviceToken) {
+        UserModel.findById(res.userId, options, function(err, userInstance){
+            if (userInstance && userInstance.deviceToken != data.deviceToken) {
+              userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(){
+                  console.log('deviceToken updated ', data.deviceToken);
+              });
+            }
+        });
+      }
       return cb(err, res);
     });
   };
