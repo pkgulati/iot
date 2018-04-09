@@ -15,9 +15,12 @@ module.exports = function(Login) {
       password : data.password
     };
     options.ctx = options.ctx || {};
-    options.ctx.tenantId = "defult";
+    options.ctx.tenantId = "default";
     var UserModel = loopback.getModelByType('BaseUser');
-    UserModel.login(credentials, options, cb);
+    UserModel.login(credentials, options, function(err, res){
+      console.log('post login');
+      return cb(err, res);
+    });
   };
 
   Login.remoteMethod("login", {
