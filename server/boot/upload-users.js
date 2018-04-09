@@ -63,6 +63,12 @@ module.exports = function (app) {
             email: 'anirudh@iot.ajith.com',
             password: password,
             image : '/documents/images/Anirudh.jpg'
+        },
+        {
+            username: 'komal',
+            email: 'komal@iot.ajith.com',
+            password: password,
+            image : '/documents/images/Komal.jpg'
         }
     ];
     
