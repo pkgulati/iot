@@ -3,7 +3,7 @@ var loopback = require("loopback");
 module.exports = function(Activity) {
 
   var sendMessageToUser = function(ctx, userId, next) {
-    var UserModel = loopback.getModel("User");
+    var UserModel = loopback.getModel("BaseUser");
     UserModel.findById(userId, ctx.options, function(err, user){
         if (err) {
             return next(err);
