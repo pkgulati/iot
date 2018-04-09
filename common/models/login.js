@@ -22,11 +22,13 @@ module.exports = function(Login) {
       if (!err && data.deviceToken) {
         UserModel.findById(res.userId, options, function(err, userInstance){
             if (userInstance && userInstance.deviceToken != data.deviceToken) {
-              userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(){
-                  console.log('deviceToken updated ', data.deviceToken);
+              userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(err){
+                  console.log('deviceToken updated ', err, data.deviceToken);
               });
             }
         });
+      } else {
+        console.log('could not login or device token null ', data.deviceToken);
       }
       return cb(err, res);
     });

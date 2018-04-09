@@ -26,6 +26,7 @@ module.exports = function locFn(Location) {
 
 	Location.observe('after save', function(ctx, next) {
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
+				console.log('posting location with login ', ctx.instance );
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
