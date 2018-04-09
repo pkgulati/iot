@@ -2,7 +2,7 @@ var loopback = require("loopback");
 var async = require("async");
 
 module.exports = function(UserModel) {
-  UserModel.prototype.dashboard = function(options, cb) {
+  UserModel.prototype.data = function(options, cb) {
     console.log('this user Id ', this.id);
     var userId = this.id;
     async.parallel ({
@@ -22,12 +22,29 @@ module.exports = function(UserModel) {
       }
       },
       function(err, results) {
-        cb(err, results);
+        var information = {};
+        results.contacts.forEach(function(contact) {
+          information[contact.contactUserId] = {};
+        });
+        results.groups.forEach(function(group) {
+          group.contactUserIds.forEach(function(userId){
+            information[userId] = {};
+          });
+        });
+        var filter = {where : {id:{inq:Object.keys(information)}}};
+        var InformationModel = loopback.getModelByType("UserInfo");
+        InformationModel.find(filter, options, function(err, list) {
+          list.forEach(function(info){
+            information[info.id] = info;
+          });
+          results.information = information;
+          cb(err, results);    
+        });
       }
     );
 };
 
-UserModel.remoteMethod("dashboard", {
+UserModel.remoteMethod("data", {
   description: "fetch contacts and groups and their information",
   accessType: "READ",
   isStatic : false,
@@ -35,7 +52,7 @@ UserModel.remoteMethod("dashboard", {
   ],
   http: {
     verb: "GET",
-    path: "/dashboard"
+    path: "/data"
   },
   returns: {
     type: "object",

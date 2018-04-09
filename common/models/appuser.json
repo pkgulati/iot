@@ -21,7 +21,7 @@
         "contacts": {
             "type": "hasMany",
             "model": "Contact",
-            "foreignKey": "userId"
+            "foreignKey": "ownerUserId"
         }
     },
     "acls": [
@@ -45,6 +45,13 @@
             "permission": "ALLOW",
             "accessType": "READ",
             "property": "__get__contacts"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "WRITE",
+            "property": "__create__contacts"
         },
         {
             "principalType": "ROLE",
@@ -99,7 +106,7 @@
             "principalType": "ROLE",
             "principalId": "$everyone",
             "permission": "ALLOW",
-            "property": "dashboard",
+            "property": "data",
             "accessType": "READ"
         }
     ]
