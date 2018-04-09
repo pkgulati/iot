@@ -35,7 +35,8 @@ module.exports = function locFn(Location) {
 								lastLocationTime : ctx.instance.time || now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
-								accuracy : ctx.instance.accuracy
+								accuracy : ctx.instance.accuracy,
+								name : ctx.options.ctx.username
 							}, ctx.options, function(err, dbresult){
 								console.log('update of userinfo ', err, dbresult.name);
 								// ignore error  
@@ -48,7 +49,7 @@ module.exports = function locFn(Location) {
 								lastLocationTime : ctx.instance.time || now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
-								name : ctx.options.ctx.userName,
+								name : ctx.options.ctx.username,
 								accuracy : ctx.instance.accuracy
 							}, ctx.options, function(err, dbresult){
 								console.log('userinfo created ', err, dbresult.name);
