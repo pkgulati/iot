@@ -87,6 +87,20 @@
             "permission": "ALLOW",
             "property": "find",
             "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "findById",
+            "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "dashboard",
+            "accessType": "READ"
         }
     ]
 }

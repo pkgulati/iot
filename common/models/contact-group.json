@@ -1,25 +1,23 @@
 {
-    "name": "Team",
+    "name": "ContactGroup",
     "idInjection": false,
     "options": {
         "validateUpsert": true
     },
     "properties": {
-        "ownerId" : {
+        "ownerUserId" : {
             "type" : "String",
             "required" : true
         },
         "name" : {
             "type" : "String",
             "required" : true
+        },
+        "contactUserIds" : {
+            "type" : ["String"]
         }
     },
     "relations": {
-        "members": {
-            "type": "hasMany",
-            "model": "TeamMember",
-            "foreignKey": "userId"
-        }
     },
     "acls" : [
        
