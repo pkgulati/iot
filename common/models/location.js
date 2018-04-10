@@ -15,21 +15,21 @@ module.exports = function locFn(Location) {
 	});
 
 
-	Location.observe('after save', function locAfterSaveFn(ctx, next) {
-		if(ctx.instance) {
-			console.log("Location after save: sending data", JSON.stringify(ctx.instance));
-			var sockets = Location.app.skts;
-			sockets.forEach(function(socket) {
-				socket.emit('message1', ctx.instance);
-			});
+	// Location.observe('after save', function locAfterSaveFn(ctx, next) {
+	// 	if(ctx.instance) {
+	// 		console.log("Location after save: sending data", JSON.stringify(ctx.instance));
+	// 		var sockets = Location.app.skts;
+	// 		sockets.forEach(function(socket) {
+	// 			socket.emit('message1', ctx.instance);
+	// 		});
 			
-		}
-		next();
-	});
+	// 	}
+	// 	next();
+	// });
 
 	Location.observe('after save', function(ctx, next) {
+		console.log('posting location ', ctx.option.ctx.username );
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
-				console.log('posting location with login ', ctx.instance );
 				console.log('time ', ctx.instance.time);
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
