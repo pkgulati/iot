@@ -16,11 +16,12 @@ module.exports = function(UserInfo) {
                 models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
                     users.forEach(function(user){
                         if (user.deviceToken) {
+                            var infodata = JSON.stringify(info.toJSON());
                             var message = {
                                 token : user.deviceToken,
                                 data : {
                                     type : "ContactInformationChanged",
-                                    info : info.toJson()
+                                    info : infodata
                                 }
                             };
                             models.FCM.push(message, ctx.options, function(){ 
