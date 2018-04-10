@@ -28,7 +28,7 @@ module.exports = function locFn(Location) {
 	// });
 
 	Location.observe('after save', function(ctx, next) {
-		console.log('posting location ', ctx.option.ctx.username );
+		console.log('posting location ', ctx.options.ctx.username );
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
 				console.log('time ', ctx.instance.time);
 				var UserInfoModel = loopback.getModelByType("UserInfo");
