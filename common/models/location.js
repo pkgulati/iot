@@ -30,6 +30,7 @@ module.exports = function locFn(Location) {
 	Location.observe('after save', function(ctx, next) {
 		console.log('posting location ', ctx.options.ctx.username );
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
+				if (ctx.instance.accuracy && ctx.instance.accuracy < 40) {
 				console.log('time ', ctx.instance.time);
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
@@ -62,7 +63,11 @@ module.exports = function locFn(Location) {
 							});
 							
 						}
-			  });
+					
+			  	});
+			} else {
+				next();
+			}
 		} else {
 			next();
 		}
