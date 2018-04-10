@@ -19,7 +19,7 @@ module.exports = function(Contact) {
         return cb();
       }
       var FCM = loopback.getModel("FCM");
-      var userId = options.ctx.userId.toString();
+      var userId = options.ctx.userId ? options.ctx.userId.toString() : "";
       var message = {
         token: user.deviceToken,
         data: {

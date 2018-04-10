@@ -27,7 +27,10 @@ module.exports = function(FCM) {
       cb(null, response);
     },
     function(error){
-      console.log("Error sent message:", error);
+	if (error.code == "messaging/registration-token-not-registered") {
+		console.log('Error code ', error.code, message.deviceToken);
+	}
+	
       cb(error, null);
     })
     .catch(function(error) {
