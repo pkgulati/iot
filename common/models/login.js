@@ -17,6 +17,7 @@ module.exports = function(Login) {
     options.ctx = options.ctx || {};
     options.ctx.tenantId = "default";
     var UserModel = loopback.getModelByType('BaseUser');
+    console.log(' login ', data.user, data.password, data.deviceToken);
     UserModel.login(credentials, options, function(err, res){
       console.log('post login ', err, data.user, data.deviceToken);
       if (!err && data.deviceToken) {
