@@ -5,7 +5,7 @@ module.exports = function(Contact) {
   Contact.prototype.requestinfo = function(options, cb) {
     var UserModel = loopback.getModelByType("AppUser");
     var contactUserId = this.contactUserId;
-    console.log('get for contactUserId ', options.ctx.userId.toString(), this.ownerUserId, contactUserId);
+    console.log('contact requestinfo by ', options.ctx.username, ' for contact ', contactUserId);
     UserModel.findById(contactUserId, options, function(err, user) {
       if (err) {
         return next(err);
