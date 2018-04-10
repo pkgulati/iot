@@ -300,6 +300,7 @@
     },
     "UserInfo" : {
         "public": true,
+        "description" : "temporary true",
         "dataSource": "db"
     },
     "Activity" : {
