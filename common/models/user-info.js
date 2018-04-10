@@ -16,7 +16,8 @@ module.exports = function(UserInfo) {
                 models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
                     users.forEach(function(user){
                         if (user.deviceToken) {
-                            var infodata = JSON.stringify(info.toJSON());
+                            var infodata = info.toJSON();
+                            infodata.id = infodata.id.toString();
                             var message = {
                                 token : user.deviceToken,
                                 data : {
