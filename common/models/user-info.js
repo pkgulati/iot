@@ -19,7 +19,7 @@ module.exports = function(UserInfo) {
                             var message = {
                                 token : user.deviceToken,
                                 data : {
-                                    type : "UserInfoChanged",
+                                    type : "ContactInformationChanged",
                                     info : info.toJson()
                                 }
                             };
