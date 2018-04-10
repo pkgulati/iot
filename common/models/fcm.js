@@ -1,13 +1,13 @@
 var admin = require("firebase-admin");
 var path = require("path");
-var loopback = require('loopback');
+var loopback = require("loopback");
 
 module.exports = function(FCM) {
   var serviceKeyPath = path.join(
     process.env.HOME,
     "fcmkey/serviceAccountKey.json"
   );
- 
+
   var serviceAccount = require(serviceKeyPath);
 
   admin.initializeApp({
@@ -17,38 +17,46 @@ module.exports = function(FCM) {
   });
 
   FCM.push = function(message, options, cb) {
-    
     admin
-    .messaging()
-    .send(message)
-    .then(function(response) {
-      // Response is a message ID string.
-      console.log("Successfully sent message:", response);
-      cb(null, response);
-    },
-    function(error){
-	if (error.code == "messaging/registration-token-not-registered") {
-		console.log('Error code ', error.code, message.deviceToken);
-	}
-	
-      cb(error, null);
-    })
-    .catch(function(error) {
-      console.log("Error sending message:", error);
-      cb(error, null);
-    });
+      .messaging()
+      .send(message)
+      .then(
+        function(response) {
+          // Response is a message ID string.
+          console.log("Successfully sent message:", response);
+          cb(null, response);
+        },
+        function(error) {
+          if (error.code == "messaging/registration-token-not-registered") {
+            console.log("Error code ", error.code, message.token);
+            var UserModel = loopback.getModelByType('User');
+            UserModel.find({where:{deviceToken:messagetoken}}, options, function(err, users){
+              users.forEach(function(user){
+                  user.updateAttributes("{deviceToken:''}", option, function(){
+                      console.log('deviceToken cleared for ' + user.username);
+                  });
+              });
+            });
+          }
+          cb(error, null);
+        }
+      )
+      .catch(function(error) {
+        console.log("Error sending message:", error);
+        cb(error, null);
+      });
   };
 
   FCM.remoteMethod("push", {
     description: "Push the message",
     accessType: "WRITE",
     accepts: [
-     {
-          arg: "data",
-          type: "object",
-          description: "Model instance data",
-          http: { source: "body" }
-        }
+      {
+        arg: "data",
+        type: "object",
+        description: "Model instance data",
+        http: { source: "body" }
+      }
     ],
     http: {
       verb: "POST",
@@ -61,21 +69,24 @@ module.exports = function(FCM) {
   });
 
   FCM.ulist = function(options, cb) {
-      var AuthSession = loopback.getModelByType('AuthSession');
-      AuthSession.find({}, options, function(err, list){
-        var result = [];
-        list.forEach(function(token) {
-          result.push({token:token.id, userId: token.userId, username:token.username});
+    var AuthSession = loopback.getModelByType("AuthSession");
+    AuthSession.find({}, options, function(err, list) {
+      var result = [];
+      list.forEach(function(token) {
+        result.push({
+          token: token.id,
+          userId: token.userId,
+          username: token.username
         });
-        cb(err, result);
       });
+      cb(err, result);
+    });
   };
 
   FCM.remoteMethod("ulist", {
     description: "for demo",
     accessType: "READ",
-    accepts: [
-    ],
+    accepts: [],
     http: {
       verb: "GET",
       path: "/ulist"
@@ -85,6 +96,4 @@ module.exports = function(FCM) {
       root: true
     }
   });
-
-
 };
