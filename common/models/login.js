@@ -18,13 +18,19 @@ module.exports = function(Login) {
     options.ctx.tenantId = "default";
     var UserModel = loopback.getModelByType('BaseUser');
     UserModel.login(credentials, options, function(err, res){
-      console.log('post login ', data.user);
+      console.log('post login ', err, data.user, data.deviceToken);
       if (!err && data.deviceToken) {
         UserModel.findById(res.userId, options, function(err, userInstance){
-            if (userInstance && userInstance.deviceToken != data.deviceToken) {
-              userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(err){
-                  console.log('deviceToken updated ', err, data.deviceToken);
-              });
+            if (userInstance) {
+              if (userInstance.deviceToken != data.deviceToken) {
+                userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(err){
+                   console.log('deviceToken update result ', err, data.deviceToken);
+                });
+              } else {
+                console.log('it is same device');
+              }
+            } else {
+              console.log('how the hell logged in user record not found');
             }
         });
       } else {

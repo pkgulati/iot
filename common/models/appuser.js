@@ -3,7 +3,7 @@ var async = require("async");
 
 module.exports = function(UserModel) {
   UserModel.prototype.data = function(options, cb) {
-    console.log('this user Id ', this.id);
+    console.log('fetching user data for  ', this.username);
     var userId = this.id;
     async.parallel ({
       contacts : function(done) {
@@ -38,6 +38,7 @@ module.exports = function(UserModel) {
             information[info.id] = info;
           });
           results.information = information;
+          console.log('send result ', results);
           cb(err, results);    
         });
       }

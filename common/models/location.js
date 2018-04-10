@@ -2,6 +2,9 @@ loopback = require('loopback');
 
 module.exports = function locFn(Location) {
 	Location.observe('before save', function locBeforeSaveFn(ctx, next) {
+		if(ctx.instance && ctx.options.ctx.username) {
+			ctx.instance.username = ctx.options.ctx.username;
+		}
 		if(ctx.instance && ctx.instance.loc) {
 			coords = (ctx.instance.loc).split(",");
 			ctx.instance.latitude = Number(coords[0]);
@@ -27,6 +30,7 @@ module.exports = function locFn(Location) {
 	Location.observe('after save', function(ctx, next) {
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
 				console.log('posting location with login ', ctx.instance );
+				console.log('time ', ctx.instance.time);
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
