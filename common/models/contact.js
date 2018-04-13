@@ -8,7 +8,7 @@ module.exports = function(Contact) {
     console.log('contact requestinfo by ', options.ctx.username, ' for contact ', contactUserId);
     UserModel.findById(contactUserId, options, function(err, user) {
       if (err) {
-        return next(err);
+        return cb(err);
       }
       if (!user) {
           console.log('user not found for id ', contactUserId);
@@ -33,7 +33,10 @@ module.exports = function(Contact) {
         }
       };
       console.log('send message ', message);
-      FCM.push(message, options, cb);
+      cb(null, {'status':'message prepared'});
+      FCM.push(message, options, function(){
+          console.log('FCM message callback');
+      });
     });
   };
 
