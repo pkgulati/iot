@@ -23,7 +23,8 @@ module.exports = function(UserInfo) {
  				    contactUserId : info.id.toString(),
                                     latitude : info.latitude.toString(),
                                     longitude : info.longitude.toString(),
-                                    accuracy : info.accuracy.toString()
+                                    accuracy : info.accuracy.toString(),
+                                    lastLocationTime : info.lastLocationTime.toJSON()
                                 }
                             };
                             models.FCM.push(message, ctx.options, function(){ 

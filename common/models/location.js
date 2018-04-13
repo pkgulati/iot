@@ -38,10 +38,11 @@ module.exports = function locFn(Location) {
 						if (userInfo) {
 							var now = new Date();
 							userInfo.updateAttributes({
-								lastLocationTime : ctx.instance.time || now,
+								lastLocationTime : ctx.instance.locationTime || now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
 								accuracy : ctx.instance.accuracy,
+								lastLocationTime : ctx.instance.locationTime,
 								name : ctx.options.ctx.username
 							}, ctx.options, function(err, dbresult){
 								console.log('update of userinfo ', err, dbresult.name);
@@ -52,7 +53,7 @@ module.exports = function locFn(Location) {
 						else {
 							UserInfoModel.create({
 								id : ctx.options.ctx.userId,
-								lastLocationTime : ctx.instance.time || now,
+								lastLocationTime : ctx.instance.locationTime || now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
 								name : ctx.options.ctx.username,

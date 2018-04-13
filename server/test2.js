@@ -11,7 +11,12 @@ var loc = {
     "username": "ajith"
   };
 var d = new Date(loc.formattedTime);
-console.log(d);
+console.log('date from 2018-04-11T09:45:09+0530', d);
+
+var e = new Date(1523590388916);
+
+console.log('date from millis 1523590388916 ', e.toJSON());
+
 contactUserIds.forEach(function(item){
     console.log('contactUserId ', item);
 });
