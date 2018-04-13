@@ -45,6 +45,34 @@ module.exports = function(Activity) {
     if (ctx.isNewInstance && ctx.instance.type === "ViewContactDetails" &&
     ctx.instance.data && ctx.instance.data.contactId) {
         sendMessage(ctx, next);
+    } else if (ctx.isNewInstance && ctx.instance.type === "messageToContact") {
+        var userId= ctx.instance.contactUserId;
+        var UserModel = loopback.getModel("BaseUser");
+        UserModel.findById(userId, ctx.options, function(err, user){
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                return(next());
+            }
+            var FCM = loopback.getModel("FCM");
+            var userId = ctx.options.ctx.userId.toString();
+            var message = {
+                  token: user.deviceToken,
+                  data : {
+                    type: "notification",
+                    user : userId,
+                    userName : ctx.options.ctx.username
+                  },
+                  notification : {
+                      title : "Team Message",
+                      body : ctx.instance.message || 'hi'
+                  }
+            };
+            next();
+            FCM.push(message, ctx.options, function(){
+            });
+          });
     } else {
         next();
     }
