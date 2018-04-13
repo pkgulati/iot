@@ -30,10 +30,11 @@ module.exports = function(FCM) {
           if (error.code == "messaging/registration-token-not-registered") {
             console.log("Error code ", error.code, message.token);
             var UserModel = loopback.getModelByType('User');
-            UserModel.find({where:{deviceToken:messagetoken}}, options, function(err, users){
+            UserModel.find({where:{deviceToken:message.token}}, options, function(err, users){
+               console.log("clear deviceToken from users " , users.length, err);
               users.forEach(function(user){
-                  user.updateAttributes("{deviceToken:''}", option, function(){
-                      console.log('deviceToken cleared for ' + user.username);
+                  user.updateAttributes({deviceToken:""}, option, function(err, dbrec){
+                      console.log("deviceToken cleared for ",  user.username , err, dbrec.username);
                   });
               });
             });
