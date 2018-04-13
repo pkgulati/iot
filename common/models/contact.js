@@ -32,7 +32,6 @@ module.exports = function(Contact) {
           text: "Please send latest information"
         }
       };
-      console.log('send message ', message);
       FCM.push(message, options, cb);
     });
   };

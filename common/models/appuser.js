@@ -38,7 +38,6 @@ module.exports = function(UserModel) {
             information[info.id] = info;
           });
           results.information = information;
-          console.log('send result ', results);
           cb(err, results);    
         });
       }
