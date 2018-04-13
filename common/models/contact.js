@@ -22,6 +22,9 @@ module.exports = function(Contact) {
       var userId = options.ctx.userId ? options.ctx.userId.toString() : "";
       var message = {
         token: user.deviceToken,
+	android: {
+		priority : "high"
+	},
         data: {
           type: "InformationUpdateRequest",
           requestUserId: userId,
