@@ -65,8 +65,8 @@ module.exports = function(Activity) {
                     userName : ctx.options.ctx.username
                   },
                   notification : {
-                      title : "Team Message",
-                      body : ctx.instance.message || 'hi'
+                      title : ctx.options.ctx.username,
+                      body : ctx.instance.message
                   }
             };
             next();
