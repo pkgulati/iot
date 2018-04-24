@@ -30,15 +30,18 @@ module.exports = function locFn(Location) {
 	Location.observe('after save', function(ctx, next) {
 		console.log('posting location ', ctx.options.ctx.username );
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
+				if (ctx.instance.private == true) {
+					return next();
+				}
 				if (ctx.instance.accuracy && ctx.instance.accuracy < 700) {
-				console.log('time ', ctx.instance.time);
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
+						var now = new Date();
 						if (userInfo) {
-							var now = new Date();
 							userInfo.updateAttributes({
-								lastLocationTime : ctx.instance.locationTime || now,
+								lastLocationTime : ctx.instance.locationTime,
+								lastUpdateTime : now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
 								accuracy : ctx.instance.accuracy,
@@ -53,8 +56,9 @@ module.exports = function locFn(Location) {
 						else {
 							UserInfoModel.create({
 								id : ctx.options.ctx.userId,
-								lastLocationTime : ctx.instance.locationTime || now,
+								lastLocationTime : ctx.instance.locationTime,
 								latitude: ctx.instance.latitude,
+								lastUpdateTime : now,
 								longitude : ctx.instance.longitude,
 								name : ctx.options.ctx.username,
 								accuracy : ctx.instance.accuracy
