@@ -27,6 +27,7 @@ module.exports = function(Contact) {
 	},
         data: {
           type: "InformationUpdateRequest",
+          messageForUserId : contactUserId,
           requestUserId: userId,
           requestUserName: options.ctx.username,
           text: "Please send latest information"

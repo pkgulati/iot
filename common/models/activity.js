@@ -18,6 +18,7 @@ module.exports = function(Activity) {
               data : {
                 type: "InformationUpdateRequest",
                 user : userId,
+                messageForUserId : userId,
                 userName : ctx.options.ctx.username,
                 text : "Please send latest information"
               }
@@ -62,6 +63,7 @@ module.exports = function(Activity) {
                   data : {
                     type: "notification",
                     user : userId,
+                    messageForUserId : userId,
                     userName : ctx.options.ctx.username
                   },
                   notification : {

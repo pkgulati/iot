@@ -20,7 +20,8 @@ module.exports = function(UserInfo) {
                                 token : user.deviceToken,
                                 data : {
                                     type : "ContactInformationChanged",
- 				    contactUserId : info.id.toString(),
+                                    messageForUserId : user.id.toString,
+ 				                    contactUserId : info.id.toString(),
                                     latitude : info.latitude.toString(),
                                     longitude : info.longitude.toString(),
                                     accuracy : info.accuracy.toString(),

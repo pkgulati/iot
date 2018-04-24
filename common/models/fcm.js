@@ -17,6 +17,10 @@ module.exports = function(FCM) {
   });
 
   FCM.push = function(message, options, cb) {
+    var messageForUserId;
+    if (message.data && message.data.messageForUserId) {
+      messageForUserId = message.data.messageForUserId;
+    }
     admin
       .messaging()
       .send(message)
@@ -27,17 +31,16 @@ module.exports = function(FCM) {
           cb(null, response);
         },
         function(error) {
-          if (error.code == "messaging/registration-token-not-registered") {
-            console.log("Error code ", error.code, message.token);
-            var UserModel = loopback.getModelByType('User');
-            var filter = {where:{deviceToken:message.token}};
-            UserModel.find(filter, options, function(err, users){
-              console.log("clear deviceToken from users " , filter, users.length, err);
-              users.forEach(function(user){
+          if (error.code == "messaging/registration-token-not-registered" && messageForUserId) {
+              console.log("Error code ", error.code, message.token);
+              var UserModel = loopback.getModelByType('User');
+              UserModel.findById(messageForUserId, options, function(err, user){
+              if (user) {
+                  console.log("clear deviceToken from users " , user.username);
                   user.updateAttributes({deviceToken:""}, option, function(err, dbrec){
                       console.log("deviceToken cleared for ",  user.username , err, dbrec.username);
                   });
-              });
+              }
             });
           }
           cb(error, null);
