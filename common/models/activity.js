@@ -3,7 +3,7 @@ var loopback = require("loopback");
 module.exports = function(Activity) {
 
   var sendMessageToUser = function(ctx, userId, next) {
-    var UserModel = loopback.getModel("BaseUser");
+    var UserModel = loopback.getModelByType("BaseUser");
     UserModel.findById(userId, ctx.options, function(err, user){
         if (err) {
             return next(err);
@@ -47,7 +47,7 @@ module.exports = function(Activity) {
         sendMessage(ctx, next);
     } else if (ctx.isNewInstance && ctx.instance.type === "messageToContact") {
         var userId= ctx.instance.contactUserId;
-        var UserModel = loopback.getModel("BaseUser");
+        var UserModel = loopback.getModelByType("BaseUser");
         UserModel.findById(userId, ctx.options, function(err, user){
             if (err) {
                 return next(err);
