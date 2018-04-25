@@ -1,6 +1,7 @@
 var admin = require("firebase-admin");
 var path = require("path");
 var loopback = require("loopback");
+var async = require("async");
 
 module.exports = function(FCM) {
   var serviceKeyPath = path.join(
@@ -74,17 +75,31 @@ module.exports = function(FCM) {
   });
 
   FCM.ulist = function(options, cb) {
-    var AuthSession = loopback.getModelByType("AuthSession");
-    AuthSession.find({}, options, function(err, list) {
-      var result = [];
-      list.forEach(function(token) {
-        result.push({
-          token: token.id,
-          userId: token.userId,
-          username: token.username
-        });
-      });
-      cb(err, result);
+    var response = [];
+    var AppUser = loopback.getModelByType("AppUser");
+    AppUser.find({}, options, function(err, userlist) {
+        
+        async.forEach(userlist, function(user, done){
+          var item = {
+            userId: user.id,
+            username: user.username,
+            email : user.email,
+            deviceToken : user.deviceToken
+          };
+          var AuthSession = loopback.getModelByType("AuthSession");
+          AuthSession.find({where:{userId:user.id}, limit:1, order:"time DESC"}, options, function(err, list) {
+            if (list.length > 0) {
+                item.authToken = list[0].id;
+                item.lastLogin = list[0].created;
+            }
+            response.push(item);
+            done(null);
+          });
+        },
+        function() {
+            cb(null, response);
+        }
+        );
     });
   };
 
