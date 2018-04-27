@@ -1,6 +1,9 @@
 # iot
 Application to learn and share IOT stuff
 
+# Building 30
+12.8496886,77.6659607
+
 # Android App
 Data Refresh : Upon FCM receive 
 
