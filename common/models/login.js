@@ -27,12 +27,10 @@ module.exports = function(Login) {
       if (!err && data.deviceToken) {
         UserModel.findById(res.userId, options, function(err, userInstance){
             if (userInstance) {
-              if (userInstance.deviceToken != data.deviceToken) {
+              if (data.deviceToken) {
                 userInstance.updateAttributes({deviceToken:data.deviceToken}, options, function(err){
                    console.log('deviceToken update result ', err, data.deviceToken);
                 });
-              } else {
-                console.log('it is same device');
               }
             } else {
               console.log('how the hell logged in user record not found');
