@@ -17,7 +17,11 @@ module.exports = function(Login) {
     options.ctx = options.ctx || {};
     options.ctx.tenantId = "default";
     var UserModel = loopback.getModelByType('BaseUser');
+    var Activity = loopback.getModelByType('Activity');
     console.log(' login ', data.user, data.password, data.deviceToken);
+    Activity.create({type:"LoginAttempt", name:data.user, device:data.deviceToken}, options, function(err, rec){
+        console.log('actiivity created ', err ? err : ' id = ', rec ? rec.id.toString() : '');
+    });
     UserModel.login(credentials, options, function(err, res){
       console.log('post login ', err, data.user, data.deviceToken);
       if (!err && data.deviceToken) {
