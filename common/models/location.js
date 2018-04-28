@@ -30,9 +30,9 @@ module.exports = function locFn(Location) {
 	Location.observe('after save', function(ctx, next) {
 		console.log('posting location ', ctx.options.ctx.username );
 		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
-				if (ctx.instance.private == true) {
-					return next();
-				}
+				// if (ctx.instance.private == true) {
+				// 	return next();
+				// }
 				if (ctx.instance.accuracy && ctx.instance.accuracy < 700) {
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
