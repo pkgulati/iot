@@ -3,6 +3,9 @@ var async = require("async");
 
 module.exports = function(Contact) {
   Contact.prototype.requestinfo = function(options, cb) {
+
+    
+
     var UserModel = loopback.getModelByType("AppUser");
     var contactUserId = this.contactUserId;
     console.log('contact requestinfo by ', options.ctx.username, ' for contact ', contactUserId);
@@ -14,6 +17,12 @@ module.exports = function(Contact) {
           console.log('user not found for id ', contactUserId);
           return cb();
       }
+      var Activity = loopback.getModelByType('Activity');
+      
+      Activity.create({type:"RequestInfo", nrequestedBy:options.ctx.username, rquestedFor:user.name}, options, function(err, rec){
+        console.log('actiivity created RequestInfo ', err ? err : ' id = ', rec ? rec.id.toString() : '');
+      });
+
       if (!user.deviceToken) {
         console.log('deviceToken not set for ', contactUserId);
         return cb();
