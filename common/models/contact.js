@@ -18,8 +18,8 @@ module.exports = function(Contact) {
           return cb();
       }
       var Activity = loopback.getModelByType('Activity');
-      
-      Activity.create({type:"RequestInfo", nrequestedBy:options.ctx.username, rquestedFor:user.name}, options, function(err, rec){
+      var date = new Date();
+      Activity.create({type:"RequestInfo", name:options.ctx.username, rquestedFor:user.username, time:date}, options, function(err, rec){
         console.log('actiivity created RequestInfo ', err ? err : ' id = ', rec ? rec.id.toString() : '');
       });
 
