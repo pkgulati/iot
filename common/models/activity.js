@@ -2,6 +2,33 @@ var loopback = require("loopback");
 
 module.exports = function(Activity) {
 
+    Activity.synchronize = function(array, options, cb) {
+            console.log('array ', array);
+            cb(null, array);
+    };
+
+    Activity.remoteMethod("synchronize", {
+        description: "Synchrnozed",
+        accessType: "WRITE",
+        accepts: [
+          {
+            arg: "data",
+            type: "Array",
+            description: "Model instance data",
+            http: { source: "body" }
+          }
+        ],
+        http: {
+          verb: "POST",
+          path: "/synchronize"
+        },
+        returns: {
+          type: "Array",
+          root: true
+        }
+      });
+
+
   var sendMessageToUser = function(ctx, userId, next) {
     var UserModel = loopback.getModelByType("BaseUser");
     UserModel.findById(userId, ctx.options, function(err, user){

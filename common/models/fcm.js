@@ -17,7 +17,22 @@ module.exports = function(FCM) {
     databaseURL: "https://myteam-8d547.firebaseio.com"
   });
 
+  FCM.enable = function(status, options, cb) {
+    FCM.status = "enable";
+    cb(null, err);
+  };
+
+  FCM.disable = function(status, options, cb) {
+    FCM.status = "disable";
+    cb(null, err);
+  };
+
+  FCM.status = "enable";
+
   FCM.push = function(message, options, cb) {
+    if (FCM.status == "disable") {
+      return cb(null, {});
+    }
     var messageForUserId;
     if (message.data && message.data.messageForUserId) {
       messageForUserId = message.data.messageForUserId;
@@ -116,4 +131,34 @@ module.exports = function(FCM) {
       root: true
     }
   });
+
+  FCM.remoteMethod("enable", {
+    description: "for demo",
+    accessType: "READ",
+    accepts: [],
+    http: {
+      verb: "GET",
+      path: "/enable"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
+  FCM.remoteMethod("disable", {
+    description: "for demo",
+    accessType: "READ",
+    accepts: [],
+    http: {
+      verb: "GET",
+      path: "/enable"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
+
 };
