@@ -17,12 +17,12 @@ module.exports = function(FCM) {
     databaseURL: "https://myteam-8d547.firebaseio.com"
   });
 
-  FCM.enable = function(status, options, cb) {
+  FCM.enable = function(options, cb) {
     FCM.status = "enable";
     cb(null, {});
   };
 
-  FCM.disable = function(status, options, cb) {
+  FCM.disable = function(options, cb) {
     FCM.status = "disable";
     cb(null, {});
   };
