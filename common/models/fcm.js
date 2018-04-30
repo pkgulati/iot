@@ -19,12 +19,12 @@ module.exports = function(FCM) {
 
   FCM.enable = function(status, options, cb) {
     FCM.status = "enable";
-    cb(null, err);
+    cb(null, {});
   };
 
   FCM.disable = function(status, options, cb) {
     FCM.status = "disable";
-    cb(null, err);
+    cb(null, {});
   };
 
   FCM.status = "enable";
