@@ -1,10 +1,26 @@
 var loopback = require("loopback");
+var async = require('async');
 
 module.exports = function(Activity) {
 
     Activity.synchronize = function(array, options, cb) {
-            console.log('array ', array);
-            cb(null, array);
+            var results = [];
+            async.forEachOf(array, function(item, index, done){
+                var idx = index;
+                Activity.create(item, options, function(err, dbrec){
+                    results[idx] = {};
+                    if (err && err.code == 11000) {
+                        results[idx].error = null;
+                    } else {
+                        results[idx].error = err;
+                    }
+                    results[idx].data = dbrec ? dbrec : item;
+                    done(null);
+                });
+            },
+            function(){
+                cb(null, results);
+            });      
     };
 
     Activity.remoteMethod("synchronize", {
