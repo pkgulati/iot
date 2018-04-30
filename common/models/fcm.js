@@ -152,7 +152,7 @@ module.exports = function(FCM) {
     accepts: [],
     http: {
       verb: "GET",
-      path: "/enable"
+      path: "/disable"
     },
     returns: {
       type: "object",
