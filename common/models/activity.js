@@ -85,7 +85,15 @@ module.exports = function(Activity) {
     });
   };
 
+  Activity.observe("before save", function(ctx, next) {
+	if (ctx.isNewInstance && ctx.instance) {
+		ctx.instance.created = new Date();
+	}
+	next();
+  });;
+
   Activity.observe("after save", function(ctx, next) {
+	console.log('activity type ', ctx.instance.type, ' user ', ctx.instance.created, ' ', ctx.instance.justtime, ctx.options.ctx.username);
     if (ctx.isNewInstance && ctx.instance.type === "ViewContactDetails" &&
     ctx.instance.data && ctx.instance.data.contactId) {
         sendMessage(ctx, next);

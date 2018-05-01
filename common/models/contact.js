@@ -43,8 +43,9 @@ module.exports = function(Contact) {
         }
       };
       cb(null, {'status':'message prepared'});
-      FCM.push(message, options, function(){
-          console.log('FCM message callback');
+console.log('sending InformationUpdateRequest');
+      FCM.push(message, options, function(err, res){
+          console.log('FCM InformationUpdateRequest message callback ', err, res);
       });
     });
   };

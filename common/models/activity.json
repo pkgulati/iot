@@ -18,6 +18,9 @@
         },
         "time" : {
             "type" : "Date"
+        },
+        "created" : {
+            "type" : "Date"
         }
     },
     "acls" : [
