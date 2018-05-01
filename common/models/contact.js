@@ -8,7 +8,7 @@ module.exports = function(Contact) {
       var data = {
         type : 'ViewContact',
         remarks : "via old interface /api/contacts/:id/requestinfo",
-        contactId : this.contactId
+        contactId : this.id.toString()
       };
       Activity.create(data, options, function(err, rec){
         cb(err, rec);

@@ -15,7 +15,8 @@ module.exports = function(UserInfo) {
                 });
                 models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
                     users.forEach(function(user){
-                        if (user.deviceToken ) {
+                        if (user.deviceToken && user.online) {
+				console.log('sending to user ', user.username, user.userName);	
                             var message = {
                                 token : user.deviceToken,
                                 data : {
@@ -28,7 +29,7 @@ module.exports = function(UserInfo) {
                                     lastLocationTime : info.lastLocationTime.toJSON()
                                 }
                             };
-                            models.FCM.push(message, ctx.options, function(){ 
+                            models.FCM.push(message, ctx.options, function(err, res){ 
                             });
                         }
                     });

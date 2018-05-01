@@ -15,7 +15,10 @@
         },
         "deviceToken" : {
             "type" : "String"
-        }
+        },
+	"online" : {
+		"type" : "Boolean"
+	}
     },
     "relations": {
         "contacts": {
@@ -108,6 +111,20 @@
             "permission": "ALLOW",
             "property": "data",
             "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "update",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "updateAttributes",
+            "accessType": "WRITE"
         }
     ]
 }

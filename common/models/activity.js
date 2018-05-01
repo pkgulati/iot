@@ -45,9 +45,9 @@ module.exports = function(Activity) {
       });
 
 
-  var sendMessageToUser = function(ctx, userId, next) {
+  var sendMessageToUser = function(message, options, userId, next) {
     var UserModel = loopback.getModelByType("BaseUser");
-    UserModel.findById(userId, ctx.options, function(err, user){
+    UserModel.findById(userId, options, function(err, user){
         if (err) {
             return next(err);
         }
@@ -55,79 +55,64 @@ module.exports = function(Activity) {
             return(next());
         }
         var FCM = loopback.getModel("FCM");
-        var userId = ctx.options.ctx.userId.toString();
-        var message = {
-              token: user.deviceToken,
-              data : {
-                type: "InformationUpdateRequest",
-                user : userId,
-                messageForUserId : userId,
-                userName : ctx.options.ctx.username,
-                text : "Please send latest information"
-              }
-        };
-        FCM.push(message, ctx.options, next);
+        message.token= user.deviceToken;
+        FCM.push(message, options, next);
       });
     };
-
-    var sendMessage = function(ctx, next) {
-    // TODO - Validate whether contact is user allowed contact
-    var contactId = ctx.instance.data.contactId;
-    var ContactModel = loopback.getModel("Contact");
-    ContactModel.findById(contactId, ctx.options, function(err, contact){
-        if (err) {
-            return next(err);
-        }
-        if (!contact) {
-            return next();
-        }
-        sendMessageToUser(ctx, contact.contactUserId, next);
-    });
-  };
 
   Activity.observe("before save", function(ctx, next) {
 	if (ctx.isNewInstance && ctx.instance) {
 		ctx.instance.created = new Date();
+		ctx.instance.userId = ctx.options.ctx.userId;
+		ctx.instance.name = ctx.options.ctx.username;
 	}
 	next();
-  });;
-
-  Activity.observe("after save", function(ctx, next) {
-	console.log('activity type ', ctx.instance.type, ' user ', ctx.instance.created, ' ', ctx.instance.justtime, ctx.options.ctx.username);
-    if (ctx.isNewInstance && ctx.instance.type === "ViewContactDetails" &&
-    ctx.instance.data && ctx.instance.data.contactId) {
-        sendMessage(ctx, next);
-    } else if (ctx.isNewInstance && ctx.instance.type === "messageToContact") {
-        var userId= ctx.instance.contactUserId;
-        var UserModel = loopback.getModelByType("BaseUser");
-        UserModel.findById(userId, ctx.options, function(err, user){
-            if (err) {
-                return next(err);
-            }
-            if (!user) {
-                return(next());
-            }
-            var FCM = loopback.getModel("FCM");
-            var userId = ctx.options.ctx.userId.toString();
-            var message = {
-                  token: user.deviceToken,
-                  data : {
-                    type: "notification",
-                    user : userId,
-                    messageForUserId : userId,
-                    userName : ctx.options.ctx.username
-                  },
-                  notification : {
-                      title : ctx.options.ctx.username,
-                      body : ctx.instance.message
-                  }
-            };
-            next();
-            FCM.push(message, ctx.options, function(){
-            });
-          });
-    } else {
-        next();
-    }
   });
+
+	Activity.prototype.process = function(options, cb) {
+		if (this.type == "ViewContact") {
+	console.log('activity ViewContact ', this);
+			if (!this.contactId) {
+				return cb(null);
+			}
+			var self = this;
+			var ContactModel = loopback.getModel("Contact");
+			ContactModel.findById(this.contactId, options, function(err, contact){
+				if (err) {
+				    return cb(err);
+				}
+				if (!contact) {
+				    return cb();
+				}
+				var message = {
+					android: {
+    						priority : "high"
+  					},
+				      data : {
+					type: "InformationUpdateRequest",
+					activityId : self.id.toString()
+				      }
+				}
+				sendMessageToUser(message, options, contact.contactUserId, function(err, res) {
+					console.log('message sent ', err, res);
+					cb(err, res);
+				});
+			    });
+		}
+		else {
+			cb(null);
+		}
+	};
+
+	Activity.observe("after save", function(ctx, next) {
+	next();
+	if (!ctx.isNewInstance) {
+		return;
+	}
+	if (!ctx.instance) {
+		return;
+	}
+		ctx.instance.process(ctx.options, function(err, res) {
+		});
+  	});
 };
