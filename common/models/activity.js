@@ -128,6 +128,7 @@ module.exports = function(Activity) {
     if (!ctx.instance) {
       return;
     }
-    ctx.instance.process(ctx.options, function(err, res) {});
+    console.log('activity ', ctx.instance.type , ctx.instance.name );
+    ctx.instance.process(ctx.options, function() {});
   });
 };
