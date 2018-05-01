@@ -102,7 +102,7 @@ module.exports = function(FCM) {
             deviceToken : user.deviceToken
           };
           var AuthSession = loopback.getModelByType("AuthSession");
-          AuthSession.find({where:{userId:user.id}, limit:1, order:"time DESC"}, options, function(err, list) {
+          AuthSession.find({where:{userId:user.id}, limit:1, order:"created DESC"}, options, function(err, list) {
             if (list.length > 0) {
                 item.authToken = list[0].id;
                 item.lastLogin = list[0].created;
