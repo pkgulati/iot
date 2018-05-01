@@ -8,14 +8,14 @@ module.exports = function(UserInfo) {
         if (ctx.instance) {
             var info = ctx.instance;
             var models = UserInfo.app.models;
-            models.Contact.find({where:{contactUserId:info.userId}}, ctx.options, function(err, contacts){
+            models.Contact.find({where:{contactUserId:info.id}}, ctx.options, function(err, contacts){
                 var userIds = [];
                 contacts.forEach(function(contact) {
                     userIds.push(contact.ownerUserId.toString());
                 });
                 models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
                     users.forEach(function(user){
-                        if (user.deviceToken && user.online) {
+                        if (user.deviceToken ) {
 				console.log('sending to user ', user.username, user.userName);	
                             var message = {
                                 token : user.deviceToken,

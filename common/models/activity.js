@@ -1,5 +1,6 @@
 var loopback = require("loopback");
 var async = require("async");
+var moment = require('moment-timezone');
 
 module.exports = function(Activity) {
   Activity.synchronize = function(array, options, cb) {
@@ -72,7 +73,6 @@ module.exports = function(Activity) {
 
   Activity.prototype.process = function(options, cb) {
     if (this.type == "ViewContact") {
-      console.log("activity ViewContact ", this);
       if (!this.contactId) {
         return cb(null);
       }
@@ -113,6 +113,7 @@ module.exports = function(Activity) {
         locationTime: this.locationTime
       };
       Location.create(data, options, function(err, rec) {
+		console.log('location created ', err, rec ? rec.id : '');
         cb(err, rec);
       });
     } else {
@@ -128,7 +129,9 @@ module.exports = function(Activity) {
     if (!ctx.instance) {
       return;
     }
-    console.log('activity ', ctx.instance.type , ctx.instance.name );
+
+	var ist = moment(ctx.instance.created).tz('Asia/Calcutta');
+    console.log('activity ', ctx.instance.type , ctx.instance.justtime, ist.format().substr(11,8), ctx.instance.name , ctx.instance.id);
     ctx.instance.process(ctx.options, function() {});
   });
 };
