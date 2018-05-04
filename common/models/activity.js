@@ -116,7 +116,7 @@ module.exports = function(Activity) {
           );
           delete UserInfo
             .OnlineContacts[contact.contactUserId][options.ctx.userId];
-        }, 2 * 60 * 1000);
+        }, 1 * 60 * 1000);
         sendMessageToUser(message, options, contact.contactUserId, function(
           err,
           res
