@@ -29,3 +29,8 @@ Calling startService() multiple times does not result in starting multiple servi
 
 ```
 
+## Links
+
+https://medium.com/@mohitgupta_87777/testing-your-app-on-doze-mode-4ee30ad6a3b0
+
+

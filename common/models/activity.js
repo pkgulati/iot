@@ -88,13 +88,17 @@ module.exports = function(Activity) {
         if (!contact) {
           return cb();
         }
+        var now = new Date();
+        var expiry = now.getMilliseconds + 2 * 60 * 1000;
         var message = {
           android: {
             priority: "high"
           },
           data: {
             type: "InformationUpdateRequest",
-            activityId: self.id.toString()
+            activityId: self.id.toString(),
+            time : now.getMilliseconds,
+            expiry : expiry
           }
         };
         var UserInfo = loopback.getModelByType("UserInfo");
