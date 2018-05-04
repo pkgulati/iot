@@ -9,11 +9,12 @@ module.exports = function(UserInfo) {
     if (ctx.instance) {
       var info = ctx.instance;
       var models = UserInfo.app.models;
-      Object.keys(UserInfo.OnlineContacts).forEach(function(userId) {
+      var interestedUsers = UserInfo.OnlineContacts[ctx.instance.id] || {};
+      Object.keys(interestedUsers).forEach(function(userId) {
         console.log("online user id ", userId);
         models.AppUser.findById(userId, ctx.options, function(err, user) {
           if (user && user.deviceToken) {
-            //console.log('sending to user ', user.username, user.userName);
+            console.log('sending to user ', user.username);;
             var message = {
               token: user.deviceToken,
               data: {
