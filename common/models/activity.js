@@ -110,7 +110,7 @@ module.exports = function(Activity) {
         UserInfo.OnlineContacts[contact.contactUserId][
           options.ctx.userId
         ] = setTimeout(function() {
-          console.log("clear online view ");
+          console.log("clear online view " + contact.name);
           clearTimeout(
             UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId]
           );
