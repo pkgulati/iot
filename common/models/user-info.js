@@ -16,7 +16,7 @@ module.exports = function(UserInfo) {
                 models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
                     users.forEach(function(user){
                         if (user.deviceToken ) {
-				console.log('sending to user ', user.username, user.userName);	
+				//console.log('sending to user ', user.username, user.userName);	
                             var message = {
                                 token : user.deviceToken,
                                 data : {

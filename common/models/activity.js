@@ -58,7 +58,10 @@ module.exports = function(Activity) {
       }
       var FCM = loopback.getModel("FCM");
       message.token = user.deviceToken;
-      FCM.push(message, options, next);
+	next();
+      FCM.push(message, options, function(err, res) {
+		console.log('FCM ' , err, res);
+		});
     });
   };
 
