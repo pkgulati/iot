@@ -136,7 +136,6 @@ module.exports = function(Activity) {
         locationTime: this.locationTime
       };
       Location.create(data, options, function(err, rec) {
-        console.log("location created ", err, rec ? rec.id : "");
         cb(err, rec);
       });
     } else {
