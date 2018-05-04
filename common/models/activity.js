@@ -97,7 +97,7 @@ module.exports = function(Activity) {
             activityId: self.id.toString()
           }
         };
-        var UserInfo= loopback.getModelByType('UserInfo');
+        var UserInfo = loopback.getModelByType("UserInfo");
         // assuming single nodejs instance for this app
         UserInfo.OnlineContacts[contact.contactUserId] = UserInfo
           .OnlineContacts[contact.contactUserId] || {};
@@ -106,7 +106,13 @@ module.exports = function(Activity) {
         if (timer) {
           clearTimeout(timer);
         }
-        console.log('view contact ', contact.contactUserId, contact.ownerUserId, options.ctx.userId, contact.name);
+        console.log(
+          "view contact ",
+          contact.contactUserId,
+          contact.ownerUserId,
+          options.ctx.userId,
+          contact.name
+        );
         UserInfo.OnlineContacts[contact.contactUserId][
           options.ctx.userId
         ] = setTimeout(function() {
@@ -137,6 +143,33 @@ module.exports = function(Activity) {
       };
       Location.create(data, options, function(err, rec) {
         cb(err, rec);
+      });
+    } else if (this.type == "StopViewContact") {
+      if (!this.contactId) {
+        return cb(null);
+      }
+      var self = this;
+      var ContactModel = loopback.getModel("Contact");
+      ContactModel.findById(this.contactId, options, function(err, contact) {
+        if (err) {
+          return cb(err);
+        }
+        if (!contact) {
+          return cb();
+        }
+        var UserInfo = loopback.getModelByType("UserInfo");
+        // assuming single nodejs instance for this app
+        UserInfo.OnlineContacts[contact.contactUserId] = UserInfo
+          .OnlineContacts[contact.contactUserId] || {};
+        var timer =
+          UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId];
+        if (timer) {
+          console.log('StopViewContact ' + contact.name);
+          clearTimeout(timer);
+          delete UserInfo.OnlineContacts[contact.contactUserId][
+            options.ctx.userId
+          ];
+        }
       });
     } else {
       cb(null);
