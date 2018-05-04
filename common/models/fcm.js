@@ -43,7 +43,6 @@ module.exports = function(FCM) {
       .then(
         function(response) {
           // Response is a message ID string.
-          console.log("Successfully sent message:", response);
           cb(null, response);
         },
         function(error) {
