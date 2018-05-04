@@ -19,5 +19,13 @@ Sending Location :
 Calling startService() multiple times does not result in starting multiple service.
 
 
+```
+{"order":"time DESC", "where":{"name":"funny"}, "fields":{"accuracy":true,"latitude":true, "longitude" :true, "time":true,"justtime":true,"timediff":true,"distance":true, "speed":true, "name":true}}
 
+{"order":"time DESC", "limit":100, "where":{"name":"rama"}}
+
+{"order":"time DESC", "limit":100, "where":{"name": "praveen","locationJob":"LocationStickyService"}}
+
+
+```
 
