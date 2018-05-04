@@ -2,40 +2,34 @@ var loopback = require("loopback");
 var async = require("async");
 
 module.exports = function(UserInfo) {
+  UserInfo.OnlineContacts = {};
 
-    UserInfo.observe('after save', function(ctx, next) {
-        next();
-        if (ctx.instance) {
-            var info = ctx.instance;
-            var models = UserInfo.app.models;
-            models.Contact.find({where:{contactUserId:info.id}}, ctx.options, function(err, contacts){
-                var userIds = [];
-                contacts.forEach(function(contact) {
-                    userIds.push(contact.ownerUserId.toString());
-                });
-                models.AppUser.find({where:{id:{inq:userIds}}}, ctx.options, function(err, users){
-                    users.forEach(function(user){
-                        if (user.deviceToken ) {
-				//console.log('sending to user ', user.username, user.userName);	
-                            var message = {
-                                token : user.deviceToken,
-                                data : {
-                                    type : "ContactInformationChanged",
-                                    messageForUserId : user.id.toString(),
- 				                    contactUserId : info.id.toString(),
-                                    latitude : info.latitude.toString(),
-                                    longitude : info.longitude.toString(),
-                                    accuracy : info.accuracy.toString(),
-                                    lastLocationTime : info.lastLocationTime.toJSON()
-                                }
-                            };
-                            models.FCM.push(message, ctx.options, function(err, res){ 
-                            });
-                        }
-                    });
-                });
-            });
-        }
-    });
- 
+  UserInfo.observe("after save", function(ctx, next) {
+    next();
+    if (ctx.instance) {
+      var info = ctx.instance;
+      var models = UserInfo.app.models;
+      Object.keys(UserInfo.OnlineContacts).forEach(function(userId) {
+        console.log("online user id ", userId);
+        models.AppUser.findById(userId, ctx.options, function(err, user) {
+          if (user && user.deviceToken) {
+            //console.log('sending to user ', user.username, user.userName);
+            var message = {
+              token: user.deviceToken,
+              data: {
+                type: "ContactInformationChanged",
+                messageForUserId: user.id.toString(),
+                contactUserId: info.id.toString(),
+                latitude: info.latitude.toString(),
+                longitude: info.longitude.toString(),
+                accuracy: info.accuracy.toString(),
+                lastLocationTime: info.lastLocationTime.toJSON()
+              }
+            };
+            models.FCM.push(message, ctx.options, function(err, res) {});
+          }
+        });
+      });
+    }
+  });
 };

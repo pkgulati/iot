@@ -1,3 +1,5 @@
+import { clearTimeout, clearImmediate } from "timers";
+
 var loopback = require("loopback");
 var async = require("async");
 var moment = require('moment-timezone');
@@ -97,6 +99,17 @@ module.exports = function(Activity) {
             activityId: self.id.toString()
           }
         };
+        // assuming single nodejs instance for this app
+        UserInfo.OnlineContacts[contact.contactUserId] = UserInfo.OnlineContacts[contact.contactUserId] || {};
+        var timer = UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId];
+        if (timer) {
+          clearTimeout(timer);
+        }
+        UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId] = setTimeout(function() {
+          console.log('clear online view ');
+          clearTimeout(UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId]);
+          delete UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId];
+        }, 2*60*1000);
         sendMessageToUser(message, options, contact.contactUserId, function(
           err,
           res
@@ -133,7 +146,8 @@ module.exports = function(Activity) {
       return;
     }
 
-	var ist = moment(ctx.instance.created).tz('Asia/Calcutta');
+   
+	  var ist = moment(ctx.instance.created).tz('Asia/Calcutta');
     console.log('activity ', ctx.instance.type , ctx.instance.justtime, ist.format().substr(11,8), ctx.instance.name , ctx.instance.id);
     ctx.instance.process(ctx.options, function() {});
   });
