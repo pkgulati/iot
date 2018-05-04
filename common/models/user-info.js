@@ -11,7 +11,6 @@ module.exports = function(UserInfo) {
       var models = UserInfo.app.models;
       var interestedUsers = UserInfo.OnlineContacts[ctx.instance.id] || {};
       Object.keys(interestedUsers).forEach(function(userId) {
-        console.log("online user id ", userId);
         models.AppUser.findById(userId, ctx.options, function(err, user) {
           if (user && user.deviceToken) {
             console.log('sending to user ', user.username);;
