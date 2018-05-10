@@ -44,7 +44,7 @@ module.exports = function(UserMessage) {
             },
             data: {
               type: "notification",
-              time : now.getMilliseconds
+              time : now.getMilliseconds.toString()
             },
             notification : {
                 title : ctx.instance.title,
