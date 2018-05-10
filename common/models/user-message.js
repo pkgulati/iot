@@ -1,5 +1,15 @@
 module.exports = function(UserMessage) {
 
+    UserMessage.observe("before save", function(ctx, next) {
+        if (ctx.isNewInstance && ctx.instance) {
+          ctx.instance.created = new Date();
+          ctx.instance.userId = ctx.options.ctx.userId;
+          ctx.instance.name = ctx.options.ctx.username;
+        }
+        next();
+      });
+
+
     var sendMessageToUser = function(message, options, userId, next) {
         var UserModel = loopback.getModelByType("BaseUser");
         UserModel.findById(userId, options, function(err, user) {
