@@ -314,5 +314,9 @@
     "DeviceRegistration" : {
         "public": true,
         "dataSource": "db"
+    },
+    "UserMessage" : {
+        "public": true,
+        "dataSource": "db"
     }
 }

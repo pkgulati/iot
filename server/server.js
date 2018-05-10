@@ -31,6 +31,10 @@ app.get('/apk', function (req, res) {
   res.sendFile('app-debug.apk', { root: path.join(__dirname, '../../apk/') });
 });
 
+app.get('/apk2', function (req, res) {
+  res.sendFile('app2-debug.apk', { root: path.join(__dirname, '../../apk/') });
+});
+
 app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
