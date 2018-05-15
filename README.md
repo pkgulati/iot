@@ -26,6 +26,8 @@ Calling startService() multiple times does not result in starting multiple servi
 {"order":"time DESC", "limit":100, "where":{"name":"ajith"}}
 {"order":"time DESC", "limit":100, "where":{"name":"praveen"}}
 
+{"order":"time DESC", "limit":100, "where":{"type":"LocationJobIntentEnqueue"}}
+LocationJobIntentEnqueue
 "fields":{"justtime":true},
 
 {"fields":{"justtime":true},"order":"time DESC", "limit":500, "where":{"name":"praveen", "type": "LocationResult"}}

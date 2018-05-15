@@ -1,0 +1,14 @@
+{
+	"name": "SMS",
+    "base": "PersistedModel",
+    "plural" : "SMS",
+    "idInjection": false,
+    "properties": {
+        "body" : {
+            "type" : "String"
+        },
+        "installationId" : {
+            "type" : "String"
+        }
+    }
+}
