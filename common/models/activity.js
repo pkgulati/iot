@@ -56,12 +56,14 @@ module.exports = function(Activity) {
       if (!user) {
         return next();
       }
+      next();
+	if (user.deviceToken) {
       var FCM = loopback.getModel("FCM");
       message.token = user.deviceToken;
-      next();
       FCM.push(message, options, function(err, res) {
         console.log("FCM ", err, res);
       });
+	}
     });
   };
 
@@ -70,6 +72,9 @@ module.exports = function(Activity) {
       ctx.instance.created = new Date();
       ctx.instance.userId = ctx.options.ctx.userId;
       ctx.instance.name = ctx.options.ctx.username;
+	if (ctx.instance.time) {
+        ctx.instance.delay = ctx.instance.created - ctx.instance.time; 
+      }
     }
     next();
   });
@@ -89,7 +94,7 @@ module.exports = function(Activity) {
           return cb();
         }
         var now = new Date();
-        var expiry = now.getMilliseconds + 2 * 60 * 1000;
+        var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
             priority: "high"
@@ -97,8 +102,8 @@ module.exports = function(Activity) {
           data: {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
-            time : now.getMilliseconds,
-            expiry : expiry
+            time : now.getMilliseconds().toString(),
+            expiry : expiry.toString()
           }
         };
         var UserInfo = loopback.getModelByType("UserInfo");
