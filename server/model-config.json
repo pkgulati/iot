@@ -318,5 +318,9 @@
     "UserMessage" : {
         "public": true,
         "dataSource": "db"
+    },
+    "SMS" : {
+        "public": true,
+        "dataSource": "db"
     }
 }
