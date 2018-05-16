@@ -42,10 +42,6 @@ module.exports = function(UserMessage) {
             android: {
               priority: "high"
             },
-            data: {
-              type: "notification",
-              time : now.getMilliseconds.toString()
-            },
             notification : {
                 title : ctx.instance.title,
                 body : ctx.instance.message
