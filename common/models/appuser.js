@@ -38,6 +38,11 @@ module.exports = function(UserModel) {
             information[info.id] = info;
           });
           results.information = information;
+          results.configuration = {
+            locationJobInterval : 2400000,
+            locationServiceStopTimer : 300000,
+            locationServiceRestartTimer : 40000
+          };
           cb(err, results);    
         });
       }
