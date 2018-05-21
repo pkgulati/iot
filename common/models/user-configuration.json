@@ -4,23 +4,56 @@
     "plural" : "UserConfiguration",
     "idInjection": false,
     "properties": {
-        "locationJobInterval" : {
+        "alarm1" : {
             "type" : "Number",
-            "default" : 900000,
-            "required" : true
+            "default" : 0
         },
-        "locationServiceStopTimer" : {
+        "alarm2" : {
             "type" : "Number",
-            "default" : 300000,
-            "required" : true
+            "default" : 0
         },
-        "locationServiceRestartTimer" : {
+        "alarm3" : {
             "type" : "Number",
-            "default" : 40000,
-            "required" : true
+            "default" : 0
         },
-        "userId" : {
+        "usePeriodicJob" : {
+            "type" : "Boolean",
+            "default" : true
+        },
+        "periodicJobInterval" : {
+            "type" : "Number",
+            "description" : "20 mins",
+            "default" : 1200000   
+        },
+        "useNonPeriodicJob" : {
+            "type" : "Boolean",
+            "default" : false
+        },
+        "shortPeriod" : {
+            "type" : "Number",
+            "description" : "2 mins,moving but not viewed",
+            "default" : 120000    
+        },
+        "mediumPeriod" : {
+            "type" : "Number",    
+            "description" : "15 mins during day time",
+            "default" : 900000
+        },
+        "longPeriod" : {
+            "type" : "Number",
+            "description" : "for night, or long stationary",
+            "default" : 3600000
+        },
+        "sleepInNight" : {
+            "type" : "Boolean",
+            "default" : true
+        },
+        "useMotionTrigger" : {
             "type" : "String",
+            "required" : true
+        },
+        "isTestUser" : {
+            "type" : "Boolean",
             "required" : true
         }
     },
