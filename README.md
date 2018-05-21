@@ -62,7 +62,7 @@ adb shell am get-inactive com.example.kpraveen.myteam
 ```
 db.AuthSession.update({},{$set:{'ttl':67737600}},{multi:true})
 
-{"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{"type": "LocationJobService","name": "shashi"}}
+{"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
 
 {"fields":{"batteryPercentage":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{"name": "ajith"}}
 

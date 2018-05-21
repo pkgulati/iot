@@ -1,7 +1,7 @@
 var loopback = require('loopback');
 var async = require('async');
 
-module.exports = function (app) {
+module.exports = function (app, cb) {
 
     var User = loopback.getModelByType('BaseUser');
    
@@ -72,10 +72,13 @@ module.exports = function (app) {
         }
     ];
     
-    async.mapSeries(users, function(user, cb){
+    async.mapSeries(users, function(user, done){
         User.findOrCreate({where:{username:user.username}}, user, context, function(err, dbuser, isNew){
-            cb();
+            done();
         });
+    }, function(){
+        console.log('upload users job done');
+        cb();
     });
 
 };

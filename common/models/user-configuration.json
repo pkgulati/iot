@@ -1,0 +1,57 @@
+{
+	"name": "UserConfiguration",
+    "base": "PersistedModel",
+    "plural" : "UserConfiguration",
+    "idInjection": false,
+    "properties": {
+        "locationJobInterval" : {
+            "type" : "Number",
+            "default" : 900000,
+            "required" : true
+        },
+        "locationServiceStopTimer" : {
+            "type" : "Number",
+            "default" : 300000,
+            "required" : true
+        },
+        "locationServiceRestartTimer" : {
+            "type" : "Number",
+            "default" : 40000,
+            "required" : true
+        },
+        "userId" : {
+            "type" : "String",
+            "required" : true
+        }
+    },
+    "acls": [
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY",
+            "property": "*",
+            "accessType": "*"
+        },
+        {
+            "principalType": "USER",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "property": "*",
+            "accessType": "*"          
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$teamadmin",
+            "permission": "ALLOW",
+            "property": "*",
+            "accessType": "*"          
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "teamadmin",
+            "permission": "ALLOW",
+            "property": "*",
+            "accessType": "*"          
+        }
+    ]
+}

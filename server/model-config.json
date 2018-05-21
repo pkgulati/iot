@@ -322,5 +322,9 @@
     "SMS" : {
         "public": true,
         "dataSource": "db"
+    },
+    "UserConfiguration" : {
+        "public": true,
+        "dataSource": "db"
     }
 }
