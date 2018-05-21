@@ -3,8 +3,51 @@ var async = require("async");
 
 module.exports = function(UserModel) {
   UserModel.prototype.nextjob = function(options, cb) {
+    var interval = 30;
+    var now = new Date();
+    var hour = now.getHours();
+    var mins = now.getMinutes();
+    var total = hour * 60 + mins;
+    var name = this.name;
+    if (total < 240) {
+      interval = 90;
+    }
+    else if (total < 300) {
+      // before 5 am
+        interval = 30;
+    } else if (total < 420) {
+      // 5 to 7
+      interval = 25;
+    } else if (total < 480) {
+      // 7 to 8
+      interval = 20;
+    }  else if (total < 540) {
+      // 8 to 9 
+      interval = 15;
+      if (name == "shashi") {
+        interval = 20;
+      } 
+    } else if (total < 600) {
+      // 9 to 10
+      interval = 15;
+    } else if (total < 660) {
+      interval = 30;
+      if (name == "shashi") {
+        interval = 15;
+      }
+    } else if (total < 1050) {
+      // 5:30 pm
+      interval = 30;
+    } else if (total < 1260) {
+      interval = 15;
+    } else if (total < 1380) {
+      interval = 30;
+    } else {
+      interval = 90;
+    }
+    // mins to milliseconds
     var res = {
-      interval: 1000
+      milliseconds : interval * 60 * 1000
     };
     cb(null, res);
   };
