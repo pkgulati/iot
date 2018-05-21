@@ -29,9 +29,18 @@
             "type" : "Boolean",
             "default" : false
         },
+        "liveLocationOnMoving" : {
+            "type" : "Boolean",
+            "default" : false
+        },
+        "locationListenerPeriod" : {
+            "type" : "Number",
+            "description" : "location listener period ",
+            "default" : 60000   
+        },
         "shortPeriod" : {
             "type" : "Number",
-            "description" : "2 mins,moving but not viewed",
+            "description" : "2 mins,moving but not viewed, or peak hour",
             "default" : 120000    
         },
         "mediumPeriod" : {
@@ -48,13 +57,16 @@
             "type" : "Boolean",
             "default" : true
         },
-        "useMotionTrigger" : {
-            "type" : "String",
-            "required" : true
+        "motionTriggerInterval" : {
+            "type" : "Number"
         },
         "isTestUser" : {
             "type" : "Boolean",
             "required" : true
+        },
+        "disable" : {
+            "type" : "Boolean",
+            "default" : false
         }
     },
     "acls": [

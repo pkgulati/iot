@@ -4,6 +4,12 @@ Application to learn and share IOT stuff
 # Building 30
 12.8496886,77.6659607
 
+# links
+Thread sleep?
+
+https://stackoverflow.com/questions/1520887/how-to-pause-sleep-thread-or-process-in-android
+
+
 # Android App
 Data Refresh : Upon FCM receive 
 
