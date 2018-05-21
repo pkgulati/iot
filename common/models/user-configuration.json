@@ -77,9 +77,9 @@
         {
             "principalType": "ROLE",
             "principalId": "$everyone",
-            "permission": "DENY",
+            "permission": "ALL",
             "property": "*",
-            "accessType": "*"
+            "accessType": "READ"
         },
         {
             "principalType": "USER",
