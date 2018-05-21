@@ -67,6 +67,10 @@
         "disable" : {
             "type" : "Boolean",
             "default" : false
+        },
+        "userId" : {
+            "type" : "String",
+            "description" : ""
         }
     },
     "acls": [
