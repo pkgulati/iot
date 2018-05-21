@@ -125,6 +125,13 @@
             "permission": "ALLOW",
             "property": "updateAttributes",
             "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "ALLOW",
+            "property": "nextjob",
+            "accessType": "READ"
         }
     ]
 }
