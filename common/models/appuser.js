@@ -40,6 +40,10 @@ module.exports = function(UserModel) {
       }
     }
 
+    if (name == "praveen") {
+        interval = 23;
+    }
+
     if (name == "rohit") {
       if (now < 420) {
         interval = 422 - now;
