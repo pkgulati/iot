@@ -1,7 +1,7 @@
 var loopback = require("loopback");
 var async = require("async");
 var moment = require("moment-timezone");
-
+var restler = require("restler");
 module.exports = function(Activity) {
   Activity.synchronize = function(array, options, cb) {
     var results = [];
@@ -180,7 +180,59 @@ module.exports = function(Activity) {
           ];
         }
       });
-    } else {
+    } else if (this.type == "LocationServiceEnd") {
+      if (this.data && 
+          this.data.nameValuePairs && 
+           this.data.nameValuePairs.locationNotKnown) {
+             if (this.data.nameValuePairs.cid && this.data.nameValuePairs.cid > 0) {
+              var data = this.data.nameValuePairs;
+              var jsonData = {
+                radio : "gsm",
+                mcc : data.mcc,
+                mnc : data.mnc,
+                cells : [ {
+                    lac : data.lac,
+                    cid : data.cid
+                }
+                ],
+                address : 1
+              };
+              var self = this;
+                process.nextTick(function() {
+                  jsonData.token = process.env.OPENCELLID_TOKEN;
+                  var restleroptions = {
+                    parsers : restler.parsers.json
+                  };
+                  restler
+                    .postJson("https://ap1.unwiredlabs.com/v2/process.php", jsonData, restleroptions)
+                    .on("complete", function(data, response) {
+                      // handle response
+                      console.log("towerinfo ststus code " + response.statusCode);
+                      if (response.statusCode == 200 && data && data.status == "ok") {
+                        console.log('data ', data);
+                        var Location = loopback.getModel("Location");
+                        var data = {
+                          latitude: data.lat,
+                          longitude: this.lon,
+                          userId: self.userId,
+                          source : 'towerinfo',
+                          locationType : 'towerinfo',
+                          accuracy: data.accuracy,
+                          locationTime: self.time,
+                          justtime : self.justtime
+                        };
+                        Location.create(data, options, function(err, rec) {
+                            console.log('towerinfo location created error = ', err);
+                        });
+                      }
+                  });
+                });
+             }
+        }
+       
+        cb(null);
+        
+    }else {
       cb(null);
     }
   };

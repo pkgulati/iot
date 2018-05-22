@@ -55,9 +55,26 @@ module.exports = function(UserModel) {
     var res = {
       milliseconds: interval * 60 * 1000
     };
-    cb(null, res);
+
+    var context = {
+      Model: UserModel,
+      instance: this,
+      options: options,
+      data : res
+    };
+
+    UserModel.notifyObserversOf('nextjob', context, function (err) {
+      res = context.data;
+      cb(null, res);
+    });
+
   };
 
+  UserModel.observe("nextjob", function(ctx, next) {
+    ctx.data.foo = 'bar';
+    next();
+  });
+    
   UserModel.remoteMethod("nextjob", {
     description: "fetch nextjob interval",
     accessType: "READ",
