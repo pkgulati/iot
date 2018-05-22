@@ -31,6 +31,7 @@ module.exports = function(UserModel) {
     }
 
     if (name == "shashi") {
+      interval = 23;
       if (now >= am9 && now <= am11) {
         interval = 15;
       }
