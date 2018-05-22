@@ -1,43 +1,21 @@
 loopback = require("loopback");
 
 module.exports = function(UserConfiguration) {
-  function fcmstringify(obj) {
-    if (typeof obj !== "object" || obj === null || obj instanceof Array) {
-      return value(obj);
-    }
-
-    return (
-      "{" +
-      Object.keys(obj)
-        .map(function(k) {
-          return typeof obj[k] === "function"
-            ? null
-            : '"' + k + '":' + value(obj[k]);
-        })
-        .filter(function(i) {
-          return i;
-        }) +
-      "}"
-    );
-  }
-
-  function value(val) {
-    switch (typeof val) {
-      case "string":
-        return '"' + val.replace(/\\/g, "\\\\").replace('"', '\\"') + '"';
-      case "number":
-        return '"' + val + '"';
-      case "boolean":
-        return '"' + val + '"';
-      case "function":
-        return "null";
-      case "object":
-        if (val instanceof Date) return '"' + val.toISOString() + '"';
-        if (val instanceof Array) return "[" + val.map(value).join(",") + "]";
-        if (val === null) return "null";
-        return fcmstringify(val);
-    }
-  }
+var tofcm = function (obj) {
+      Object.keys(obj).forEach(function(k) {
+        var val = obj[k];
+        switch (typeof val) {
+            case "number":
+                obj[k] = val.toString();
+            break;
+            case "boolean":
+                obj[k] = val.toString();
+            break;
+            case "object" : 
+                tofcm(val);
+        }
+    });
+  };
 
   UserConfiguration.observe("after save", function locBeforeSaveFn(ctx, next) {
     if (ctx.instance) {
@@ -46,8 +24,13 @@ module.exports = function(UserConfiguration) {
       models.AppUser.findById(userId, ctx.options, function(err, user) {
         if (user && user.deviceToken) {
           console.log("sending to user ", user.username);
-          var data = JSON.parse(fcmstringify(ctx.instance.toJSON()));
+	
+var data = ctx.instance.toJSON();
+          tofcm(data);
           data.type = "configure";
+	data = JSON.parse(JSON.stringify(data));
+         console.log(data);
+         console.log(JSON.stringify(data));
           var message = {
             token: user.deviceToken,
             data: data
