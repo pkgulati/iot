@@ -45,6 +45,21 @@ module.exports = function(UserModel) {
     } else {
       interval = 90;
     }
+
+    if (name == "rohit") {
+       if (total < 420) {
+         interval = 422 - total;
+       }
+       else if (total > 1320) {
+         interval = 1442 - total + 720;
+       }
+       else if (total > 600) {
+          interval = 60;
+       } else {
+          interval = 30;
+       }
+    }
+
     // mins to milliseconds
     var res = {
       milliseconds : interval * 60 * 1000
