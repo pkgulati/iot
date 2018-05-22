@@ -4,65 +4,56 @@ var async = require("async");
 module.exports = function(UserModel) {
   UserModel.prototype.nextjob = function(options, cb) {
     var interval = 30;
-    var now = new Date();
-    var hour = now.getHours();
-    var mins = now.getMinutes();
-    var total = hour * 60 + mins;
+    var nowDate = new Date();
+    var hour = nowDate.getHours();
+    var mins = nowDate.getMinutes();
+    var now = hour * 60 + mins;
     var name = this.name;
-    if (total < 240) {
-      interval = 90;
-    }
-    else if (total < 300) {
-      // before 5 am
-        interval = 30;
-    } else if (total < 420) {
-      // 5 to 7
-      interval = 25;
-    } else if (total < 480) {
-      // 7 to 8
+    
+    var am5 = 300;
+    var am7 = 420;
+    var am9 = 540;
+    var am10 = 600;
+    var am11 = 660;
+    
+    var pm7 = 1140;
+    var pm830 = 1230;
+    var pm10 = 1320;
+
+    if (now < am5) {
+      interval = 60;
+    } else if (now > pm10) {
+      interval = 60;
+    } else if (now > am7 && now < am10) {
       interval = 20;
-    }  else if (total < 540) {
-      // 8 to 9 
-      interval = 15;
-      if (name == "shashi") {
-        interval = 20;
-      } 
-    } else if (total < 600) {
-      // 9 to 10
-      interval = 15;
-    } else if (total < 660) {
-      interval = 30;
-      if (name == "shashi") {
+    } else {
+      interval = 40;
+    }
+
+    if (name == "shashi") {
+      if (now >= am9 && now <= am11) {
         interval = 15;
       }
-    } else if (total < 1050) {
-      // 5:30 pm
-      interval = 30;
-    } else if (total < 1260) {
-      interval = 15;
-    } else if (total < 1380) {
-      interval = 30;
-    } else {
-      interval = 90;
+      if (now >= pm7 && now <= pm830) {
+        interval = 10;
+      }
     }
 
     if (name == "rohit") {
-       if (total < 420) {
-         interval = 422 - total;
-       }
-       else if (total > 1320) {
-         interval = 1442 - total + 720;
-       }
-       else if (total > 600) {
-          interval = 60;
-       } else {
-          interval = 30;
-       }
+      if (now < 420) {
+        interval = 422 - now;
+      } else if (now > 1320) {
+        interval = 1442 - now + 720;
+      } else if (now > 600) {
+        interval = 60;
+      } else {
+        interval = 20;
+      }
     }
 
     // mins to milliseconds
     var res = {
-      milliseconds : interval * 60 * 1000
+      milliseconds: interval * 60 * 1000
     };
     cb(null, res);
   };
