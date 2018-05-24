@@ -27,6 +27,24 @@
         },
         "image" : {
             "type" : "String"
+        },
+        "lastViewedAt" : {
+            "type" : "Number"
+        },
+        "lastUpdatedAt" : {
+            "type" : "Number"
+        },
+        "stableLocation" : {
+            "type" : "Boolean",
+            "default" : true
+        },
+        "stableLocationExpiryTime" : {
+            "type" : "Number",
+            "default" : 0
+        },
+        "nextJobExecutionTime" : {
+            "type" : "Number",
+            "default" : 0
         }
     }
 }
