@@ -17,10 +17,10 @@
             "type" : "String"
         },
         "time" : {
-            "type" : "Date"
+            "type" : "Number"
         },
         "created" : {
-            "type" : "Date"
+            "type" : "Number"
         }
     },
     "acls" : [
