@@ -79,21 +79,17 @@ module.exports = function(Activity) {
     next();
   });
 
-  Activity.prototype.process = function(options, cb) {
-    if (this.type == "ViewContact") {
-      if (!this.contactId) {
-        return cb(null);
-      }
+  Activity.prototype.process = function(options) {
+    if (this.type == "ViewContact" && this.contactId) {
       var self = this;
       var ContactModel = loopback.getModel("Contact");
       ContactModel.findById(this.contactId, options, function(err, contact) {
-        if (err) {
-          return cb(err);
-        }
         if (!contact) {
-          return cb();
+          return;
         }
         var now = new Date();
+	contact.updateAttributes({"lastViewedAt" : now.getTime()}, options, function() {
+	});
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -107,37 +103,19 @@ module.exports = function(Activity) {
           }
         };
         var UserInfo = loopback.getModelByType("UserInfo");
-        // assuming single nodejs instance for this app
-        UserInfo.OnlineContacts[contact.contactUserId] = UserInfo
-          .OnlineContacts[contact.contactUserId] || {};
-        var timer =
-          UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId];
-        if (timer) {
-          clearTimeout(timer);
-        }
         console.log(
           "view contact ",
           contact.contactUserId,
           contact.ownerUserId,
           options.ctx.userId,
-          contact.name
+          contact.name,
+	 "by ",
+	   options.ctx.username
         );
-        UserInfo.OnlineContacts[contact.contactUserId][
-          options.ctx.userId
-        ] = setTimeout(function() {
-          console.log("clear online view " + contact.name);
-          clearTimeout(
-            UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId]
-          );
-          delete UserInfo
-            .OnlineContacts[contact.contactUserId][options.ctx.userId];
-        }, 90 * 1000);
         sendMessageToUser(message, options, contact.contactUserId, function(
           err,
           res
         ) {
-          console.log("message sent ", err, res);
-          cb(err, res);
         });
       });
     } else if (this.type == "LocationResult") {
@@ -151,34 +129,6 @@ module.exports = function(Activity) {
         locationTime: this.locationTime
       };
       Location.create(data, options, function(err, rec) {
-        cb(err, rec);
-      });
-    } else if (this.type == "StopViewContact") {
-      if (!this.contactId) {
-        return cb(null);
-      }
-      var self = this;
-      var ContactModel = loopback.getModel("Contact");
-      ContactModel.findById(this.contactId, options, function(err, contact) {
-        if (err) {
-          return cb(err);
-        }
-        if (!contact) {
-          return cb();
-        }
-        var UserInfo = loopback.getModelByType("UserInfo");
-        // assuming single nodejs instance for this app
-        UserInfo.OnlineContacts[contact.contactUserId] = UserInfo
-          .OnlineContacts[contact.contactUserId] || {};
-        var timer =
-          UserInfo.OnlineContacts[contact.contactUserId][options.ctx.userId];
-        if (timer) {
-          console.log('StopViewContact ' + contact.name);
-          clearTimeout(timer);
-          delete UserInfo.OnlineContacts[contact.contactUserId][
-            options.ctx.userId
-          ];
-        }
       });
     } else if (this.type == "LocationServiceEnd") {
       if (this.data && 
@@ -199,7 +149,7 @@ module.exports = function(Activity) {
               };
               var self = this;
                 process.nextTick(function() {
-                  jsonData.token = process.env.OPENCELLID_TOKEN;
+                  jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
                   var restleroptions = {
                     parsers : restler.parsers.json
                   };
@@ -208,8 +158,8 @@ module.exports = function(Activity) {
                     .on("complete", function(data, response) {
                       // handle response
                       console.log("towerinfo ststus code " + response.statusCode);
-                      if (response.statusCode == 200 && data && data.status == "ok") {
                         console.log('data ', data);
+                      if (response.statusCode == 200 && data && data.status == "ok") {
                         var Location = loopback.getModel("Location");
                         var data = {
                           latitude: data.lat,
@@ -229,11 +179,6 @@ module.exports = function(Activity) {
                 });
              }
         }
-       
-        cb(null);
-        
-    }else {
-      cb(null);
     }
   };
 
@@ -255,6 +200,6 @@ module.exports = function(Activity) {
       ctx.instance.name,
       ctx.instance.id
     );
-    ctx.instance.process(ctx.options, function() {});
+    ctx.instance.process(ctx.options);
   });
 };

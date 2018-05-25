@@ -8,7 +8,7 @@ module.exports = function(UserModel) {
     var hour = nowDate.getHours();
     var mins = nowDate.getMinutes();
     var now = hour * 60 + mins;
-    var name = this.name;
+    var name = this.username;
     
     var am5 = 300;
     var am7 = 420;
@@ -31,7 +31,7 @@ module.exports = function(UserModel) {
     }
 
     if (name == "shashi") {
-      interval = 23;
+      interval = 25;
       if (now >= am9 && now <= am11) {
         interval = 15;
       }
@@ -67,6 +67,10 @@ module.exports = function(UserModel) {
       options: options,
       data : res
     };
+
+	
+	console.log('nextjob ', name, interval);
+    
 
     UserModel.notifyObserversOf('nextjob', context, function (err) {
       res = context.data;
