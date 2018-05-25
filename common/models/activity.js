@@ -116,15 +116,11 @@ module.exports = function(Activity) {
         });
       });
 
-      var filter = {
-        where : {
-          ownerUserId : this.userId,
-          autofcm : true,
-          id : {ne : this.contactId}
-        }
-      };
-
-      ContactModel.findById(filter, options, function(err, contacts) {
+      var filter = {where:{ownerUserId:this.userId, autofcm:true, id:{neq:this.contactId}}};
+      ContactModel.find(filter, options, function(err, contacts) {
+		if (err) {
+				console.log('error' , err);
+		}
         contacts.forEach(function (contact) {
           var expiry = now.getMilliseconds() + 2 * 60 * 1000;
           var message = {
