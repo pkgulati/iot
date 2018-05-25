@@ -68,6 +68,11 @@ adb shell am get-inactive com.example.kpraveen.myteam
 ```
 db.AuthSession.update({},{$set:{'ttl':67737600}},{multi:true})
 
+"fields":{"justtime":true, "type":true}
+
+"fields":{"justtime":true, "startedBy":true, "type":true}
+
+
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
 
 {"fields":{"batteryPercentage":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{"name": "ajith"}}
@@ -76,11 +81,38 @@ db.AuthSession.update({},{$set:{'ttl':67737600}},{multi:true})
 
 {"order":"time DESC", "limit":100, "where":{"name":"rama"}}
 {"order":"time DESC", "limit":100, "where":{"name":"ajith"}}
+{"order":"time DESC", "limit":100, "where":{"name":"shashi"}}
 {"order":"time DESC", "limit":100, "where":{"name":"praveen"}}
+
+
+{"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
+
+
+db.ActivityArchive.find({"type":"LocationResult", "hasSpeed":true, "name" : "praveen" , time : { $gte:ISODate("2018-05-24T01:15:35.449Z"), $lt: ISODate("2018-05-24T11:15:35.449Z")}}, {time:1, speed:1, _id:0})
+
+
+db.ActivityArchive.find({"type":"LocationResult",  "name" : "praveen" ,time : { $gte:ISODate("2018-05-24T01:15:35.449Z"), $lt: ISODate("2018-05-24T11:15:35.449Z")}}, {justtime:1, speed:1, _id:0}).sort({time:1})
+
+
+time : {
+$gte:ISODate("2018-05-24T01:15:35.449Z"),
+        $lt: ISODate("2018-05-24T11:15:35.449Z")
+}
+
+        ISODate("2018-05-02T02:15:35.449Z")
+
 
 {"order":"time DESC", "limit":100, "where":{"type":"LocationJobIntentEnqueue"}}
 LocationJobIntentEnqueue
 "fields":{"justtime":true},
+
+
+{ "android": { "priority": "high" },
+  "data": 
+   { "type": "cancelJobs"
+     },
+  "token": "c3R4e3vzZ90:APA91bFSEQN0AgwnjQKl5dC1MMP5BWC4FNWKjujdSiYZ_ifD28VphggFgU9qNUw954Mt7Xm4RMbDAa2vfawnChybG6QS_EXPO8i78l3B34j1cdMFkdluI4Hf3dqnuAG7V84k5vfMDV1W" }
+
 
 "fields":{"justtime":true,"type":true,"name":true,"locationType":true},
 {"fields":{"justtime":true},"order":"time DESC", "limit":500, "where":{"name":"praveen", "type": "LocationResult"}}
