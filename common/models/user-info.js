@@ -9,6 +9,7 @@ module.exports = function(UserInfo) {
       var info = ctx.instance;
       var models = UserInfo.app.models;
         var ts = new Date();
+        ts = ts.getTime();
         ts = ts - 30*60*1000;
 	var filter = {
 		where : {

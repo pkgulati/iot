@@ -83,13 +83,14 @@ module.exports = function(Activity) {
     if (this.type == "ViewContact" && this.contactId) {
       var self = this;
       var ContactModel = loopback.getModel("Contact");
+      var now = new Date();
+      
       ContactModel.findById(this.contactId, options, function(err, contact) {
         if (!contact) {
           return;
         }
-        var now = new Date();
-	contact.updateAttributes({"lastViewedAt" : now.getTime()}, options, function() {
-	});
+        contact.updateAttributes({"lastViewedAt" : now.getTime()}, options, function() {
+	      });
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -102,22 +103,49 @@ module.exports = function(Activity) {
             expiry : expiry.toString()
           }
         };
-        var UserInfo = loopback.getModelByType("UserInfo");
         console.log(
           "view contact ",
           contact.contactUserId,
           contact.ownerUserId,
           options.ctx.userId,
           contact.name,
-	 "by ",
-	   options.ctx.username
+	        "by ",
+	        options.ctx.username
         );
-        sendMessageToUser(message, options, contact.contactUserId, function(
-          err,
-          res
-        ) {
+        sendMessageToUser(message, options, contact.contactUserId, function(err,res) {
         });
       });
+
+      var filter = {
+        where : {
+          ownerUserId : this.userId,
+          autofcm : true,
+          id : {ne : this.contactId}
+        }
+      };
+
+      ContactModel.findById(filter, options, function(err, contacts) {
+        contacts.forEach(function (contact) {
+          var expiry = now.getMilliseconds() + 2 * 60 * 1000;
+          var message = {
+            android: {
+              priority: "high"
+            },
+            data: {
+              type: "InformationUpdateRequest",
+              activityId: self.id.toString(),
+              time : now.getMilliseconds().toString(),
+              expiry : expiry.toString()
+            }
+          };
+          console.log('auto FCM send to ', contact.name,
+	        "by ",
+	        options.ctx.username );
+          sendMessageToUser(message, options, contact.contactUserId, function(err,res) {
+          });
+        });
+      });
+
     } else if (this.type == "LocationResult") {
       var Location = loopback.getModel("Location");
       var data = {
