@@ -79,21 +79,17 @@ module.exports = function(Activity) {
     next();
   });
 
-  Activity.prototype.process = function(options, cb) {
-    if (this.type == "ViewContact") {
-      if (!this.contactId) {
-        return cb(null);
-      }
+  Activity.prototype.process = function(options) {
+    if (this.type == "ViewContact" && this.contactId) {
       var self = this;
       var ContactModel = loopback.getModel("Contact");
       ContactModel.findById(this.contactId, options, function(err, contact) {
-        if (err) {
-          return cb(err);
-        }
         if (!contact) {
-          return cb();
+          return;
         }
         var now = new Date();
+	contact.updateAttributes({"lastViewedAt" : now.getTime()}, options, function() {
+	});
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -107,25 +103,19 @@ module.exports = function(Activity) {
           }
         };
         var UserInfo = loopback.getModelByType("UserInfo");
-        // assuming single nodejs instance for this app
-        UserInfo.OnlineContacts[contact.contactUserId] = UserInfo
-          .OnlineContacts[contact.contactUserId] || {};
         console.log(
           "view contact ",
           contact.contactUserId,
           contact.ownerUserId,
           options.ctx.userId,
-          contact.name
+          contact.name,
+	 "by ",
+	   options.ctx.username
         );
-        UserInfo.OnlineContacts[contact.contactUserId][
-          options.ctx.userId
-        ] = true;
         sendMessageToUser(message, options, contact.contactUserId, function(
           err,
           res
         ) {
-          console.log("message sent ", err, res);
-          cb(err, res);
         });
       });
     } else if (this.type == "LocationResult") {
@@ -139,10 +129,7 @@ module.exports = function(Activity) {
         locationTime: this.locationTime
       };
       Location.create(data, options, function(err, rec) {
-        cb(err, rec);
       });
-    } else if (this.type == "StopViewContact") {
-         return cb();
     } else if (this.type == "LocationServiceEnd") {
       if (this.data && 
           this.data.nameValuePairs && 
@@ -192,11 +179,6 @@ module.exports = function(Activity) {
                 });
              }
         }
-       
-        cb(null);
-        
-    }else {
-      cb(null);
     }
   };
 
@@ -218,6 +200,6 @@ module.exports = function(Activity) {
       ctx.instance.name,
       ctx.instance.id
     );
-    ctx.instance.process(ctx.options, function() {});
+    ctx.instance.process(ctx.options);
   });
 };
