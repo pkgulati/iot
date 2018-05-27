@@ -23,6 +23,7 @@ module.exports = function(UserModel) {
     var am10 = 600;
     var am11 = 660;
     
+    var pm3 = 900;
     var pm4 = 960;
     var pm5 = 1020;
     var pm530 = 1050;
@@ -46,8 +47,10 @@ module.exports = function(UserModel) {
         interval = 15;
       } else if (now < am11) {
         interval = 30;
+      } else if (now < pm3) {
+        interval = 45;
       } else if (now < pm4) {
-        interval = 60;
+        interval = 30;
       } else if (now < pm5) {
         interval = 30;
       } else if (now < pm7) {
