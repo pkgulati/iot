@@ -6,18 +6,10 @@ module.exports = function(UserModel) {
   UserModel.prototype.nextjob = function(options, cb) {
     var interval = 39;
     var nowDate = new Date();
-<<<<<<< HEAD
-=======
-
->>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
     var hour = nowDate.getUTCHours();
     var mins = nowDate.getUTCMinutes();
     hour = hour + 5;
     mins = mins + 30;
-<<<<<<< HEAD
-=======
-
->>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
     var now = hour * 60 + mins;
     var name = this.username;
     console.log('hour', hour);
@@ -71,10 +63,6 @@ module.exports = function(UserModel) {
       }
 
     if (name == "shashi") {
-<<<<<<< HEAD
-      interval = 20;
-=======
->>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
       if (now >= am9 && now <= am11) {
         interval = 15;
       }
