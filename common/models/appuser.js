@@ -5,10 +5,13 @@ module.exports = function(UserModel) {
   UserModel.prototype.nextjob = function(options, cb) {
     var interval = 30;
     var nowDate = new Date();
-    var hour = nowDate.getHours();
-    var mins = nowDate.getMinutes();
+    var hour = nowDate.getUTCHours();
+    var mins = nowDate.getUTCMinutes();
+    hour = hour + 5;
+    mins = mins + 30;
     var now = hour * 60 + mins;
     var name = this.username;
+    console.log('hour', hour);
     
     var am5 = 300;
     var am7 = 420;
@@ -31,7 +34,7 @@ module.exports = function(UserModel) {
     }
 
     if (name == "shashi") {
-      interval = 25;
+      interval = 20;
       if (now >= am9 && now <= am11) {
         interval = 15;
       }

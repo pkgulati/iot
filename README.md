@@ -68,7 +68,13 @@ adb shell am get-inactive com.example.kpraveen.myteam
 ```
 db.AuthSession.update({},{$set:{'ttl':67737600}},{multi:true})
 
-"fields":{"justtime":true, "type":true}
+db.Contact.update({},{$set:{"autofcm":false}}, {multi:true})
+
+db.Contact.update({"ownerUserId":"5acb3b12146ca8f84d18a8ac"},{$set:{"autofcm":true}}, {multi:true})
+
+db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
+
+"fields":{"justtime":true, "type":true, "name":true},
 
 "fields":{"justtime":true, "startedBy":true, "type":true}
 
