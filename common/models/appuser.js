@@ -1,44 +1,87 @@
 var loopback = require("loopback");
+var moment = require("moment-timezone");
 var async = require("async");
 
 module.exports = function(UserModel) {
   UserModel.prototype.nextjob = function(options, cb) {
-    var interval = 30;
+    var interval = 39;
     var nowDate = new Date();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
     var hour = nowDate.getUTCHours();
     var mins = nowDate.getUTCMinutes();
     hour = hour + 5;
     mins = mins + 30;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
     var now = hour * 60 + mins;
     var name = this.username;
     console.log('hour', hour);
     
     var am5 = 300;
+    var am6 = 360;
     var am7 = 420;
+    var am8 = 480;
     var am9 = 540;
     var am10 = 600;
     var am11 = 660;
     
+    var pm3 = 900;
+    var pm4 = 960;
+    var pm5 = 1020;
+    var pm530 = 1050;
+    var pm6 = 1080;
     var pm7 = 1140;
+    var pm8 = 1200;
     var pm830 = 1230;
+    var pm9 = 1260;
     var pm10 = 1320;
 
-    if (now < am5) {
-      interval = 60;
-    } else if (now > pm10) {
-      interval = 60;
-    } else if (now > am7 && now < am10) {
-      interval = 20;
-    } else {
-      interval = 40;
-    }
+      if (now < 240) {
+        interval = 120
+      } else if (now < 300) {
+        interval = 90
+	}
+	else if (now < 420) {
+        interval = 60
+      } else if (now < am8) {
+        interval = 30;
+      } else if (now < am9) {
+        interval = 15;
+      } else if (now < am11) {
+        interval = 30;
+      } else if (now < pm3) {
+        interval = 45;
+      } else if (now < pm4) {
+        interval = 30;
+      } else if (now < pm5) {
+        interval = 30;
+      } else if (now < pm7) {
+        interval = 15;
+      } else if (now < pm8) {
+        interval = 30;
+      } else if (now < pm9) {
+        interval = 30;
+      } else {
+        interval = 120;
+      }
 
     if (name == "shashi") {
+<<<<<<< HEAD
       interval = 20;
+=======
+>>>>>>> 776288d4c055b345bb4759fcfe728ccdb1c81bc5
       if (now >= am9 && now <= am11) {
         interval = 15;
       }
-      if (now >= pm7 && now <= pm830) {
+      if (now >= pm6 && now <= pm7) {
+        interval = 15;
+      }
+      if (now >= pm7 && now <= pm9) {
         interval = 10;
       }
     }
@@ -72,7 +115,8 @@ module.exports = function(UserModel) {
     };
 
 	
-	console.log('nextjob ', name, interval);
+var ist = moment(new Date()).tz("Asia/Calcutta");
+	console.log('nextjob ', ist.format().substr(11, 8), now, name, interval);
     
 
     UserModel.notifyObserversOf('nextjob', context, function (err) {
