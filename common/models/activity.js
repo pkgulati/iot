@@ -203,6 +203,55 @@ module.exports = function(Activity) {
                 });
              }
         }
+    } else if (this.type == "LocationJobResult") {
+        var Location = loopback.getModel("Location");
+        var postGPS = false;
+        var postNetwork = false;
+        if (this.gpsLocation && this.networkLocation) {
+          if (this.gpsAccuracy > this.networkAccuracy) {
+            postGPS = true;
+          } else {
+            postNetwork = true;
+          }
+        } else if (this.gpsLocation) {
+           postGPS = true;
+        } else  if (this.networkLocation) {
+          postNetwork = true;
+        } else {
+          // check wifi 
+        }
+
+        var data = null;
+        if (postGPS) {
+            data = {
+              latitude: this.gpsLatitude,
+              longitude: this.gpsLongitude,
+              userId: this.userId,
+              accuracy: this.gpsAccuracy,
+              justtime: this.justtime,
+              locationTime: this.gpsLocationTime,
+              hasSpeed : this.gpsHasSpeed,
+              speed : this.gpsSpeed
+            };
+        } else if (postNetwork) {
+           data = {
+            latitude: this.networkLatitude,
+            longitude: this.networkLongitude,
+            userId: this.userId,
+            accuracy: this.networkAccuracy,
+            justtime: this.justtime,
+            locationTime: this.networkLocationTime,
+            hasSpeed : this.networkHasSpeed,
+            speed : this.networkSpeed
+          };
+        }
+        if (data) {
+          Location.create(data, options, function(err, rec) {
+            if (rec) {
+              console.log("location created out of LocationJobResult " + rec.id);
+            }
+          });
+        }
     }
   };
 
