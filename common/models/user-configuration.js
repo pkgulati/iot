@@ -12,7 +12,7 @@ var tofcm = function (obj) {
                 obj[k] = val.toString();
             break;
             case "object" : 
-                tofcm(val);
+                delete obj[k];
         }
     });
   };

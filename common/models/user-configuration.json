@@ -71,9 +71,6 @@
         "userId" : {
             "type" : "String",
             "description" : ""
-        },
-        "peakTimeInMinutes" : {
-            "type" : ["Number"]
         }
     },
     "acls": [
