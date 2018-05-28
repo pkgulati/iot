@@ -33,35 +33,16 @@ module.exports = function(UserModel) {
     var pm9 = 1260;
     var pm10 = 1320;
 
-      if (now < 240) {
-        interval = 120
-      } else if (now < 300) {
-        interval = 90
-	}
-	else if (now < 420) {
-        interval = 60
-      } else if (now < am8) {
-        interval = 30;
-      } else if (now < am9) {
-        interval = 15;
-      } else if (now < am11) {
-        interval = 30;
-      } else if (now < pm3) {
-        interval = 45;
-      } else if (now < pm4) {
-        interval = 30;
-      } else if (now < pm5) {
-        interval = 30;
-      } else if (now < pm7) {
-        interval = 15;
-      } else if (now < pm8) {
-        interval = 30;
-      } else if (now < pm9) {
-        interval = 30;
-      } else {
-        interval = 120;
-      }
-
+    // 6am 
+    if (now < 360) {
+      interval = 120;
+    } else if (now > 1320) {
+      // after 22:00 10pm
+      interval = 120;
+    } else {
+      interval = 60;
+    }
+   
     if (name == "shashi") {
       if (now >= am9 && now <= am11) {
         interval = 15;
@@ -75,7 +56,7 @@ module.exports = function(UserModel) {
     }
 
     if (name == "praveen") {
-        interval = 23;
+        interval = 60;
     }
 
     if (name == "rohit") {

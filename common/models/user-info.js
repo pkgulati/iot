@@ -2,10 +2,16 @@ var loopback = require("loopback");
 var async = require("async");
 
 module.exports = function(UserInfo) {
+
+  UserInfo.statusCache = {
+  };
+
   UserInfo.OnlineContacts = {};
   UserInfo.observe("after save", function(ctx, next) {
     next();
     if (ctx.instance) {
+      // toJson ?
+      UserInfo.statusCache[ctx.instance.id] = ctx.instance.toJSON;
       var info = ctx.instance;
       var models = UserInfo.app.models;
         var ts = new Date();
