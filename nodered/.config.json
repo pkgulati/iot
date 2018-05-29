@@ -497,6 +497,26 @@
      "local": false,
      "module": "loopback-connector-nodes-for-Node-RED",
      "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/execute-remote-method/execute-remote-method.js"
+    },
+    "custom-method": {
+     "name": "custom-method",
+     "types": [
+      "custom-method"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "loopback-connector-nodes-for-Node-RED",
+     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method.js"
+    },
+    "custom-method-callback": {
+     "name": "custom-method-callback",
+     "types": [
+      "custom-method-callback"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "loopback-connector-nodes-for-Node-RED",
+     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
     }
    }
   },
