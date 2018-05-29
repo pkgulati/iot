@@ -40,7 +40,7 @@ module.exports = function(UserModel) {
       // after 22:00 10pm
       interval = 120;
     } else {
-      interval = 60;
+      interval = 30;
     }
    
     if (name == "shashi") {
@@ -56,7 +56,7 @@ module.exports = function(UserModel) {
     }
 
     if (name == "praveen") {
-        interval = 60;
+        interval = 45;
     }
 
     if (name == "rohit") {

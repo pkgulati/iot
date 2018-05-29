@@ -23,7 +23,6 @@ var tofcm = function (obj) {
       var models = UserConfiguration.app.models;
       models.AppUser.findById(userId, ctx.options, function(err, user) {
         if (user && user.deviceToken) {
-          console.log("sending to user ", user.username);
 	
 var data = ctx.instance.toJSON();
           tofcm(data);
@@ -35,7 +34,9 @@ var data = ctx.instance.toJSON();
             token: user.deviceToken,
             data: data
           };
-          models.FCM.push(message, ctx.options, function(err, res) {});
+          models.FCM.push(message, ctx.options, function(err, res) {
+        		console.log("FCM configure response ", err, res);
+          });
         }
       });
     }
