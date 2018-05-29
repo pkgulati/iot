@@ -54,8 +54,9 @@ module.exports = function(UserModel) {
       response : res
     };
 
+	console.log('before nodered');
     // to support node red
-    UserrModel.getNextJob(context, options, function(err, ctx) {
+    UserModel.getNextJob(context, options, function(err, ctx) {
       var ist = moment(new Date()).tz("Asia/Calcutta");
       console.log('nextjob ', ist.format().substr(11, 8), now, name, interval);
       cb(null, ctx.response);

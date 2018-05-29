@@ -38,3 +38,8 @@ app.get('/apk2', function (req, res) {
 app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
+
+//app.use(function (req, res, next) {   
+//console.log('Time:', Date.now() , 'URL ', req.url);
+// next();
+//});
