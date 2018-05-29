@@ -12,7 +12,6 @@ module.exports = function(UserModel) {
     mins = mins + 30;
     var now = hour * 60 + mins;
     var name = this.username;
-    console.log('hour', hour);
     
     var am5 = 300;
     var am6 = 360;
@@ -43,34 +42,6 @@ module.exports = function(UserModel) {
       interval = 30;
     }
    
-    if (name == "shashi") {
-      if (now >= am9 && now <= am11) {
-        interval = 15;
-      }
-      if (now >= pm6 && now <= pm7) {
-        interval = 15;
-      }
-      if (now >= pm7 && now <= pm9) {
-        interval = 10;
-      }
-    }
-
-    if (name == "praveen") {
-        interval = 45;
-    }
-
-    if (name == "rohit") {
-      if (now < 420) {
-        interval = 422 - now;
-      } else if (now > 1320) {
-        interval = 1442 - now + 720;
-      } else if (now > 600) {
-        interval = 60;
-      } else {
-        interval = 20;
-      }
-    }
-
     // mins to milliseconds
     var res = {
       milliseconds: interval * 60 * 1000
@@ -80,19 +51,20 @@ module.exports = function(UserModel) {
       Model: UserModel,
       instance: this,
       options: options,
-      data : res
+      response : res
     };
 
-	
-var ist = moment(new Date()).tz("Asia/Calcutta");
-	console.log('nextjob ', ist.format().substr(11, 8), now, name, interval);
-    
-
-    UserModel.notifyObserversOf('nextjob', context, function (err) {
-      res = context.data;
-      cb(null, res);
+    // to support node red
+    UserrModel.getNextJob(context, options, function(err, ctx) {
+      var ist = moment(new Date()).tz("Asia/Calcutta");
+      console.log('nextjob ', ist.format().substr(11, 8), now, name, interval);
+      cb(null, ctx.response);
     });
+   
+  };
 
+  UserModel.getNextJob = function(context, options, cb) {
+    cb(null, context);
   };
 
   UserModel.observe("nextjob", function(ctx, next) {
