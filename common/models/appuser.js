@@ -39,7 +39,7 @@ module.exports = function(UserModel) {
       // after 22:00 10pm
       interval = 120;
     } else {
-      interval = 30;
+      interval = 45;
     }
    
     // mins to milliseconds
