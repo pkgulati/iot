@@ -9,6 +9,8 @@ Thread sleep?
 
 https://stackoverflow.com/questions/1520887/how-to-pause-sleep-thread-or-process-in-android
 
+https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2&state=hashArgs%23
+
 
 # Android App
 Data Refresh : Upon FCM receive 
@@ -78,6 +80,7 @@ db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 
 "fields":{"justtime":true, "startedBy":true, "type":true}
 
+"type" : {"nin" : ["LocationResult", "LocationJobResult"]},
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
 
