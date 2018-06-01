@@ -244,6 +244,51 @@ module.exports = function(Activity) {
             hasSpeed : this.networkHasSpeed,
             speed : this.networkSpeed
           };
+        } else if (this.cid > 0 && this.lac > 0) {
+
+            var data = this;
+            var jsonData = {
+              radio : "gsm",
+              mcc : data.mcc,
+              mnc : data.mnc,
+              cells : [ {
+                  lac : data.lac,
+                  cid : data.cid
+              }
+              ],
+              address : 1
+            };
+            var self = this;
+              process.nextTick(function() {
+                jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
+                var restleroptions = {
+                  parsers : restler.parsers.json
+                };
+                restler
+                  .postJson("https://ap1.unwiredlabs.com/v2/process.php", jsonData, restleroptions)
+                  .on("complete", function(data, response) {
+                    // handle response
+                    console.log("towerinfo ststus code " + response.statusCode);
+                      console.log('data ', data);
+                    if (response.statusCode == 200 && data && data.status == "ok") {
+                      var Location = loopback.getModel("Location");
+                      var data = {
+                        latitude: data.lat,
+                        longitude: data.lon,
+                        userId: self.userId,
+                        source : 'towerinfo',
+                        locationType : 'towerinfo',
+                        accuracy: data.accuracy,
+                        locationTime: self.time,
+                        justtime : self.justtime
+                      };
+                      Location.create(data, options, function(err, rec) {
+                          console.log('towerinfo location created error = ', err);
+                      });
+                    }
+                });
+              });
+           }
         }
         if (data) {
           Location.create(data, options, function(err, rec) {
