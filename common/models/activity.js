@@ -308,7 +308,7 @@ module.exports = function(Activity) {
                   justtime: self.justtime
                 };
                 Location.create(data, options, function(err, rec) {
-                  console.log("towerinfo location created error = ", err);
+                  console.log("towerinfo location created error = ", err, rec.id);
                 });
               }
             });
