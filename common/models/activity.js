@@ -200,23 +200,24 @@ module.exports = function(Activity) {
                 jsonData,
                 restleroptions
               )
-              .on("complete", function(data, response) {
+              .on("complete", function(rdata, response) {
                 // handle response
                 console.log("towerinfo ststus code " + response.statusCode);
-                console.log("data ", data);
-                if (response.statusCode == 200 && data && data.status == "ok") {
+                console.log("rdata ", rdata);
+                if (response.statusCode == 200 && rdata && rdata.status == "ok") {
                   var Location = loopback.getModel("Location");
-                  var data = {
-                    latitude: data.lat,
-                    longitude: this.lon,
+                  var loc = {
+                    latitude: rdata.lat,
+                    longitude: rdata.lon,
                     userId: self.userId,
                     source: "towerinfo",
                     locationType: "towerinfo",
-                    accuracy: data.accuracy,
+                    accuracy: rdata.accuracy,
                     locationTime: self.time,
                     justtime: self.justtime
                   };
-                  Location.create(data, options, function(err, rec) {
+		  console.log('loc data ', loc);
+                  Location.create(loc, options, function(err, rec) {
                     console.log("towerinfo location created error = ", err);
                   });
                 }
@@ -307,7 +308,7 @@ module.exports = function(Activity) {
                   justtime: self.justtime
                 };
                 Location.create(locrec, options, function(err, rec) {
-                  console.log("towerinfo location created error = ", err, rec.id);
+                  console.log("towerinfo location created error = ", err, locrec, rec.id);
                 });
               }
             });
