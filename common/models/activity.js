@@ -57,13 +57,13 @@ module.exports = function(Activity) {
         return next();
       }
       next();
-	if (user.deviceToken) {
-      var FCM = loopback.getModel("FCM");
-      message.token = user.deviceToken;
-      FCM.push(message, options, function(err, res) {
-        console.log("FCM ", err, res);
-      });
-	}
+      if (user.deviceToken) {
+        var FCM = loopback.getModel("FCM");
+        message.token = user.deviceToken;
+        FCM.push(message, options, function(err, res) {
+          console.log("FCM ", err, res);
+        });
+      }
     });
   };
 
@@ -72,8 +72,8 @@ module.exports = function(Activity) {
       ctx.instance.created = new Date();
       ctx.instance.userId = ctx.options.ctx.userId;
       ctx.instance.name = ctx.options.ctx.username;
-	if (ctx.instance.time) {
-        ctx.instance.delay = ctx.instance.created - ctx.instance.time; 
+      if (ctx.instance.time) {
+        ctx.instance.delay = ctx.instance.created - ctx.instance.time;
       }
     }
     next();
@@ -84,13 +84,16 @@ module.exports = function(Activity) {
       var self = this;
       var ContactModel = loopback.getModel("Contact");
       var now = new Date();
-      
+
       ContactModel.findById(this.contactId, options, function(err, contact) {
         if (!contact) {
           return;
         }
-        contact.updateAttributes({"lastViewedAt" : now.getTime()}, options, function() {
-	      });
+        contact.updateAttributes(
+          { lastViewedAt: now.getTime() },
+          options,
+          function() {}
+        );
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -99,8 +102,8 @@ module.exports = function(Activity) {
           data: {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
-            time : now.getMilliseconds().toString(),
-            expiry : expiry.toString()
+            time: now.getMilliseconds().toString(),
+            expiry: expiry.toString()
           }
         };
         console.log(
@@ -109,19 +112,27 @@ module.exports = function(Activity) {
           contact.ownerUserId,
           options.ctx.userId,
           contact.name,
-	        "by ",
-	        options.ctx.username
+          "by ",
+          options.ctx.username
         );
-        sendMessageToUser(message, options, contact.contactUserId, function(err,res) {
-        });
+        sendMessageToUser(message, options, contact.contactUserId, function(
+          err,
+          res
+        ) {});
       });
 
-      var filter = {where:{ownerUserId:this.userId, autofcm:true, id:{neq:this.contactId}}};
+      var filter = {
+        where: {
+          ownerUserId: this.userId,
+          autofcm: true,
+          id: { neq: this.contactId }
+        }
+      };
       ContactModel.find(filter, options, function(err, contacts) {
-		if (err) {
-				console.log('error' , err);
-		}
-        contacts.forEach(function (contact) {
+        if (err) {
+          console.log("error", err);
+        }
+        contacts.forEach(function(contact) {
           var expiry = now.getMilliseconds() + 2 * 60 * 1000;
           var message = {
             android: {
@@ -130,18 +141,22 @@ module.exports = function(Activity) {
             data: {
               type: "InformationUpdateRequest",
               activityId: self.id.toString(),
-              time : now.getMilliseconds().toString(),
-              expiry : expiry.toString()
+              time: now.getMilliseconds().toString(),
+              expiry: expiry.toString()
             }
           };
-          console.log('auto FCM send to ', contact.name,
-	        "by ",
-	        options.ctx.username );
-          sendMessageToUser(message, options, contact.contactUserId, function(err,res) {
-          });
+          console.log(
+            "auto FCM send to ",
+            contact.name,
+            "by ",
+            options.ctx.username
+          );
+          sendMessageToUser(message, options, contact.contactUserId, function(
+            err,
+            res
+          ) {});
         });
       });
-
     } else if (this.type == "LocationResult") {
       var Location = loopback.getModel("Location");
       var data = {
@@ -152,151 +167,160 @@ module.exports = function(Activity) {
         justtime: this.justtime,
         locationTime: this.locationTime
       };
-      Location.create(data, options, function(err, rec) {
-      });
+      Location.create(data, options, function(err, rec) {});
     } else if (this.type == "LocationServiceEnd") {
-      if (this.data && 
-          this.data.nameValuePairs && 
-           this.data.nameValuePairs.locationNotKnown) {
-             if (this.data.nameValuePairs.cid && this.data.nameValuePairs.cid > 0) {
-              var data = this.data.nameValuePairs;
-              var jsonData = {
-                radio : "gsm",
-                mcc : data.mcc,
-                mnc : data.mnc,
-                cells : [ {
-                    lac : data.lac,
-                    cid : data.cid
-                }
-                ],
-                address : 1
-              };
-              var self = this;
-                process.nextTick(function() {
-                  jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
-                  var restleroptions = {
-                    parsers : restler.parsers.json
-                  };
-                  restler
-                    .postJson("https://ap1.unwiredlabs.com/v2/process.php", jsonData, restleroptions)
-                    .on("complete", function(data, response) {
-                      // handle response
-                      console.log("towerinfo ststus code " + response.statusCode);
-                        console.log('data ', data);
-                      if (response.statusCode == 200 && data && data.status == "ok") {
-                        var Location = loopback.getModel("Location");
-                        var data = {
-                          latitude: data.lat,
-                          longitude: this.lon,
-                          userId: self.userId,
-                          source : 'towerinfo',
-                          locationType : 'towerinfo',
-                          accuracy: data.accuracy,
-                          locationTime: self.time,
-                          justtime : self.justtime
-                        };
-                        Location.create(data, options, function(err, rec) {
-                            console.log('towerinfo location created error = ', err);
-                        });
-                      }
-                  });
-                });
-             }
-        }
-    } else if (this.type == "LocationJobResult") {
-        var Location = loopback.getModel("Location");
-        var postGPS = false;
-        var postNetwork = false;
-        if (this.gpsLocation && this.networkLocation) {
-          if (this.gpsAccuracy > this.networkAccuracy) {
-            postGPS = true;
-          } else {
-            postNetwork = true;
-          }
-        } else if (this.gpsLocation) {
-           postGPS = true;
-        } else  if (this.networkLocation) {
-          postNetwork = true;
-        } else {
-          // check wifi 
-        }
-
-        var data = null;
-        if (postGPS) {
-            data = {
-              latitude: this.gpsLatitude,
-              longitude: this.gpsLongitude,
-              userId: this.userId,
-              accuracy: this.gpsAccuracy,
-              justtime: this.justtime,
-              locationTime: this.gpsLocationTime,
-              hasSpeed : this.gpsHasSpeed,
-              speed : this.gpsSpeed
-            };
-        } else if (postNetwork) {
-           data = {
-            latitude: this.networkLatitude,
-            longitude: this.networkLongitude,
-            userId: this.userId,
-            accuracy: this.networkAccuracy,
-            justtime: this.justtime,
-            locationTime: this.networkLocationTime,
-            hasSpeed : this.networkHasSpeed,
-            speed : this.networkSpeed
-          };
-        } else if (this.cid > 0 && this.lac > 0) {
-
-            var data = this;
-            var jsonData = {
-              radio : "gsm",
-              mcc : data.mcc,
-              mnc : data.mnc,
-              cells : [ {
-                  lac : data.lac,
-                  cid : data.cid
+      if (
+        this.data &&
+        this.data.nameValuePairs &&
+        this.data.nameValuePairs.locationNotKnown
+      ) {
+        if (this.data.nameValuePairs.cid && this.data.nameValuePairs.cid > 0) {
+          var data = this.data.nameValuePairs;
+          var jsonData = {
+            radio: "gsm",
+            mcc: data.mcc,
+            mnc: data.mnc,
+            cells: [
+              {
+                lac: data.lac,
+                cid: data.cid
               }
-              ],
-              address : 1
+            ],
+            address: 1
+          };
+          var self = this;
+          process.nextTick(function() {
+            jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
+            var restleroptions = {
+              parsers: restler.parsers.json
             };
-            var self = this;
-              process.nextTick(function() {
-                jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
-                var restleroptions = {
-                  parsers : restler.parsers.json
-                };
-                restler
-                  .postJson("https://ap1.unwiredlabs.com/v2/process.php", jsonData, restleroptions)
-                  .on("complete", function(data, response) {
-                    // handle response
-                    console.log("towerinfo ststus code " + response.statusCode);
-                      console.log('data ', data);
-                    if (response.statusCode == 200 && data && data.status == "ok") {
-                      var Location = loopback.getModel("Location");
-                      var data = {
-                        latitude: data.lat,
-                        longitude: data.lon,
-                        userId: self.userId,
-                        source : 'towerinfo',
-                        locationType : 'towerinfo',
-                        accuracy: data.accuracy,
-                        locationTime: self.time,
-                        justtime : self.justtime
-                      };
-                      Location.create(data, options, function(err, rec) {
-                          console.log('towerinfo location created error = ', err);
-                      });
-                    }
-                });
+            restler
+              .postJson(
+                "https://ap1.unwiredlabs.com/v2/process.php",
+                jsonData,
+                restleroptions
+              )
+              .on("complete", function(data, response) {
+                // handle response
+                console.log("towerinfo ststus code " + response.statusCode);
+                console.log("data ", data);
+                if (response.statusCode == 200 && data && data.status == "ok") {
+                  var Location = loopback.getModel("Location");
+                  var data = {
+                    latitude: data.lat,
+                    longitude: this.lon,
+                    userId: self.userId,
+                    source: "towerinfo",
+                    locationType: "towerinfo",
+                    accuracy: data.accuracy,
+                    locationTime: self.time,
+                    justtime: self.justtime
+                  };
+                  Location.create(data, options, function(err, rec) {
+                    console.log("towerinfo location created error = ", err);
+                  });
+                }
               });
-           }
-        }
-        if (data) {
-          Location.create(data, options, function(err, rec) {
-            if (rec) {
-              console.log("location created out of LocationJobResult " + rec.id);
-            }
           });
         }
+      }
+    } else if (this.type == "LocationJobResult") {
+      var Location = loopback.getModel("Location");
+      var postGPS = false;
+      var postNetwork = false;
+      if (this.gpsLocation && this.networkLocation) {
+        if (this.gpsAccuracy > this.networkAccuracy) {
+          postGPS = true;
+        } else {
+          postNetwork = true;
+        }
+      } else if (this.gpsLocation) {
+        postGPS = true;
+      } else if (this.networkLocation) {
+        postNetwork = true;
+      } else {
+        // check wifi
+      }
+
+      var data = null;
+      if (postGPS) {
+        data = {
+          latitude: this.gpsLatitude,
+          longitude: this.gpsLongitude,
+          userId: this.userId,
+          accuracy: this.gpsAccuracy,
+          justtime: this.justtime,
+          locationTime: this.gpsLocationTime,
+          hasSpeed: this.gpsHasSpeed,
+          speed: this.gpsSpeed
+        };
+      } else if (postNetwork) {
+        data = {
+          latitude: this.networkLatitude,
+          longitude: this.networkLongitude,
+          userId: this.userId,
+          accuracy: this.networkAccuracy,
+          justtime: this.justtime,
+          locationTime: this.networkLocationTime,
+          hasSpeed: this.networkHasSpeed,
+          speed: this.networkSpeed
+        };
+      } else if (this.cid > 0 && this.lac > 0) {
+        var data = this;
+        var jsonData = {
+          radio: "gsm",
+          mcc: data.mcc,
+          mnc: data.mnc,
+          cells: [
+            {
+              lac: data.lac,
+              cid: data.cid
+            }
+          ],
+          address: 1
+        };
+        var self = this;
+        process.nextTick(function() {
+          jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
+          var restleroptions = {
+            parsers: restler.parsers.json
+          };
+          restler
+            .postJson(
+              "https://ap1.unwiredlabs.com/v2/process.php",
+              jsonData,
+              restleroptions
+            )
+            .on("complete", function(data, response) {
+              // handle response
+              console.log("towerinfo ststus code " + response.statusCode);
+              console.log("data ", data);
+              if (response.statusCode == 200 && data && data.status == "ok") {
+                var Location = loopback.getModel("Location");
+                var data = {
+                  latitude: data.lat,
+                  longitude: data.lon,
+                  userId: self.userId,
+                  source: "towerinfo",
+                  locationType: "towerinfo",
+                  accuracy: data.accuracy,
+                  locationTime: self.time,
+                  justtime: self.justtime
+                };
+                Location.create(data, options, function(err, rec) {
+                  console.log("towerinfo location created error = ", err);
+                });
+              }
+            });
+        });
+      }
+    }
+    if (data) {
+      Location.create(data, options, function(err, rec) {
+        if (rec) {
+          console.log("location created out of LocationJobResult " + rec.id);
+        }
+      });
     }
   };
 
