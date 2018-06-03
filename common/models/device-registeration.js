@@ -6,13 +6,14 @@ module.exports = function(DeviceRegistration) {
     } else {
         delete ctx.instance.userId;
     }
+    ctx.instance.created = new Date();
     next();
   });
 
   DeviceRegistration.observe("after save", function(ctx, next) {
     if (ctx.isNewInstance) {
       var UserModel = loopback.getModelByType("User");
-      UserModel.findById(ctx.instance.userId, options, function(
+      UserModel.findById(ctx.instance.userId, ctx.options, function(
         err,
         userInfo
       ) {
@@ -21,7 +22,7 @@ module.exports = function(DeviceRegistration) {
             {
               deviceToken: ctx.instance.deviceToken
             },
-            options,
+            ctx.options,
             function(err, dbresult) {
               console.log(
                 "update of registrationToken  ",
