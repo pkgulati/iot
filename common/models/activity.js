@@ -70,8 +70,9 @@ module.exports = function(Activity) {
   Activity.observe("before save", function(ctx, next) {
     if (ctx.isNewInstance && ctx.instance) {
       ctx.instance.created = new Date();
-      ctx.instance.userId = ctx.options.ctx.userId;
-      ctx.instance.name = ctx.options.ctx.username;
+      ctx.instance.userId = ctx.instance.userId || ctx.options.ctx.userId;
+      ctx.instance.name = ctx.instance.name || ctx.options.ctx.username;
+      ctx.instance.createdBy = ctx.instance.userId;
       if (ctx.instance.time) {
         ctx.instance.delay = ctx.instance.created - ctx.instance.time;
       }
