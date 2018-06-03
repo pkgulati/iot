@@ -204,7 +204,9 @@ module.exports = function(Activity) {
                 // handle response
                 console.log("towerinfo ststus code " + response.statusCode);
                 console.log("rdata ", rdata);
-                if (response.statusCode == 200 && rdata && rdata.status == "ok") {
+                if (
+                  response.statusCode == 200 && rdata && rdata.status == "ok"
+                ) {
                   var Location = loopback.getModel("Location");
                   var loc = {
                     latitude: rdata.lat,
@@ -216,7 +218,7 @@ module.exports = function(Activity) {
                     locationTime: self.time,
                     justtime: self.justtime
                   };
-		  console.log('loc data ', loc);
+                  console.log("loc data ", loc);
                   Location.create(loc, options, function(err, rec) {
                     console.log("towerinfo location created error = ", err);
                   });
@@ -308,19 +310,24 @@ module.exports = function(Activity) {
                   justtime: self.justtime
                 };
                 Location.create(locrec, options, function(err, rec) {
-                  console.log("towerinfo location created error = ", err, locrec, rec.id);
+                  console.log(
+                    "towerinfo location created error = ",
+                    err,
+                    locrec,
+                    rec.id
+                  );
                 });
               }
             });
         });
       }
       if (data) {
-	      Location.create(data, options, function(err, rec) {
-		if (rec) {
-		  console.log("location created out of LocationJobResult " + rec.id);
-		}
-	      });
-	    }
+        Location.create(data, options, function(err, rec) {
+          if (rec) {
+            console.log("location created out of LocationJobResult " + rec.id);
+          }
+        });
+      }
     }
   };
 

@@ -77,14 +77,17 @@ db.Contact.update({"ownerUserId":"5acb3b12146ca8f84d18a8ac"},{$set:{"autofcm":tr
 db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 
 
-"fields":{"justtime":true, "type":true, "name":true},
+"fields":{"justtime":true, "speed":true, "averageSpeed":true, "provider":true, "longitude":true, "accuracy":true},
 
+"fields":{"justtime":true, "batteryPercentage":true},
 
 "fields":{"justtime":true, "type":true, "name":true},
 
 "fields":{"justtime":true, "startedBy":true, "type":true}
 
 "type" : {"nin" : ["LocationResult", "LocationJobResult"]},
+
+"type" : {"inq" : ["LocationResult", "LocationJobResult"]},
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
 
