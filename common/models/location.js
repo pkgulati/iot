@@ -32,7 +32,7 @@ module.exports = function locFn(Location) {
 				// if (ctx.instance.private == true) {
 				// 	return next();
 				// }
-				if (ctx.instance.accuracy && ctx.instance.accuracy < 700) {
+				if (ctx.instance.accuracy ) {
 				var UserInfoModel = loopback.getModelByType("UserInfo");
 				var filter = {where : {id : ctx.options.ctx.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
