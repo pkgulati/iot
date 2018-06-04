@@ -72,7 +72,7 @@ module.exports = function(Activity) {
       ctx.instance.created = new Date();
       ctx.instance.userId = ctx.instance.userId || ctx.options.ctx.userId;
       ctx.instance.name = ctx.instance.name || ctx.options.ctx.username;
-      ctx.instance.createdBy = ctx.instance.userId;
+      ctx.instance.createdBy = ctx.options.ctx.userId;
       if (ctx.instance.time) {
         ctx.instance.delay = ctx.instance.created - ctx.instance.time;
       }
