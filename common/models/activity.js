@@ -231,7 +231,7 @@ module.exports = function(Activity) {
       var postGPS = false;
       var postNetwork = false;
       if (this.gpsLocation && this.networkLocation) {
-        if (this.gpsAccuracy > this.networkAccuracy) {
+        if (this.gpsAccuracy < this.networkAccuracy) {
           postGPS = true;
         } else {
           postNetwork = true;
