@@ -57,7 +57,7 @@ module.exports = function(FCM) {
           .send(message)
           .then(
             function(response) {
-              updateAttributes(
+              self.updateAttributes(
                 { status: "sent", fcmresponse: response },
                 options,
                 function() {}
@@ -82,7 +82,7 @@ module.exports = function(FCM) {
             cb(error, null);
           });
       } else {
-        roboself.updateAttributes(
+        self.updateAttributes(
           { status: "No Device Token For User" },
           options,
           function() {}
