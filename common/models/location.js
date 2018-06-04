@@ -5,6 +5,13 @@ module.exports = function locFn(Location) {
 		if(ctx.instance && ctx.options.ctx.username) {
 			ctx.instance.username = ctx.options.ctx.username;
 		}
+		if (ctx.isNewInstance) {
+			ctx.instance.created = new Date();
+			ctx.instance.userId = ctx.instance.userId || ctx.options.ctx.userId;
+			ctx.instance.name = ctx.instance.name || ctx.options.ctx.username;
+			ctx.instance.createdBy = ctx.options.ctx.userId;
+	   }
+
 		if(ctx.instance && ctx.instance.loc) {
 			coords = (ctx.instance.loc).split(",");
 			ctx.instance.latitude = Number(coords[0]);
@@ -28,13 +35,13 @@ module.exports = function locFn(Location) {
 	// });
 
 	Location.observe('after save', function(ctx, next) {
-		if(ctx.instance && ctx.options.ctx && ctx.options.ctx.userId) {
+		if(ctx.instance && ctx.instance.userId) {
 				// if (ctx.instance.private == true) {
 				// 	return next();
 				// }
 				if (ctx.instance.accuracy ) {
 				var UserInfoModel = loopback.getModelByType("UserInfo");
-				var filter = {where : {id : ctx.options.ctx.userId}};
+				var filter = {where : {id : ctx.instance.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
 						var now = new Date();
 						if (userInfo) {
@@ -54,7 +61,7 @@ module.exports = function locFn(Location) {
 						}
 						else {
 							UserInfoModel.create({
-								id : ctx.options.ctx.userId,
+								id : ctx.instance.userId,
 								lastLocationTime : ctx.instance.locationTime,
 								latitude: ctx.instance.latitude,
 								lastUpdateTime : now,
