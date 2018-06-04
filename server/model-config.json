@@ -27,7 +27,7 @@
     }, 
     "FCM" : {
         "public": true,
-        "dataSource" : "transient"
+        "dataSource" : "db"
     },
     "Admin": {
         "dataSource": "transient",

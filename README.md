@@ -76,6 +76,8 @@ db.Contact.update({"ownerUserId":"5acb3b12146ca8f84d18a8ac"},{$set:{"autofcm":tr
 
 db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 
+db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:true})
+
 
 "fields":{"justtime":true, "speed":true, "averageSpeed":true, "provider":true, "longitude":true, "accuracy":true},
 
@@ -88,6 +90,10 @@ db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 "type" : {"nin" : ["LocationResult", "LocationJobResult"]},
 
 "type" : {"inq" : ["LocationResult", "LocationJobResult"]},
+
+2700000
+
+{"fields":{"locationServiceTotalTime":true,"name":true,"id":true}}
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
 

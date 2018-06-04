@@ -4,6 +4,102 @@ var loopback = require("loopback");
 var async = require("async");
 
 module.exports = function(FCM) {
+  FCM.tofcm = function(obj) {
+    var ret = {};
+    Object.keys(obj).forEach(function(k) {
+      var val = obj[k];
+      switch (typeof val) {
+        case "number":
+          ret[k] = val.toString();
+          break;
+        case "boolean":
+          ret[k] = val.toString();
+          break;
+        case "object":
+          break;
+        case "string":
+          ret[k] = val;
+      }
+    });
+    return ret;
+  };
+
+  FCM.prototype.process = function(options) {
+    var AppUser = loopback.getModelByType("AppUser");
+    if (FCM.status == "disable") {
+      return;
+    }
+    var self = this;
+    AppUser.findById(self.userId, options, function(err, user) {
+      if (user && user.deviceToken) {
+        var message = {
+          token: user.deviceToken
+        };
+        if (self.highPriority) {
+          message.android = {
+            priority: "high"
+          };
+        }
+        if (self.title && self.body) {
+            message.notification = {
+              title : self.title,
+              body : self.body
+            };
+        }
+        if (self.data) {
+          message.data = FCM.tofcm(self.data);
+        } else {
+          message.data = {};
+        }
+        message.data.type = self.type;
+        admin
+          .messaging()
+          .send(message)
+          .then(
+            function(response) {
+              updateAttributes(
+                { status: "sent", fcmresponse: response },
+                options,
+                function() {}
+              );
+            },
+            function(error) {
+              if (
+                error.code == "messaging/registration-token-not-registered" &&
+                messageForUserId
+              ) {
+                console.log("Error code ", error.code, message.token);
+                updateAttributes(
+                  { status: "Device Token in invalid" },
+                  options,
+                  function() {}
+                );
+              }
+            }
+          )
+          .catch(function(error) {
+            console.log("Error sending message:", error);
+            cb(error, null);
+          });
+      } else {
+        roboself.updateAttributes(
+          { status: "No Device Token For User" },
+          options,
+          function() {}
+        );
+      }
+    });
+  };
+
+  FCM.observe("after save", function(ctx, next) {
+    if (ctx.instance && ctx.isNewInstance) {
+      setImmediate(function() {
+        ctx.instance.process(ctx.options);
+      });
+    }
+    next();
+  });
+
   var serviceKeyPath = path.join(
     process.env.HOME,
     "fcmkey/serviceAccountKey.json"
@@ -46,15 +142,26 @@ module.exports = function(FCM) {
           cb(null, response);
         },
         function(error) {
-          if (error.code == "messaging/registration-token-not-registered" && messageForUserId) {
-              console.log("Error code ", error.code, message.token);
-              var UserModel = loopback.getModelByType('User');
-              UserModel.findById(messageForUserId, options, function(err, user){
+          if (
+            error.code == "messaging/registration-token-not-registered" &&
+            messageForUserId
+          ) {
+            console.log("Error code ", error.code, message.token);
+            var UserModel = loopback.getModelByType("User");
+            UserModel.findById(messageForUserId, options, function(err, user) {
               if (user) {
-                  console.log("clear deviceToken from users " , user.username);
-                  user.updateAttributes({deviceToken:""}, option, function(err, dbrec){
-                      console.log("deviceToken cleared for ",  user.username , err, dbrec.username);
-                  });
+                console.log("clear deviceToken from users ", user.username);
+                user.updateAttributes({ deviceToken: "" }, option, function(
+                  err,
+                  dbrec
+                ) {
+                  console.log(
+                    "deviceToken cleared for ",
+                    user.username,
+                    err,
+                    dbrec.username
+                  );
+                });
               }
             });
           }
@@ -92,28 +199,33 @@ module.exports = function(FCM) {
     var response = [];
     var AppUser = loopback.getModelByType("AppUser");
     AppUser.find({}, options, function(err, userlist) {
-        
-        async.forEach(userlist, function(user, done){
+      async.forEach(
+        userlist,
+        function(user, done) {
           var item = {
             userId: user.id,
             username: user.username,
-            email : user.email,
-            deviceToken : user.deviceToken
+            email: user.email,
+            deviceToken: user.deviceToken
           };
           var AuthSession = loopback.getModelByType("AuthSession");
-          AuthSession.find({where:{userId:user.id}, limit:1, order:"created DESC"}, options, function(err, list) {
-            if (list.length > 0) {
+          AuthSession.find(
+            { where: { userId: user.id }, limit: 1, order: "created DESC" },
+            options,
+            function(err, list) {
+              if (list.length > 0) {
                 item.authToken = list[0].id;
                 item.lastLogin = list[0].created;
+              }
+              response.push(item);
+              done(null);
             }
-            response.push(item);
-            done(null);
-          });
+          );
         },
         function() {
-            cb(null, response);
+          cb(null, response);
         }
-        );
+      );
     });
   };
 
@@ -158,6 +270,4 @@ module.exports = function(FCM) {
       root: true
     }
   });
-
-
 };
