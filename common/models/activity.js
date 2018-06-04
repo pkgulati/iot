@@ -95,6 +95,7 @@ module.exports = function(Activity) {
           options,
           function() {}
         );
+	liveLocation = contact.liveLocation || false;
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -103,6 +104,7 @@ module.exports = function(Activity) {
           data: {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
+            liveLocation:liveLocation.toString(), 
             time: now.getMilliseconds().toString(),
             expiry: expiry.toString()
           }
@@ -143,6 +145,7 @@ module.exports = function(Activity) {
               type: "InformationUpdateRequest",
               activityId: self.id.toString(),
               time: now.getMilliseconds().toString(),
+              liveLocation:contact.liveLocation.toString(), 
               expiry: expiry.toString()
             }
           };
