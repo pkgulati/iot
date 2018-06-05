@@ -236,6 +236,32 @@ module.exports = function(Activity) {
           });
         }
       }
+    } else if (this.type == "InformationUpdateRequest") {
+        if (this.atHomeWifi) {
+          var self = this;
+          var Location = loopback.getModel("Location");
+          var locrec = {
+            userId: self.userId,
+            source: "wifi",
+            locationType: "wifi",
+            accuracy: 10,
+            locationTime: self.time,
+            justtime: self.justtime
+          };
+          if (this.wifissid == "Andromeda_5G") {
+           locrec.latitude = 12.9603608;
+           locrec.longitude = 77.5256268;
+          }
+          else if (this.wifissid == "pkgwifi") {
+            locrec.latitude = 12.9603608;
+            locrec.longitude = 77.5256268;
+          }
+          if (locrec.latitude) {
+            Location.create(locrec, options, function(err, rec) {
+                console.log("wifi location created error = ", err, locrec, rec.id);
+            });
+          }
+        }
     } else if (this.type == "LocationJobResult") {
       var Location = loopback.getModel("Location");
       var postGPS = false;
