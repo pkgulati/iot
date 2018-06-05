@@ -96,6 +96,11 @@ module.exports = function(Activity) {
           function() {}
         );
 	liveLocation = contact.liveLocation || false;
+	var provider = "both";
+	if (contact.contactUserId == "5acb3b15146ca8f84d18a8ae") {
+		provider = "network";
+	}
+	console.log("contact " + contact.name + " " + provider);
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -105,6 +110,8 @@ module.exports = function(Activity) {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
             liveLocation:liveLocation.toString(), 
+            waitTime:"50000",
+            provider:provider,
             time: now.getMilliseconds().toString(),
             expiry: expiry.toString()
           }
