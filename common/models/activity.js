@@ -253,8 +253,8 @@ module.exports = function(Activity) {
            locrec.longitude = 77.5256268;
           }
           else if (this.wifissid == "pkgwifi") {
-            locrec.latitude = 12.9603608;
-            locrec.longitude = 77.5256268;
+            locrec.latitude =  12.905067214742303;
+            locrec.longitude = 77.60017370807244;
           }
           if (locrec.latitude) {
             Location.create(locrec, options, function(err, rec) {
