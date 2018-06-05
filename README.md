@@ -168,3 +168,26 @@ LocationJobIntentEnqueue
 https://medium.com/@mohitgupta_87777/testing-your-app-on-doze-mode-4ee30ad6a3b0
 
 
+
+###########
+Network Job
+Dynamic Period
+Does not use GPS
+Main two purpose
+It can help save battery....
+It can help if FCM is not working...
+Job1 and Job2 approach Simply meant for X hour to Y hour periodic..
+If base location has changed can schedule GPSJob / LocationJob
+================
+AlarmService : Meant for starting frequent check of location for morning and evening peak hours...
+Can run LocationJob
+================
+FCM Based on ViewContact
+At contact level you can have a flag to decide whether GPS is allowed or not
+Server side can send Network/GPS/Both Wait Yes/No
+setExtras
+
+
+
+
+
