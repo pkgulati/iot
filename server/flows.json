@@ -1,5 +1,185 @@
 [
     {
+        "id": "fd50509a.52404",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "default",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 385,
+        "y": 374,
+        "wires": [
+            [
+                "1e4042d2.e854fd"
+            ]
+        ]
+    },
+    {
+        "id": "a28b25b6.d45828",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "Praveen",
+        "func": "msg.payload.response.milliseconds = 900000;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 372,
+        "y": 56,
+        "wires": [
+            [
+                "1e4042d2.e854fd"
+            ]
+        ]
+    },
+    {
+        "id": "27cad2c.526eb2e",
+        "type": "switch",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "property": "payload.instance.username",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Praveen",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "praveen",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Ajith",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "ajith",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "shashi",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "anirudh",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "rama",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 8,
+        "x": 181,
+        "y": 192,
+        "wires": [
+            [
+                "a28b25b6.d45828"
+            ],
+            [
+                "a28b25b6.d45828"
+            ],
+            [
+                "ff09b780.950a38"
+            ],
+            [
+                "ff09b780.950a38"
+            ],
+            [
+                "fb6790ea.c58b"
+            ],
+            [
+                "2fdcc904.9974d6"
+            ],
+            [
+                "3d9875be.61dcba"
+            ],
+            [
+                "fd50509a.52404"
+            ]
+        ]
+    },
+    {
+        "id": "ff09b780.950a38",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "Ajith",
+        "func": "if (msg.payload.hour >= 6 && msg.payload.hour <= 10) {\n    msg.payload.response.milliseconds = 900000;\n}\nif (msg.payload.hour >= 16 && msg.payload.hour <= 21) {\n    msg.payload.response.milliseconds = 900000;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 365,
+        "y": 121,
+        "wires": [
+            [
+                "1e4042d2.e854fd"
+            ]
+        ]
+    },
+    {
+        "id": "1e4042d2.e854fd",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "Finally",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 546.5,
+        "y": 192,
+        "wires": [
+            [
+                "7d6e136c.68b63c",
+                "e9529a0e.063688"
+            ]
+        ]
+    },
+    {
+        "id": "7d6e136c.68b63c",
+        "type": "debug",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload.response",
+        "x": 696.5,
+        "y": 299,
+        "wires": []
+    },
+    {
+        "id": "fb6790ea.c58b",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "shashi",
+        "func": "msg.payload.response.milliseconds = 1800000;\n// 15 mins\nif (msg.payload.hour >= 9 && msg.payload.hour <= 10) {\n    msg.payload.response.milliseconds = 900000;\n}\n// 6 mins\nif (msg.payload.hour >= 19 && msg.payload.hour <= 20) {\n    msg.payload.response.milliseconds = 360000;\n}\n// 600000 10 mins\nif (msg.payload.hour == 21) {\n    msg.payload.response.milliseconds = 600000;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370.5,
+        "y": 194,
+        "wires": [
+            [
+                "1e4042d2.e854fd"
+            ]
+        ]
+    },
+    {
+        "id": "e9529a0e.063688",
+        "type": "custom-method-callback",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "x": 702.5,
+        "y": 122,
+        "wires": []
+    },
+    {
         "id": "d9f6ce89.ddae7",
         "type": "custom-method",
         "z": "34ac9fca.fd089",
@@ -16,5 +196,129 @@
                 "27cad2c.526eb2e"
             ]
         ]
+    },
+    {
+        "id": "2fdcc904.9974d6",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "anirudh",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 382.5,
+        "y": 253,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d9875be.61dcba",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "rama",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 376.5,
+        "y": 311,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e557ab42.add898",
+        "type": "inject",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 97.5,
+        "y": 417,
+        "wires": [
+            [
+                "e419009.1a207"
+            ]
+        ]
+    },
+    {
+        "id": "e419009.1a207",
+        "type": "function",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "func": "\nvar loopback = global.get('loopback');\n\nvar options = {}\noptions.ignoreAutoScope = true;\noptions.fetchAllScopes = true;    \n\nmsg.payload = {'foo' : 'bar'};\n\nvar model = loopback.findModel('UserConfiguration');\nif (model) {\n   model.update({}, {\"useJobForFCM\" : true}, options, function(err, list){\n        msg.payload = list;\n        node.send(msg);\n   });\n   return;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 265.5,
+        "y": 437,
+        "wires": [
+            [
+                "fcc335ab.ffacc8"
+            ]
+        ]
+    },
+    {
+        "id": "fcc335ab.ffacc8",
+        "type": "debug",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 457.5,
+        "y": 455,
+        "wires": []
+    },
+    {
+        "id": "609a2f90.e7df1",
+        "type": "find-data",
+        "z": "34ac9fca.fd089",
+        "name": "find data",
+        "modelname": "UserConfiguration",
+        "filter": "{}",
+        "x": 317.5,
+        "y": 519,
+        "wires": [
+            [
+                "f1a07707.396858"
+            ],
+            [
+                "f1a07707.396858"
+            ]
+        ]
+    },
+    {
+        "id": "5b0bfbc7.f65ca4",
+        "type": "inject",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 108.5,
+        "y": 504,
+        "wires": [
+            [
+                "609a2f90.e7df1"
+            ]
+        ]
+    },
+    {
+        "id": "f1a07707.396858",
+        "type": "debug",
+        "z": "34ac9fca.fd089",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 483.5,
+        "y": 530,
+        "wires": []
     }
 ]

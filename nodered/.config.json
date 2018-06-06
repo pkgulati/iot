@@ -516,7 +516,21 @@
      "enabled": true,
      "local": false,
      "module": "loopback-connector-nodes-for-Node-RED",
+<<<<<<< HEAD
      "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
+=======
+     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
+    },
+    "join-inputs": {
+     "name": "join-inputs",
+     "types": [
+      "join-inputs"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "loopback-connector-nodes-for-Node-RED",
+     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/join-inputs/join-inputs.js"
+>>>>>>> 870349102d29e60121d89b75c1a6d09cbbba88a2
     }
    }
   },
