@@ -110,6 +110,15 @@ db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:t
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
 
 
+
+{"where":{"useJobForFCM":true, "useLocationService":true}}
+
+{"fields":{"name":true,"id":true},"where":{"useLocationServiceForFCM":{"inq":[false,true]}}}
+
+
+{"fields":{"name":true,"id":true},"where":{"useJobForFCM":true}}
+
+
 db.ActivityArchive.find({"type":"LocationResult", "hasSpeed":true, "name" : "praveen" , time : { $gte:ISODate("2018-05-24T01:15:35.449Z"), $lt: ISODate("2018-05-24T11:15:35.449Z")}}, {time:1, speed:1, _id:0})
 
 
