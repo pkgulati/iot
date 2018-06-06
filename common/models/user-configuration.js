@@ -28,8 +28,6 @@ var data = ctx.instance.toJSON();
           tofcm(data);
           data.type = "configure";
 	data = JSON.parse(JSON.stringify(data));
-         console.log(data);
-         console.log(JSON.stringify(data));
           var message = {
             token: user.deviceToken,
             data: data

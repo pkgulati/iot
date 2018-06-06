@@ -261,7 +261,7 @@ module.exports = function(Activity) {
           }
           if (locrec.latitude) {
             Location.create(locrec, options, function(err, rec) {
-                console.log("wifi location created error = ", err, locrec, rec.id);
+                // console.log("wifi location created error = ", err, locrec, rec.id);
             });
           }
         }
