@@ -176,7 +176,8 @@ module.exports = function(Activity) {
         userId: this.userId,
         accuracy: this.accuracy,
         justtime: this.justtime,
-        locationTime: this.locationTime
+        locationTime: this.locationTime,
+        provider : this.provider
       };
       Location.create(data, options, function(err, rec) {});
     } else if (this.type == "LocationServiceEnd") {
@@ -246,7 +247,8 @@ module.exports = function(Activity) {
             locationType: "wifi",
             accuracy: 10,
             locationTime: self.time,
-            justtime: self.justtime
+            justtime: self.justtime,
+            provider : "homewifi"
           };
           if (this.wifissid == "Andromeda_5G") {
            locrec.latitude = 12.9603608;
@@ -296,7 +298,8 @@ module.exports = function(Activity) {
           justtime: this.justtime,
           locationTime: this.gpsLocationTime,
           hasSpeed: this.gpsHasSpeed,
-          speed: this.gpsSpeed
+          speed: this.gpsSpeed,
+          provider : "gps"
         };
       } else if (postNetwork) {
         data = {
@@ -307,7 +310,8 @@ module.exports = function(Activity) {
           justtime: this.justtime,
           locationTime: this.networkLocationTime,
           hasSpeed: this.networkHasSpeed,
-          speed: this.networkSpeed
+          speed: this.networkSpeed,
+          provider : "network"
         };
       } else if (this.cid > 0 && this.lac > 0) {
         var self = this;
@@ -348,7 +352,8 @@ module.exports = function(Activity) {
                   locationType: "towerinfo",
                   accuracy: rdata.accuracy,
                   locationTime: self.time,
-                  justtime: self.justtime
+                  justtime: self.justtime,
+                  provider : "tower"
                 };
                 Location.create(locrec, options, function(err, rec) {
                   console.log("towerinfo location created error = ", err, locrec, rec.id);

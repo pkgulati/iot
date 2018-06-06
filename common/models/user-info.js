@@ -37,7 +37,8 @@ module.exports = function(UserInfo) {
                   latitude: info.latitude.toString(),
                   longitude: info.longitude.toString(),
                   accuracy: info.accuracy.toString(),
-                  lastLocationTime: info.lastLocationTime.toJSON()
+                  lastLocationTime: info.lastLocationTime.toJSON(),
+                  provider : info.provider || 'x'
                 }
               };
             models.FCM.push(message, ctx.options, function(err, res) {});
