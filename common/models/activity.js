@@ -255,8 +255,8 @@ module.exports = function(Activity) {
            locrec.longitude = 77.5256268;
           }
           else if (this.wifissid == "pkgwifi") {
-            locrec.latitude =  12.905067214742303;
-            locrec.longitude = 77.60017370807244;
+            locrec.latitude =  12.90475;
+            locrec.longitude = 77.60055;
           } else if (this.wifissid == "MasterBlaster") {
             locrec.latitude =  12.8587013;
             locrec.longitude = 77.6128877;
