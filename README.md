@@ -101,11 +101,13 @@ db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:t
 
 {"order":"time DESC", "where":{"name":"funny"}, "fields":{"accuracy":true,"latitude":true, "longitude" :true, "time":true,"justtime":true,"timediff":true,"distance":true, "speed":true, "name":true}}
 
+
 {"order":"time DESC", "limit":100, "where":{"name":"rama"}}
 {"order":"time DESC", "limit":100, "where":{"name":"ajith"}}
 {"order":"time DESC", "limit":100, "where":{"name":"shashi"}}
 {"order":"time DESC", "limit":100, "where":{"name":"praveen"}}
 
+{"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "type": "NetworkJobStart", "name":"praveen"}}
 
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
 

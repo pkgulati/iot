@@ -4,9 +4,13 @@
     "plural" : "UserConfiguration",
     "idInjection": false,
     "properties": {
-        "useOnlyNetwork" : {
+        "useGPS" : {
             "type" : "Boolean",
-            "default" : false
+            "default" : true
+        },
+        "useNetwork" : {
+            "type" : "Boolean",
+            "default" : true
         },
         "trackMode" : {
             "type" : "Boolean",
