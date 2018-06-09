@@ -12,13 +12,13 @@
             "type" : "Boolean",
             "default" : true
         },
-        "trackMode" : {
-            "type" : "Boolean",
-            "default" : false
-        },
-        "intervalInMinutes" : {
+        "peakIntervalInMinutes" : {
             "type" : "Number",
-            "default" : false
+            "default" : 30
+        },
+        "nonPeakIntervalInMinutes" : {
+            "type" : "Number",
+            "default" : 90
         },
         "userId" : {
             "type" : "String",
