@@ -263,6 +263,9 @@ module.exports = function(Activity) {
           } else if (this.wifissid == "Agrawalla29") {
             locrec.latitude =  12.900803955622955;
             locrec.longitude = 77.67353189751772;
+          } else if (this.wifissid == "sharada") {
+            locrec.latitude =  12.9027769;
+            locrec.longitude = 77.6476618;
           }
           if (locrec.latitude) {
             Location.create(locrec, options, function(err, rec) {
