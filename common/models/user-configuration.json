@@ -4,91 +4,23 @@
     "plural" : "UserConfiguration",
     "idInjection": false,
     "properties": {
-        "alarm1" : {
-            "type" : "Number",
-            "default" : 0
-        },
-        "alarm2" : {
-            "type" : "Number",
-            "default" : 0
-        },
-        "alarm3" : {
-            "type" : "Number",
-            "default" : 0
-        },
-        "alarm4" : {
-            "type" : "Number",
-            "default" : 0
-        },
-        "locationMode" : {
-            "type" : "Number",
-            "default" : 50
-        },
-        "useLocationJob" : {
-            "type" : "Boolean",
-            "default" : true
-        },
-        "useJobForFCM" : {
-            "type" : "Boolean",
-            "default" : true
-        },
-        "useLocationServiceAtStart" : {
+        "useOnlyNetwork" : {
             "type" : "Boolean",
             "default" : false
         },
-        "useLocationServiceForFCM" : {
+        "trackMode" : {
             "type" : "Boolean",
             "default" : false
         },
-        "networkJobInterval" : {
+        "intervalInMinutes" : {
             "type" : "Number",
-            "description" : "this is in minutes",
-            "default" : 60
-        },
-        "networkPeriodStart" : {
-            "type" : "Number",
-            "description" : "6AM",
-            "default" : 360
-        },
-        "networkPeriodEnd" : {
-            "type" : "Number",
-            "description" : "9PM",
-            "default" : 1260
-        },
-        "usePeriodicJob" : {
-            "type" : "Boolean",
-            "default" : true
-        },
-        "periodicJobInterval" : {
-            "type" : "Number",
-            "description" : "20 mins",
-            "default" : 1200000   
-        },
-        "useNonPeriodicJob" : {
-            "type" : "Boolean",
-            "default" : false
-        },
-        "liveLocationOnMoving" : {
-            "type" : "Boolean",
-            "default" : false
-        },
-        "locationListenerPeriod" : {
-            "type" : "Number",
-            "description" : "location listener period ",
-            "default" : 60000   
-        },
-        "motionTriggerInterval" : {
-            "type" : "Number"
-        },
-        "isTestUser" : {
-            "type" : "Boolean",
-            "required" : true
-        },
-        "disable" : {
-            "type" : "Boolean",
             "default" : false
         },
         "userId" : {
+            "type" : "String",
+            "description" : ""
+        },
+        "userName" : {
             "type" : "String",
             "description" : ""
         }

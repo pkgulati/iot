@@ -31,5 +31,6 @@ var loc = {
 
 // infosys 12.847417, 77.663111
 // elite 12.905620, 77.600501
+// indirangar 12.967609, 77.641135
 
-console.log('distance is ', distance(12.847417, 77.663111,12.905620, 77.600501));
+console.log('distance is ', distance(12.967609, 77.641135,12.905620, 77.600501));
