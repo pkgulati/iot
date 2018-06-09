@@ -20,6 +20,10 @@
             "type" : "String",
             "description" : ""
         },
+        "homeWifiSsid" : {
+            "type" : "String",
+            "description" : "nonblank123"
+        },
         "userName" : {
             "type" : "String",
             "description" : ""
