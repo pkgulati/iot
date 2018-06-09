@@ -237,7 +237,7 @@ module.exports = function(Activity) {
           });
         }
       }
-    } else if (this.type == "InformationUpdateRequest") {
+    } else if (this.type == "InformationUpdateRequest" || this.type == "FCMResponse") {
         if (this.atHomeWifi) {
           var self = this;
           var Location = loopback.getModel("Location");
