@@ -45,6 +45,9 @@
         "nextJobExecutionTime" : {
             "type" : "Number",
             "default" : 0
+        },
+        "deviceToken" : {
+            "type" : "String"
         }
     }
 }
