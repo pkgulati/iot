@@ -2,6 +2,7 @@ var loopback = require("loopback");
 var async = require("async");
 var moment = require("moment-timezone");
 var restler = require("restler");
+
 module.exports = function(Activity) {
   Activity.synchronize = function(array, options, cb) {
     var results = [];
@@ -95,12 +96,12 @@ module.exports = function(Activity) {
           options,
           function() {}
         );
-	liveLocation = contact.liveLocation || false;
-	var provider = "both";
-	if (contact.contactUserId == "5acb3b15146ca8f84d18a8ae") {
-		provider = "network";
-	}
-	console.log("contact " + contact.name + " " + provider);
+        liveLocation = contact.liveLocation || false;
+        var provider = "both";
+        if (contact.contactUserId == "5acb3b15146ca8f84d18a8ae") {
+          provider = "network";
+        }
+        console.log("contact " + contact.name + " " + provider);
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -109,9 +110,9 @@ module.exports = function(Activity) {
           data: {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
-            liveLocation:liveLocation.toString(), 
-            waitTime:"50000",
-            provider:provider,
+            liveLocation: liveLocation.toString(),
+            waitTime: "50000",
+            provider: provider,
             time: now.getMilliseconds().toString(),
             expiry: expiry.toString()
           }
@@ -152,7 +153,7 @@ module.exports = function(Activity) {
               type: "InformationUpdateRequest",
               activityId: self.id.toString(),
               time: now.getMilliseconds().toString(),
-              liveLocation:contact.liveLocation.toString(), 
+              liveLocation: contact.liveLocation.toString(),
               expiry: expiry.toString()
             }
           };
@@ -177,7 +178,7 @@ module.exports = function(Activity) {
         accuracy: this.accuracy,
         justtime: this.justtime,
         locationTime: this.locationTime,
-        provider : this.provider
+        provider: this.provider
       };
       Location.create(data, options, function(err, rec) {});
     } else if (this.type == "LocationServiceEnd") {
@@ -216,7 +217,9 @@ module.exports = function(Activity) {
                 // handle response
                 console.log("towerinfo ststus code " + response.statusCode);
                 console.log("rdata ", rdata);
-                if (response.statusCode == 200 && rdata && rdata.status == "ok") {
+                if (
+                  response.statusCode == 200 && rdata && rdata.status == "ok"
+                ) {
                   var Location = loopback.getModel("Location");
                   var loc = {
                     latitude: rdata.lat,
@@ -228,7 +231,7 @@ module.exports = function(Activity) {
                     locationTime: self.time,
                     justtime: self.justtime
                   };
-		  console.log('loc data ', loc);
+                  console.log("loc data ", loc);
                   Location.create(loc, options, function(err, rec) {
                     console.log("towerinfo location created error = ", err);
                   });
@@ -237,42 +240,43 @@ module.exports = function(Activity) {
           });
         }
       }
-    } else if (this.type == "InformationUpdateRequest" || this.type == "FCMResponse") {
-        if (this.atHomeWifi) {
-          var self = this;
-          var Location = loopback.getModel("Location");
-          var locrec = {
-            userId: self.userId,
-            source: "wifi",
-            locationType: "wifi",
-            accuracy: 10,
-            locationTime: self.time,
-            justtime: self.justtime,
-            provider : "homewifi"
-          };
-          if (this.wifissid == "Andromeda_5G") {
-           locrec.latitude = 12.9603608;
-           locrec.longitude = 77.5256268;
-          }
-          else if (this.wifissid == "pkgwifi") {
-            locrec.latitude =  12.90475;
-            locrec.longitude = 77.60055;
-          } else if (this.wifissid == "MasterBlaster") {
-            locrec.latitude =  12.8587013;
-            locrec.longitude = 77.6128877;
-          } else if (this.wifissid == "Agrawalla29") {
-            locrec.latitude =  12.900803955622955;
-            locrec.longitude = 77.67353189751772;
-          } else if (this.wifissid == "sharada") {
-            locrec.latitude =  12.9027769;
-            locrec.longitude = 77.6476618;
-          }
-          if (locrec.latitude) {
-            Location.create(locrec, options, function(err, rec) {
-                // console.log("wifi location created error = ", err, locrec, rec.id);
-            });
-          }
+    } else if (
+      this.type == "InformationUpdateRequest" || this.type == "FCMResponse"
+    ) {
+      if (this.atHomeWifi) {
+        var self = this;
+        var Location = loopback.getModel("Location");
+        var locrec = {
+          userId: self.userId,
+          source: "wifi",
+          locationType: "wifi",
+          accuracy: 10,
+          locationTime: self.time,
+          justtime: self.justtime,
+          provider: "homewifi"
+        };
+        if (this.wifissid == "Andromeda_5G") {
+          locrec.latitude = 12.9603608;
+          locrec.longitude = 77.5256268;
+        } else if (this.wifissid == "pkgwifi") {
+          locrec.latitude = 12.90475;
+          locrec.longitude = 77.60055;
+        } else if (this.wifissid == "MasterBlaster") {
+          locrec.latitude = 12.8587013;
+          locrec.longitude = 77.6128877;
+        } else if (this.wifissid == "Agrawalla29") {
+          locrec.latitude = 12.900803955622955;
+          locrec.longitude = 77.67353189751772;
+        } else if (this.wifissid == "sharada") {
+          locrec.latitude = 12.9027769;
+          locrec.longitude = 77.6476618;
         }
+        if (locrec.latitude) {
+          Location.create(locrec, options, function(err, rec) {
+            // console.log("wifi location created error = ", err, locrec, rec.id);
+          });
+        }
+      }
     } else if (this.type == "LocationJobResult") {
       var Location = loopback.getModel("Location");
       var postGPS = false;
@@ -302,7 +306,7 @@ module.exports = function(Activity) {
           locationTime: this.gpsLocationTime,
           hasSpeed: this.gpsHasSpeed,
           speed: this.gpsSpeed,
-          provider : "gps"
+          provider: "gps"
         };
       } else if (postNetwork) {
         data = {
@@ -314,7 +318,7 @@ module.exports = function(Activity) {
           locationTime: this.networkLocationTime,
           hasSpeed: this.networkHasSpeed,
           speed: this.networkSpeed,
-          provider : "network"
+          provider: "network"
         };
       } else if (this.cid > 0 && this.lac > 0) {
         var self = this;
@@ -356,22 +360,27 @@ module.exports = function(Activity) {
                   accuracy: rdata.accuracy,
                   locationTime: self.time,
                   justtime: self.justtime,
-                  provider : "tower"
+                  provider: "tower"
                 };
                 Location.create(locrec, options, function(err, rec) {
-                  console.log("towerinfo location created error = ", err, locrec, rec.id);
+                  console.log(
+                    "towerinfo location created error = ",
+                    err,
+                    locrec,
+                    rec.id
+                  );
                 });
               }
             });
         });
       }
-	    if (data) {
-	      Location.create(data, options, function(err, rec) {
-		if (rec) {
-		  console.log("location created out of LocationJobResult " + rec.id);
-		}
-	      });
-	    }
+      if (data) {
+        Location.create(data, options, function(err, rec) {
+          if (rec) {
+            console.log("location created out of LocationJobResult " + rec.id);
+          }
+        });
+      }
     }
   };
 
