@@ -93,6 +93,8 @@ db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:t
 
 2700000
 
+locationAge
+
 {"fields":{"locationServiceTotalTime":true,"name":true,"id":true}}
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "name": "shashi"}}
@@ -107,7 +109,8 @@ db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:t
 {"order":"time DESC", "limit":100, "where":{"name":"shashi"}}
 {"order":"time DESC", "limit":100, "where":{"name":"praveen"}}
 
-{"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "type": "NetworkJobStart", "name":"praveen"}}
+{"fields":{"locationAge":true,"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"funny"}}
+
 
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
 

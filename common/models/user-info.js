@@ -7,6 +7,8 @@ module.exports = function(UserInfo) {
   };
 
   UserInfo.OnlineContacts = {};
+
+
   UserInfo.observe("after save", function(ctx, next) {
     next();
     if (ctx.instance) {
@@ -48,5 +50,30 @@ module.exports = function(UserInfo) {
     });
   };
 });
+
+UserInfo.prototype.next = function(options, cb) {
+  var response = {
+    finishJob : true,
+    nextJobMinutes : 30,
+    startService : false
+  };
+  return cb(null, response);
+};
+
+UserInfo.remoteMethod("next", {
+    description: "get next action",
+    accessType: "READ",
+    isStatic: false,
+    accepts: [],
+    http: {
+      verb: "GET",
+      path: "/next"
+    },
+    returns: {
+      type: "object",
+      root: true
+    }
+  });
+
 };
 
