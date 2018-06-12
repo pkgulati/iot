@@ -78,17 +78,18 @@ module.exports = function(Activity) {
         ctx.instance.delay = ctx.instance.created - ctx.instance.time;
       }
       // for testing 
-      if (ctx.instance.type == "LocationJobData" && ctx.instance.userId == "5acb3b18146ca8f84d18a8b0") {
+      if (ctx.instance.type == "LocationJobData" && ctx.instance.userId.toString() == "5acb3b18146ca8f84d18a8b0") {
         var nowDate = new Date();
         var hour = nowDate.getUTCHours();
         var mins = nowDate.getUTCMinutes();
         hour = hour + 5;
         mins = mins + 30;
         var now = hour * 60 + mins;
-        if (hour == 4) {
-              console.log("test startService and nextJobMinutes ", hour, now);           
-              ctx.instance.name.startService = true;
+	console.log("pkg...--------" , hour);
+        if (hour == 16) {
+              ctx.instance.startService = true;
               ctx.instance.nextJobMinutes = 23;
+	console.log("pkg...set --------" , ctx.instance.nextJobMinutes);
         }
       }
     }
