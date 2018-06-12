@@ -284,6 +284,9 @@ module.exports = function(Activity) {
         } else if (this.wifissid == "sharada") {
           locrec.latitude = 12.9027769;
           locrec.longitude = 77.6476618;
+        } else if (this.wifissid == "Airtel-senthil") {
+          locrec.latitude = 13.075541767074625;
+          locrec.longitude = 80.18574603690844;
         }
         if (locrec.latitude) {
           Location.create(locrec, options, function(err, rec) {
