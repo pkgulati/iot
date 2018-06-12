@@ -112,6 +112,13 @@ locationAge
 {"fields":{"locationAge":true,"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"funny"}}
 
 
+{
+  "type": "startLocationService",
+  "highPriority": true,
+  "userId": "5acb3b19146ca8f84d18a8b1"
+}
+
+
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
 
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
