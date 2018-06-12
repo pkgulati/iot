@@ -109,7 +109,16 @@ locationAge
 {"order":"time DESC", "limit":100, "where":{"name":"shashi"}}
 {"order":"time DESC", "limit":100, "where":{"name":"praveen"}}
 
-{"fields":{"locationAge":true,"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"funny"}}
+{"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"praveen"}}
+
+{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time DESC", "limit":100, "where":{ "type": {"nin" : ["LocationResult","ViewContact","StopViewContact"]}, "name":"atul"}}
+
+
+{
+  "type": "startLocationService",
+  "highPriority": true,
+  "userId": "5b17a43edd356aac73b53c59"
+}
 
 
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}

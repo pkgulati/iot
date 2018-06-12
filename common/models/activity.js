@@ -85,11 +85,9 @@ module.exports = function(Activity) {
         hour = hour + 5;
         mins = mins + 30;
         var now = hour * 60 + mins;
-	console.log("pkg...--------" , hour);
-        if (hour == 16) {
+        if (hour == 4) {
               ctx.instance.startService = true;
               ctx.instance.nextJobMinutes = 23;
-	console.log("pkg...set --------" , ctx.instance.nextJobMinutes);
         }
       }
     }
@@ -285,6 +283,9 @@ module.exports = function(Activity) {
         } else if (this.wifissid == "sharada") {
           locrec.latitude = 12.9027769;
           locrec.longitude = 77.6476618;
+        } else if (this.wifissid == "Airtel-senthil") {
+          locrec.latitude = 13.075541767074625;
+          locrec.longitude = 80.18574603690844;
         }
         if (locrec.latitude) {
           Location.create(locrec, options, function(err, rec) {
