@@ -86,7 +86,6 @@ module.exports = function(Activity) {
         mins = mins + 30;
         var now = hour * 60 + mins;
         if (hour == 4) {
-              console.log("test startService and nextJobMinutes ", hour, now);           
               ctx.instance.startService = true;
               ctx.instance.nextJobMinutes = 23;
         }

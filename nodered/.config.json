@@ -437,6 +437,26 @@
      "module": "loopback-connector-nodes-for-Node-RED",
      "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/create-data/create-data.js"
     },
+    "custom-method": {
+     "name": "custom-method",
+     "types": [
+      "custom-method"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "loopback-connector-nodes-for-Node-RED",
+     "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method.js"
+    },
+    "custom-method-callback": {
+     "name": "custom-method-callback",
+     "types": [
+      "custom-method-callback"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "loopback-connector-nodes-for-Node-RED",
+     "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
+    },
     "destroy-data": {
      "name": "destroy-data",
      "types": [
@@ -497,40 +517,6 @@
      "local": false,
      "module": "loopback-connector-nodes-for-Node-RED",
      "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/execute-remote-method/execute-remote-method.js"
-    },
-    "custom-method": {
-     "name": "custom-method",
-     "types": [
-      "custom-method"
-     ],
-     "enabled": true,
-     "local": false,
-     "module": "loopback-connector-nodes-for-Node-RED",
-     "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method.js"
-    },
-    "custom-method-callback": {
-     "name": "custom-method-callback",
-     "types": [
-      "custom-method-callback"
-     ],
-     "enabled": true,
-     "local": false,
-     "module": "loopback-connector-nodes-for-Node-RED",
-<<<<<<< HEAD
-     "file": "/home/ubuntu/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
-=======
-     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/custom-method/custom-method-callback.js"
-    },
-    "join-inputs": {
-     "name": "join-inputs",
-     "types": [
-      "join-inputs"
-     ],
-     "enabled": true,
-     "local": false,
-     "module": "loopback-connector-nodes-for-Node-RED",
-     "file": "/Users/kpraveen/repos/iot/node_modules/loopback-connector-nodes-for-Node-RED/join-inputs/join-inputs.js"
->>>>>>> 870349102d29e60121d89b75c1a6d09cbbba88a2
     }
    }
   },
@@ -606,5 +592,5 @@
    }
   }
  },
- "_credentialSecret": "590d07df8dc1dae5066b99b1b87c0a3b8e0ba9da52227cde2f7e362f4af38b00"
+ "_credentialSecret": "caa4177921db326a61c8bcc4ce1eeda99f0ca529fd151a09690fd797b57d6065"
 }
