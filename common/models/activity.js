@@ -287,6 +287,9 @@ module.exports = function(Activity) {
         } else if (this.wifissid == "Airtel-senthil") {
           locrec.latitude = 13.075541767074625;
           locrec.longitude = 80.18574603690844;
+        } else if(this.wifissid == "ganapathy") {
+          locrec.latitude =  12.90724;
+          locrec.longitude = 77.6891483;
         }
         if (locrec.latitude) {
           Location.create(locrec, options, function(err, rec) {

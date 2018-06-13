@@ -111,6 +111,9 @@ locationAge
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"praveen"}}
 
+"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true}
+
+
 {"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time DESC", "limit":100, "where":{ "type": {"nin" : ["LocationResult","ViewContact","StopViewContact"]}, "name":"atul"}}
 
 
