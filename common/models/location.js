@@ -44,14 +44,18 @@ module.exports = function locFn(Location) {
 				var filter = {where : {id : ctx.instance.userId}};
         		UserInfoModel.findOne(filter, ctx.options, function(err, userInfo) {
 						var now = new Date();
+						// GPS has a delay of more than 60 seconds
+						var locationTime = ctx.instance.locationTime;
+						if (now.getTime() - locationTime.getTime() <= 90000) {
+							locationTime = now.getTime();
+						}
 						if (userInfo) {
 							userInfo.updateAttributes({
-								lastLocationTime : ctx.instance.locationTime,
 								lastUpdateTime : now,
 								latitude: ctx.instance.latitude,
 								longitude : ctx.instance.longitude,
 								accuracy : ctx.instance.accuracy,
-								lastLocationTime : ctx.instance.locationTime,
+								lastLocationTime : locationTime,
 								name : ctx.options.ctx.username,
 								provider : ctx.instance.provider 
 							}, ctx.options, function(err, dbresult){
@@ -63,7 +67,7 @@ module.exports = function locFn(Location) {
 						else {
 							UserInfoModel.create({
 								id : ctx.instance.userId,
-								lastLocationTime : ctx.instance.locationTime,
+								lastLocationTime : locationTime,
 								latitude: ctx.instance.latitude,
 								lastUpdateTime : now,
 								longitude : ctx.instance.longitude,

@@ -4,12 +4,39 @@ Application to learn and share IOT stuff
 # Building 30
 12.8496886,77.6659607
 
+
+# Algo
+1. If At Home and night -> Schedule Next Day morning
+2. If At Office then periodic 1 hour till 5PM 
+
+
 # links
 Thread sleep?
 
 https://stackoverflow.com/questions/1520887/how-to-pause-sleep-thread-or-process-in-android
 
 https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2&state=hashArgs%23
+
+
+{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time ASC", "limit":200, "where":{ "time":{"between": [1528915314506,1528965414506]},  "name": "rama"}}
+
+###
+FCM Request -> Job/Service
+Request Received : All Requests ASAP 
+============================================
+PushJob     [just one network location]
+Server decides 
+[L1, L2, L3], [default 1 hour fallbackjob]
+
+================================
+Periodic Job  [parameter]
+[Server decides location job L1, L2, L3]
+
+Alarm Service
+[Job Or Service]
+
+##
+FCM Foreground Service / OR FCM
 
 
 # Android App
@@ -79,6 +106,22 @@ db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:true})
 
 
+
+important fields
+
+{"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"ajith", "type": {"nin" : ["ViewContact","StopViewContact"]}}}
+
+```
+
+### wifijob
+{"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "type": "WifiJob" }}
+
+
+
+
+### query
+
+```
 "fields":{"justtime":true, "speed":true, "averageSpeed":true, "provider":true, "longitude":true, "accuracy":true},
 
 "fields":{"justtime":true, "batteryPercentage":true},
@@ -104,6 +147,7 @@ locationAge
 {"order":"time DESC", "where":{"name":"funny"}, "fields":{"accuracy":true,"latitude":true, "longitude" :true, "time":true,"justtime":true,"timediff":true,"distance":true, "speed":true, "name":true}}
 
 
+
 {"order":"time DESC", "limit":100, "where":{"name":"rama"}}
 {"order":"time DESC", "limit":100, "where":{"name":"ajith"}}
 {"order":"time DESC", "limit":100, "where":{"name":"shashi"}}
@@ -114,14 +158,20 @@ locationAge
 "fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true}
 
 
-{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time DESC", "limit":100, "where":{ "type": {"nin" : ["LocationResult","ViewContact","StopViewContact"]}, "name":"atul"}}
+"time":{"between": [1528915314506,1528935314506]}}
 
+{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time DESC", "limit":100, "where":{ "type": {"nin" : ["LocationResult","ViewContact","StopViewContact"]}, "name":"ajith"}}
+
+{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time DESC", "limit":100, "where":{ "time":{"between": [1528915314506,1528935314506]}}}
 
 {
-  "type": "startLocationService",
+  "type": "InformationUpdateRequest",
   "highPriority": true,
-  "userId": "5b17a43edd356aac73b53c59"
+  "userId": "5af1cf9d67bd14e24e2f8b3d"
 }
+
+
+{"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time ASC", "limit":100, "where":{ "time":{"between": [1528915314506,1528949314506]},  "name": "rama"}}
 
 
 {"order":"time DESC", "limit":100, "where":{"name":"AlarmService"}}
@@ -135,6 +185,7 @@ locationAge
 
 {"fields":{"name":true,"id":true},"where":{"useJobForFCM":true}}
 
+between: [1528915314506,1528935314506]
 
 {"fields":{"jobId":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{ "type": "NetworkJobEnd"}}
 

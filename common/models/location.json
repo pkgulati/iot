@@ -13,7 +13,7 @@
             "type" : "Number"
         },
 		"locationTime" : {
-            "type" : "Date"
+            "type" : "Number"
 		},
 		"accuracy" : {
             "type" : "Number",

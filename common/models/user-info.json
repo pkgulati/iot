@@ -15,7 +15,7 @@
             "type" : "Number"
         },
         "lastLocationTime" : {
-            "type" : "Date"
+            "type" : "Number"
         },
         "accuracy" : {
             "type" : "Number",
