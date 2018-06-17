@@ -46,7 +46,7 @@ module.exports = function locFn(Location) {
 						var now = new Date();
 						// GPS has a delay of more than 60 seconds
 						var locationTime = ctx.instance.locationTime;
-						if (now.getTime() - locationTime.getTime() <= 90000) {
+						if (now.getTime() - locationTime <= 90000) {
 							locationTime = now.getTime();
 						}
 						if (userInfo) {
