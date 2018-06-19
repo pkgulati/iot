@@ -1,9 +1,31 @@
 # iot
 Application to learn and share IOT stuff
 
+## Optimize
+1. Simple Periodic like every 6 or 8 hours
+2. Day time Periodic 
+3. FCM Immediate
+4. 5,15 mins after FCM, if moving, then every 15 mins, till long stationary
+
 # Building 30
 12.8496886,77.6659607
+"type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]} 
 
+
+{"fields":{"jobId":false, "yyyymmdd":false, "speed":false, "accuracy":false, "provider":false,"justtime":true,"type":true,"name":false,"locationType":true}, "order":"time DESC", "limit":100, "where":{"name":"shashi" ,  "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]}  }}
+
+
+{"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"xyz" }}
+
+{"fields":{"jobId":false, "yyyymmdd":false, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true}, "order":"time DESC", "limit":100, "where":{"name":"shashi" ,  "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]}  }}
+
+"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true}
+
+{"order":"time DESC", "limit":100, "where":{"name":"shashi" ,  "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]}  }}
+
+"locationType": {"inq" : ["PeriodicJob", "LocationJob"]}
+
+ , "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "FCMJobStart"]}
 
 # Algo
 1. If At Home and night -> Schedule Next Day morning
@@ -106,12 +128,47 @@ db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 db.UserConfiguration.update({},{$set:{"periodicJobInterval": 2700000}}, {multi:true})
 
 
+{
+  "title": "",
+  "body": "",
+  "type": "scheduleJob",
+  "data": {
+"jobName" : "LocationJob",
+"jobId" : "901",
+"time" : "1529253200000"
+},
+  "highPriority": true,
+  "userId": "5acb3b1a146ca8f84d18a8b2"
+}
+
+
+22:56
+{
+  "title": "",
+  "body": "",
+  "type": "scheduleJob",
+  "data": {
+"jobName" : "LocationJob",
+"jobId" : "905",
+"time" : "1529256400000"
+},
+  "highPriority": true,
+  "userId": "5acb3b1a146ca8f84d18a8b2"
+}
+
+906
+1529258400000 :  11:30
+
+1529260000000 : 23:56
+
 
 important fields
 
-{"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"ajith", "type": {"nin" : ["ViewContact","StopViewContact"]}}}
+{"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":false,"locationType":true},"order":"time DESC", "limit":100, "where":{  "name":"xyz"}
 
 ```
+
+"type": {"non":["FCMJobFinish", "FCMResponse", "FCMJobStart ]}
 
 ### wifijob
 {"fields":{"jobId":true, "yyyymmdd":true, "speed":true, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":true,"locationType":true},"order":"time DESC", "limit":100, "where":{  "type": "WifiJob" }}
@@ -170,6 +227,11 @@ locationAge
   "userId": "5af1cf9d67bd14e24e2f8b3d"
 }
 
+{
+  "type": "startWifiJob",
+  "highPriority": true,
+  "userId": "5acb3b18146ca8f84d18a8b0"
+}
 
 {"fields":{"speed":true,"provider":true,"jobId":true, "justtime":true,"type":true,"name":true, "text":true, "locationType":true},"order":"time ASC", "limit":100, "where":{ "time":{"between": [1528915314506,1528949314506]},  "name": "rama"}}
 

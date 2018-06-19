@@ -68,6 +68,57 @@ module.exports = function(Activity) {
     });
   };
 
+  var useTowerLocation = function(instance, options) {
+    var jsonData = {
+      radio: "gsm",
+      mcc: instance.mcc,
+      mnc: instance.mnc,
+      cells: [
+        {
+          lac: instance.lac,
+          cid: instance.cid
+        }
+      ],
+      address: 1
+    };
+    process.nextTick(function() {
+      jsonData.token = process.env.OPENCELLID_TOKEN || "94fc55c305d60b";
+      var restleroptions = {
+        parsers: restler.parsers.json
+      };
+      restler
+        .postJson(
+          "https://ap1.unwiredlabs.com/v2/process.php",
+          jsonData,
+          restleroptions
+        )
+        .on("complete", function(rdata, response) {
+          // handle response
+          console.log("towerinfo ststus code " + response.statusCode);
+          console.log("rdata ", rdata);
+          if (
+            response.statusCode == 200 && rdata && rdata.status == "ok"
+          ) {
+            var Location = loopback.getModel("Location");
+            var loc = {
+              latitude: rdata.lat,
+              longitude: rdata.lon,
+              userId: instance.userId,
+              source: "towerinfo",
+              locationType: "towerinfo",
+              accuracy: instance.accuracy,
+              locationTime: instance.time,
+              justtime: instance.justtime
+            };
+            console.log("loc data ", loc);
+            Location.create(loc, options, function(err, rec) {
+              console.log("towerinfo location created error = ", err);
+            });
+          }
+        });
+    });
+  };
+
   Activity.observe("before save", function(ctx, next) {
     if (ctx.isNewInstance && ctx.instance) {
       ctx.instance.created = new Date();
@@ -294,6 +345,25 @@ module.exports = function(Activity) {
           Location.create(locrec, options, function(err, rec) {
             // console.log("wifi location created error = ", err, locrec, rec.id);
           });
+        }
+      } else {
+          // actually 2 to 3 mins
+          var self = this;
+          if (self.cid > 0 && this.lac > 0) {
+            setTimeout(function() {
+              var UserInfoModel = loopback.getModelByType("UserInfo");
+              var filter = {where : {id : self.userId}};
+                  UserInfoModel.findOne(filter, options, function(err, userInfo) {
+                    if (userInfo) {
+                        var now = new Date();
+                        var age = now.getTime() - userInfo.lastLocationTime.getTime();
+                        console.log('age of location is ', age);
+                        if (age > 120000) {
+                          useTowerLocation(self, options);
+                        }
+                    }
+                  });
+            }, 60000);
         }
       }
     } else if (this.type == "LocationJobResult") {
