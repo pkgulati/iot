@@ -94,6 +94,7 @@ module.exports = function(Activity) {
         )
         .on("complete", function(rdata, response) {
           // handle response
+          console.log("towerinfo for " , instance.name);
           console.log("towerinfo ststus code " + response.statusCode);
           console.log("rdata ", rdata);
           if (
@@ -106,7 +107,8 @@ module.exports = function(Activity) {
               userId: instance.userId,
               source: "towerinfo",
               locationType: "towerinfo",
-              accuracy: instance.accuracy,
+              provider: "tower",
+              accuracy: rdata.accuracy,
               locationTime: instance.time,
               justtime: instance.justtime
             };
@@ -357,13 +359,13 @@ module.exports = function(Activity) {
                     if (userInfo) {
                         var now = new Date();
                         var age = now.getTime() - userInfo.lastLocationTime.getTime();
-                        console.log('age of location is ', age);
-                        if (age > 120000) {
+                        console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime);
+                        if (age > 240000) {
                           useTowerLocation(self, options);
                         }
                     }
                   });
-            }, 60000);
+            }, 120000);
         }
       }
     } else if (this.type == "LocationJobResult") {
