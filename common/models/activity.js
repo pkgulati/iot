@@ -359,7 +359,7 @@ module.exports = function(Activity) {
                     if (userInfo) {
                         var now = new Date();
                         var age = now.getTime() - userInfo.lastLocationTime.getTime();
-                        console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime);
+                        console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
                         if (age > 240000) {
                           useTowerLocation(self, options);
                         }
