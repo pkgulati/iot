@@ -326,5 +326,13 @@
     "UserConfiguration" : {
         "public": true,
         "dataSource": "db"
+    },
+    "Tower" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "AccessPoint" : {
+        "public": true,
+        "dataSource": "db"
     }
 }
