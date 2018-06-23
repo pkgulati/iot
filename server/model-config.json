@@ -91,11 +91,11 @@
     },
     "BaseRoleMapping": {
         "dataSource": "db",
-        "public": false
+        "public": true
     },
     "BaseRole": {
         "dataSource": "db",
-        "public": false
+        "public": true
     },
     "BaseEntity": {
         "dataSource": "db",
