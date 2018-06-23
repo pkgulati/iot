@@ -25,11 +25,6 @@
             "type": "hasMany",
             "model": "Contact",
             "foreignKey": "ownerUserId"
-        },
-        "configuration": {
-            "type": "hasOne",
-            "model": "UserConfiguration",
-            "foreignKey": "userId"
         }
     },
     "acls": [
@@ -42,44 +37,37 @@
         },
         {
             "principalType": "ROLE",
-            "principalId": "$authenticated",
-            "permission": "DENY",
-            "property": "*",
-            "accessType": "*"
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "READ",
+            "property": "data"
         },
         {
             "principalType": "ROLE",
-            "principalId": "$unauthenticated",
-            "permission": "DENY",
-            "property": "*",
-            "accessType": "*"
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "READ",
+            "property": "__get__contacts"
         },
         {
             "principalType": "ROLE",
-            "principalId": "$everyone",
-            "permission": "DENY",
-            "property": "create",
-            "accessType": "*"
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "WRITE",
+            "property": "__create__contacts"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "WRITE",
+            "property": "__delete__contacts"
         },
         {
             "principalType": "ROLE",
             "principalId": "admin",
             "permission": "ALLOW",
             "property": "*",
-            "accessType": "*"
-        },
-        {
-            "principalType": "ROLE",
-            "principalId": "$owner",
-            "permission": "ALLOW",
-            "property": "data",
-            "accessType": "READ"
-        },
-        {
-            "principalType": "ROLE",
-            "principalId": "$owner",
-            "permission": "ALLOW",
-            "property": "__get__configuration",
             "accessType": "READ"
         }
     ]

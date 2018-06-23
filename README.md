@@ -11,7 +11,7 @@ Application to learn and share IOT stuff
 12.8496886,77.6659607
 "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]} 
 
-{"fields":{"jobId":false, "yyyymmdd":false, "speed":false, "accuracy":false, "provider":false,"justtime":true,"type":true,"name":false,"locationType":true}, "order":"time DESC", "limit":100, "where":{"name":"praveen" }}
+{"fields":{"jobId":true, "yyyymmdd":false, "speed":false, "accuracy":false, "provider":false,"justtime":true,"type":true,"name":false,"locationType":true}, "order":"time DESC", "limit":100, "where":{"name":"praveen" }}
 
 
 {"fields":{"jobId":false, "yyyymmdd":false, "speed":false, "accuracy":false, "provider":false,"justtime":true,"type":true,"name":false,"locationType":true}, "order":"time DESC", "limit":100, "where":{"name":"shashi" ,  "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]}  }}

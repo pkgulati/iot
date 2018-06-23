@@ -33,11 +33,19 @@
             "description" : ""
         }
     },
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "AppUser",
+            "primaryKey" : "id",
+            "foreignKey" : "userId"
+        }
+    },
     "acls": [
         {
             "principalType": "ROLE",
             "principalId": "$everyone",
-            "permission": "ALL",
+            "permission": "DENY",
             "property": "*",
             "accessType": "READ"
         },
@@ -50,14 +58,7 @@
         },
         {
             "principalType": "ROLE",
-            "principalId": "$teamadmin",
-            "permission": "ALLOW",
-            "property": "*",
-            "accessType": "*"          
-        },
-        {
-            "principalType": "ROLE",
-            "principalId": "teamadmin",
+            "principalId": "admin",
             "permission": "ALLOW",
             "property": "*",
             "accessType": "*"          
