@@ -57,6 +57,14 @@
             "accessType": "*"          
         },
         {
+            "principalType": "USER",
+            "principalId": "$authenticated",
+            "permission": "ALLOW",
+            "property": "findById",
+            "accessType": "*",
+            "description" : "Temporary till we use relation or owner or datacl"          
+        },
+        {
             "principalType": "ROLE",
             "principalId": "admin",
             "permission": "ALLOW",
