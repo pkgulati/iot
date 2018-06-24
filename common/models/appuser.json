@@ -70,6 +70,20 @@
         },
         {
             "principalType": "ROLE",
+            "principalId": "admin",
+            "permission": "ALLOW",
+            "property": "create",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "admin",
+            "permission": "ALLOW",
+            "property": "update",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
             "principalId": "$owner",
             "permission": "ALLOW",
             "property": "data",
