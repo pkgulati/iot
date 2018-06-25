@@ -157,6 +157,9 @@ module.exports = function(Activity) {
         if (!contact) {
           return;
         }
+        if (contact.viewOnly) {
+          return;
+        }
         contact.updateAttributes(
           { lastViewedAt: now.getTime() },
           options,
