@@ -88,7 +88,6 @@ module.exports = function(UserModel) {
   });
 
   UserModel.prototype.data = function(options, cb) {
-    console.log("fetching user data for  ", this.username);
     var userId = this.id;
     async.parallel(
       {
