@@ -360,14 +360,31 @@ module.exports = function(Activity) {
                         var now = new Date();
                         var age = now.getTime() - userInfo.lastLocationTime.getTime();
                         console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
-                        if (age > 240000) {
+                        if (age > 300000) {
                           useTowerLocation(self, options);
                         }
                     }
                   });
-            }, 120000);
+            }, 240000);
         }
       }
+    } else if (this.type == "LocationUnavilable") {
+      var self = this;
+      if (self.cid > 0 && this.lac > 0) {
+         console.log('use tower info as LocationUnavilable ' + self.name);
+          var UserInfoModel = loopback.getModelByType("UserInfo");
+          var filter = {where : {id : self.userId}};
+              UserInfoModel.findOne(filter, options, function(err, userInfo) {
+                if (userInfo) {
+                    var now = new Date();
+                    var age = now.getTime() - userInfo.lastLocationTime.getTime();
+                    console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
+                    if (age > 300000) {
+                      useTowerLocation(self, options);
+                    }
+                }
+              });
+            }
     } else if (this.type == "LocationJobResult") {
       var Location = loopback.getModel("Location");
       var postGPS = false;
