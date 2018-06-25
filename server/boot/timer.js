@@ -67,5 +67,5 @@ function calcDistance(lat1, lon1, lat2, lon2) {
 	  }
         });
   };
-  setInterval(intervalFunc, 600000);
+  //setInterval(intervalFunc, 600000);
 };

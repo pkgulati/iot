@@ -98,13 +98,12 @@ module.exports = function(FCM) {
           username : ctx.instance.userName
         }
       };
-      AppUser.findOne(filter, options, function(err, user) {
-        console.log('fcm before save ', filter.where, user);
+      AppUser.findOne(filter, ctx.options, function(err, user) {
         if (!user) {
           return next();
         }
         ctx.instance.userId = user.id;
-        console.log('user id ', ctx.instance.userId);
+	next();
       });
     } else {
       next();    
