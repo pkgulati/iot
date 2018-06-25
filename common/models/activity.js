@@ -130,19 +130,6 @@ module.exports = function(Activity) {
       if (ctx.instance.time) {
         ctx.instance.delay = ctx.instance.created - ctx.instance.time;
       }
-      // for testing 
-      if (ctx.instance.type == "LocationJobData" && ctx.instance.userId.toString() == "5acb3b18146ca8f84d18a8b0") {
-        var nowDate = new Date();
-        var hour = nowDate.getUTCHours();
-        var mins = nowDate.getUTCMinutes();
-        hour = hour + 5;
-        mins = mins + 30;
-        var now = hour * 60 + mins;
-        if (hour == 4) {
-              ctx.instance.startService = true;
-              ctx.instance.nextJobMinutes = 23;
-        }
-      }
     }
     next();
   });
@@ -158,6 +145,7 @@ module.exports = function(Activity) {
           return;
         }
         if (contact.viewOnly) {
+	  console.log('view only ', contact.name);
           return;
         }
         contact.updateAttributes(
@@ -165,12 +153,6 @@ module.exports = function(Activity) {
           options,
           function() {}
         );
-        liveLocation = contact.liveLocation || false;
-        var provider = "both";
-        if (contact.contactUserId == "5acb3b15146ca8f84d18a8ae") {
-          provider = "network";
-        }
-        console.log("contact " + contact.name + " " + provider);
         var expiry = now.getMilliseconds() + 2 * 60 * 1000;
         var message = {
           android: {
@@ -179,20 +161,15 @@ module.exports = function(Activity) {
           data: {
             type: "InformationUpdateRequest",
             activityId: self.id.toString(),
-            liveLocation: liveLocation.toString(),
-            waitTime: "50000",
-            provider: provider,
             time: now.getMilliseconds().toString(),
             expiry: expiry.toString()
           }
         };
         console.log(
           "view contact ",
-          contact.contactUserId,
-          contact.ownerUserId,
-          options.ctx.userId,
+      	  self.justtime,
           contact.name,
-          "by ",
+          "by",
           options.ctx.username
         );
         sendMessageToUser(message, options, contact.contactUserId, function(
