@@ -7,7 +7,7 @@
             "type" : "String"
         },
         "bssid" : {
-            "type" : "Number"
+            "type" : "String"
         },
  	    "latitude" : {
             "type" : "Number"

@@ -324,33 +324,20 @@ module.exports = function(Activity) {
           justtime: self.justtime,
           provider: "homewifi"
         };
-        if (this.wifissid == "Andromeda_5G") {
-          locrec.latitude = 12.9603608;
-          locrec.longitude = 77.5256268;
-        } else if (this.wifissid == "pkgwifi") {
-          locrec.latitude = 12.90475;
-          locrec.longitude = 77.60055;
-        } else if (this.wifissid == "MasterBlaster") {
-          locrec.latitude = 12.8587013;
-          locrec.longitude = 77.6128877;
-        } else if (this.wifissid == "Agrawalla29") {
-          locrec.latitude = 12.900803955622955;
-          locrec.longitude = 77.67353189751772;
-        } else if (this.wifissid == "sharada") {
-          locrec.latitude = 12.9027769;
-          locrec.longitude = 77.6476618;
-        } else if (this.wifissid == "Airtel-senthil") {
-          locrec.latitude = 13.075541767074625;
-          locrec.longitude = 80.18574603690844;
-        } else if(this.wifissid == "ganapathy") {
-          locrec.latitude =  12.90724;
-          locrec.longitude = 77.6891483;
-        }
-        if (locrec.latitude) {
-          Location.create(locrec, options, function(err, rec) {
-            // console.log("wifi location created error = ", err, locrec, rec.id);
-          });
-        }
+        var AccessPoint = loopback.getModelByType('AccessPoint');
+        // assume for now wifi ssid does not clash
+        // lare switch to mac address
+        AccessPoint.findOne({where:{ssid:self.wifissid}}, options, function(err, dbrec){
+          if (dbrec) {
+              locrec.latitude = dbrec.latitude;
+              locrec.longitude = dbrec.longitude;
+              Location.create(locrec, options, function(err, rec) {
+                  // console.log("wifi location created error = ", err, locrec, rec.id);
+              });
+          }
+        });
+       
+       
       } else {
           // actually 2 to 3 mins
           var self = this;
