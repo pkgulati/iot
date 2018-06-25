@@ -90,6 +90,26 @@ module.exports = function(FCM) {
       }
     });
   };
+  FCM.observe("before save", function(ctx, next) {
+    if (ctx.isNewInstance && ctx.instance && ctx.instance.userName) {
+      var AppUser = loopback.getModelByType("AppUser");
+      var filter = {
+        where : {
+          username : ctx.instance.userName
+        }
+      };
+      AppUser.findOne(filter, options, function(err, user) {
+        console.log('fcm before save ', filter.where, user);
+        if (!user) {
+          return next();
+        }
+        ctx.instance.userId = user.id;
+        console.log('user id ', ctx.instance.userId);
+      });
+    } else {
+      next();    
+    }   
+  });
 
   FCM.observe("after save", function(ctx, next) {
     if (ctx.instance && ctx.isNewInstance) {
