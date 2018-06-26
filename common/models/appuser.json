@@ -3,8 +3,12 @@
     "plural": "Users",
     "base": "BaseUser",
     "idInjection": false,
+    "ttl" : 31536000,
+    "maxTTL" : 32536000,
     "options": {
-        "validateUpsert": true
+        "validateUpsert": true,
+        "ttl" : 33536000,
+        "maxTTL" : 34536000
     },
     "properties": {
         "phone": {
