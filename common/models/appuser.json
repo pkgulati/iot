@@ -16,9 +16,9 @@
         "deviceToken" : {
             "type" : "String"
         },
-	"online" : {
-		"type" : "Boolean"
-	}
+	    "online" : {
+    		"type" : "Boolean"
+	    }
     },
     "relations": {
         "contacts": {
@@ -29,6 +29,11 @@
         "configuration": {
             "type": "hasOne",
             "model": "UserConfiguration",
+            "foreignKey": "userId"
+        },
+        "jobs": {
+            "type": "hasMany",
+            "model": "Job",
             "foreignKey": "userId"
         }
     },
@@ -95,6 +100,20 @@
             "permission": "ALLOW",
             "property": "__get__configuration",
             "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "READ",
+            "property": "__get__jobs"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "accessType": "WRITE",
+            "property": "__create__jobs"
         }
     ]
 }

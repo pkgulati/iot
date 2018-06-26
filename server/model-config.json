@@ -334,5 +334,9 @@
     "AccessPoint" : {
         "public": true,
         "dataSource": "db"
+    },
+    "Job" : {
+        "public": true,
+        "dataSource": "db"
     }
 }
