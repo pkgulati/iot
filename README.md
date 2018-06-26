@@ -11,6 +11,8 @@ Application to learn and share IOT stuff
 12.8496886,77.6659607
 "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]} 
 
+{"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"name":"rama"}}
+
 {"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"jobId": 23,"name":"locadmin", "locationType": "IdleJob"}}
 
 
