@@ -35,6 +35,16 @@
             "model": "UserConfiguration",
             "foreignKey": "userId"
         },
+        "swipeConfiguration": {
+            "type": "hasOne",
+            "model": "SwipeConfiguration",
+            "foreignKey": "userId"
+        },
+        "swipeData": {
+            "type": "hasMany",
+            "model": "SwipeData",
+            "foreignKey": "userId"
+        },
         "jobs": {
             "type": "hasMany",
             "model": "Job",
@@ -118,6 +128,20 @@
             "permission": "ALLOW",
             "accessType": "WRITE",
             "property": "__create__jobs"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "property": "__get__swipeConfiguration",
+            "accessType": "READ"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "property": "__get__swipeData",
+            "accessType": "READ"
         }
     ]
 }

@@ -1,0 +1,36 @@
+{
+	"name": "SwipeData",
+	"base": "PersistedModel",
+	"description": "Stores swipe data",
+	"properties": {
+		"yyyymmdd" : {
+            "type" : "String"
+        },
+        "swipeInTime" : {
+            "type" : "Number"
+        },
+        "swipeOutTime" : {
+            "type" : "Number"
+        },
+        "reachedTime" : {
+            "type" : "Number"
+        },
+        "leavingTime" : {
+            "type" : "Number"
+        },
+        "userId" : {
+            "type" : "String"
+        },
+        "maxServiceDuration" : {
+            "type" : "Number"
+        }
+    },
+    "relations": {
+        "user": {
+            "type": "belongsTo",
+            "model": "AppUser",
+            "primaryKey" : "id",
+            "foreignKey" : "userId"
+        }
+    }
+}

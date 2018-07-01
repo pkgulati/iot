@@ -338,5 +338,13 @@
     "Job" : {
         "public": true,
         "dataSource": "db"
+    },
+    "SwipeConfiguration" : {
+        "public": true,
+        "dataSource": "db"
+    },
+    "SwipeData" : {
+        "public": true,
+        "dataSource": "db"
     }
 }
