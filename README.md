@@ -11,9 +11,20 @@ Application to learn and share IOT stuff
 12.8496886,77.6659607
 "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]} 
 
-{"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"name":"rama"}}
+// using 
+{"fields":{"name":true, "justtime":true},"order":"time DESC", "limit":100,  "where":{"name": {"nin":["locadmin","praveen", "ajith"]} ,"type": "MainActivity"}}
 
-{"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"jobId": 23,"name":"locadmin", "locationType": "IdleJob"}}
+{"order":"time DESC", "limit":100}
+
+{"order":"smsTime DESC", "limit":100}
+
+{"order":"time DESC", "limit":100, "where":{"type":"SwipeLocationResult}}
+
+{"fields":{"jobs":true,"type":true, "name":false, "jobName":true,"latitude":false, "provider":false, "accuracy":false, "longitude":false, "jobId":true, "time":false, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"name":"xyz"}}
+
+{"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"name":"xyz"}}
+
+{"fields":{"jobs":true,"type":true, "name":true, "jobName":true,"latitude":true, "provider":true, "accuracy":true, "longitude":true, "jobId":true, "time":true, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"jobId": 23,"name":"xyz", "locationType": "IdleJob"}}
 
 
 {"fields":{"jobs":true,"baseLocationDistance":false, "baseLocationAccuracy" : false, "jobId":true, "yyyymmdd":false, "speed":false, "accuracy":true, "provider":true,"justtime":true,"type":true,"name":true,"locationType":true}, "order":"time DESC", "limit":100, "where":{"userId":"5b1f90a7f26a18280968a567" }}
@@ -129,11 +140,13 @@ adb shell am get-inactive com.example.kpraveen.myteam
 ```
 
 ```
-db.AuthSession.update({},{$set:{'ttl':67737600}},{multi:true})
+db.AuthSession.update({},{$set:{'ttl':167737600}},{multi:true})
 
 db.Contact.update({},{$set:{"autofcm":false}}, {multi:true})
 
 db.Contact.update({"ownerUserId":"5acb3b12146ca8f84d18a8ac"},{$set:{"autofcm":true}}, {multi:true})
+
+m06L7Mr2Mj0tgHV3RaIVae31xAmB0bUCtpQutDBcKFlBxBJVLQvJAnvffDbiUwpK
 
 db.UserConfiguration.update({},{$set:{"isTestUser":false}}, {multi:true})
 
