@@ -12,6 +12,10 @@ module.exports = function(DeviceRegistration) {
 
   DeviceRegistration.observe("after save", function(ctx, next) {
     if (ctx.isNewInstance) {
+	if (ctx.instance.appName) {
+        console.log('ctx.instance.appName ', ctx.instance.appName);
+        return next();
+      }
       var UserModel = loopback.getModelByType("User");
       UserModel.findById(ctx.instance.userId, ctx.options, function(
         err,
