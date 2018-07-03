@@ -27,6 +27,20 @@
             "accessType": "WRITE"
         },
         {
+            "principalType": "ROLE",
+            "principalId": "$owner",
+            "permission": "ALLOW",
+            "property": "update",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW",
+            "property": "update",
+            "accessType": "WRITE"
+        },
+        {
             "principalType": "USER",
             "principalId": "5acb3b18146ca8f84d18a8b0",
             "permission": "ALLOW",

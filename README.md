@@ -1,6 +1,12 @@
 # iot
 Application to learn and share IOT stuff
 
+## 
+Days  X1 X2 
+Days  X3 X4
+
+
+
 ## Optimize
 1. Simple Periodic like every 6 or 8 hours
 2. Day time Periodic 
@@ -15,6 +21,8 @@ Application to learn and share IOT stuff
 {"fields":{"name":true, "justtime":true},"order":"time DESC", "limit":100,  "where":{"name": {"nin":["locadmin","praveen", "ajith"]} ,"type": "MainActivity"}}
 
 {"order":"time DESC", "limit":100}
+
+1530596700000
 
 {"order":"smsTime DESC", "limit":100}
 
