@@ -30,14 +30,14 @@
             "principalType": "ROLE",
             "principalId": "$owner",
             "permission": "ALLOW",
-            "property": "update",
+            "property": "upsert",
             "accessType": "WRITE"
         },
         {
             "principalType": "ROLE",
             "principalId": "$authenticated",
             "permission": "ALLOW",
-            "property": "update",
+            "property": "upsert",
             "accessType": "WRITE"
         },
         {

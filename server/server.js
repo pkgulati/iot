@@ -4,6 +4,7 @@ var loopback = oeApp.loopback;
 var app = loopback();
 var options = oeApp.options;
 var os = require('os');
+var helmet = require('helmet');
 
 var hostName = os.hostname().toString();
 
@@ -16,6 +17,20 @@ if (hostName.startsWith('BLR')) {
 // apphome is used by oe-cloud to know application server directory
 // as of now it used for picking providers.json
 app.locals.apphome = __dirname;
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'", "iot.kpraveen.in", "evsocial.evoncloud.com"]
+  }
+}));
+
+var sixtyDaysInSeconds = 5184000
+app.use(helmet.hsts({
+  maxAge: sixtyDaysInSeconds,
+includeSubdomains: true
+}));
+
+app.use(helmet.noSniff());
 
 options.bootDirs.push(path.join(__dirname, 'boot'));
 options.clientAppRootDir = __dirname;

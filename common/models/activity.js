@@ -224,6 +224,43 @@ module.exports = function(Activity) {
         provider: this.provider
       };
       Location.create(data, options, function(err, rec) {});
+    } else if (this.type == "ReachedOffice") {
+	var self = this;
+	console.log('instance ', self);
+        var SwipeData = loopback.getModel("SwipeData");
+	var d1 = moment(self.time).tz('Asia/Calcutta');
+	var yyyymmdd = d1.format('YYYYMMDD');
+	var filter = {where:{yyymmdd:yyyymmdd, userId:self.userId}};
+        SwipeData.findOne(filter, options, function(err, dbrec){
+		if (err) {
+			return ;
+		}
+		console.log('filter ', filter);
+		if (dbrec) {
+			console.log('swipe data exists');
+		    if (!dbrec.reachedOfficeTime || dbrec.reachedOfficeTime <= 0) {
+			dbrec.updateAttributes( { reachedOfficeTime: self.time, reachedOffice:true}, options, function() {
+				if (err) console.log('swipeData update error ', err);
+			});
+		     } 
+		} else {
+			console.log('no swipe data exists');
+		    var data =  {
+			reachedOfficeTime : self.time,
+			reachedOffice : true,
+			yyyymmdd : yyyymmdd,
+			userId : self.userId,
+			time:self.time,
+			name : self.name,
+			statusRemarks : "Office Reached Activity"
+		    }
+		    SwipeData.create(data, options, function(err, newrec) {
+				if (err) console.log('swipe data insert error', err);
+			if (newrec) console.log(newrec);
+			
+		    });
+		}
+      });
     } else if (this.type == "LocationServiceEnd") {
       if (
         this.data &&
