@@ -238,8 +238,11 @@ module.exports = function(Activity) {
 		console.log('filter ', filter, list.length);
 		if (list && list.length > 0) {
 			var dbrec = list[0];
-			console.log('swipe data exists');
-		    if (!dbrec.reachedOfficeTime || dbrec.reachedOfficeTime <= 0) {
+			console.log('swipe data exists ', dbrec.reachedOfficeTime);
+		    if (dbrec.reachedOfficeTime && dbrec.reachedOfficeTime > 0) {
+			console.log('already reached do not update');
+		    } else {	
+			console.log('swipe data update reach time');
 			dbrec.updateAttributes( { reachedOfficeTime: self.time, reachedOffice:true}, options, function() {
 				if (err) console.log('swipeData update error ', err);
 			});
