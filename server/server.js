@@ -31,7 +31,6 @@ app.get('/apk', function (req, res) {
   res.sendFile('app-debug.apk', { root: path.join(__dirname, '../../apk/') });
 });
 
-
 app.get('/swipeapk', function (req, res) {
   res.sendFile('swipeapk.apk', { root: path.join(__dirname, '../../apk/') });
 });
@@ -48,9 +47,7 @@ app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
 
-/* 
 app.use(function (req, res, next) {   
 console.log('Time:', Date.now() , 'URL ', req.url);
  next();
 }); 
-*/

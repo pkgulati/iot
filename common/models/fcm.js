@@ -63,6 +63,9 @@ module.exports = function(FCM) {
               );
             },
             function(error) {
+		if (error) {
+			console.log('fcm error ' , error);
+		}
               if (
                 error.code == "messaging/registration-token-not-registered" &&
                 messageForUserId
@@ -81,9 +84,15 @@ module.exports = function(FCM) {
             cb(error, null);
           });
       }
+      else {
+	console.log('no device token in fcm');
+	}
   };
   FCM.observe("before save", function(ctx, next) {
-    if (ctx.isNewInstance && ctx.instance && ctx.instance.userName) {
+    if (ctx.isNewInstance && ctx.instance) {
+	var now = new Date();
+	ctx.instance.time = now.getTime();
+	if (ctx.instance.userName) {
       var AppUser = loopback.getModelByType("AppUser");
       var filter = {
         where : {
@@ -96,10 +105,15 @@ module.exports = function(FCM) {
         }
         ctx.instance.userId = user.id;
         if (!ctx.instance.deviceToken && user.deviceToken) {
+		console.log('update device token from user ', user.deviceToken);
           ctx.instance.deviceToken = user.deviceToken;
         }
 	       next();
       });
+      }
+      else {
+      next();    
+	}
     } else {
       next();    
     }   

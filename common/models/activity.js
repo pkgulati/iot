@@ -95,7 +95,6 @@ module.exports = function(Activity) {
         .on("complete", function(rdata, response) {
           // handle response
           console.log("towerinfo for " , instance.name);
-          console.log("rdata ", rdata);
           if (
             response && response.statusCode && response.statusCode == 200 && rdata && rdata.status == "ok"
           ) {
@@ -111,7 +110,6 @@ module.exports = function(Activity) {
               locationTime: instance.time,
               justtime: instance.justtime
             };
-            console.log("loc data ", loc);
             Location.create(loc, options, function(err, rec) {
               console.log("towerinfo location created error = ", err);
             });
@@ -225,7 +223,6 @@ module.exports = function(Activity) {
         locationTime: this.locationTime,
         provider: this.provider
       };
-		console.log('instance ' , data);
       Location.create(data, options, function(err, rec) {});
     } else if (this.type == "LocationServiceEnd") {
       if (
