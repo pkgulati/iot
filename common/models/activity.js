@@ -94,9 +94,13 @@ module.exports = function(Activity) {
         )
         .on("complete", function(rdata, response) {
           // handle response
-          console.log("towerinfo for " , instance.name);
+          console.log("towerinfo for ", instance.name);
           if (
-            response && response.statusCode && response.statusCode == 200 && rdata && rdata.status == "ok"
+            response &&
+            response.statusCode &&
+            response.statusCode == 200 &&
+            rdata &&
+            rdata.status == "ok"
           ) {
             var Location = loopback.getModel("Location");
             var loc = {
@@ -142,7 +146,7 @@ module.exports = function(Activity) {
           return;
         }
         if (contact.viewOnly) {
-	  console.log('view only ', contact.name);
+          console.log("view only ", contact.name);
           return;
         }
         contact.updateAttributes(
@@ -164,7 +168,7 @@ module.exports = function(Activity) {
         };
         console.log(
           "view contact ",
-      	  self.justtime,
+          self.justtime,
           contact.name,
           "by",
           options.ctx.username
@@ -212,6 +216,18 @@ module.exports = function(Activity) {
           ) {});
         });
       });
+    } else if (this.type == "MySwipe") {
+      var SwipeConfiguration = loopback.getModel("SwipeConfiguration");
+      var self = this;
+      SwipeConfiguration.findById(self.userId, options, function(err, config){
+          if (config) {
+            config.updateAttributes({"deviceToken":self.deviceToken}, options, function(err, updrec){
+                if (err) {
+                  console.log('swipe deviceToken update error', err);
+                }
+            });
+          }
+      });
     } else if (this.type == "LocationResult") {
       var Location = loopback.getModel("Location");
       var data = {
@@ -225,45 +241,44 @@ module.exports = function(Activity) {
       };
       Location.create(data, options, function(err, rec) {});
     } else if (this.type == "ReachedOffice") {
-	var self = this;
-	console.log('instance ', self);
-        var SwipeData = loopback.getModel("SwipeData");
-	var d1 = moment(self.time).tz('Asia/Calcutta');
-	var yyyymmdd = d1.format('YYYYMMDD');
-	var filter = {where:{yyyymmdd:yyyymmdd, userId:self.userId}};
-        SwipeData.find(filter, options, function(err, list){
-		if (err) {
-			return ;
-		}
-		console.log('filter ', filter, list.length);
-		if (list && list.length > 0) {
-			var dbrec = list[0];
-			console.log('swipe data exists ', dbrec.reachedOfficeTime);
-		    if (dbrec.reachedOfficeTime && dbrec.reachedOfficeTime > 0) {
-			console.log('already reached do not update');
-		    } else {	
-			console.log('swipe data update reach time');
-			dbrec.updateAttributes( { reachedOfficeTime: self.time, reachedOffice:true}, options, function() {
-				if (err) console.log('swipeData update error ', err);
-			});
-		     } 
-		} else {
-			console.log('no swipe data exists');
-		    var data =  {
-			reachedOfficeTime : self.time,
-			reachedOffice : true,
-			yyyymmdd : yyyymmdd,
-			userId : self.userId,
-			time:self.time,
-			name : self.name,
-			statusRemarks : "Office Reached Activity"
-		    }
-		    SwipeData.create(data, options, function(err, newrec) {
-				if (err) console.log('swipe data insert error', err);
-			if (newrec) console.log(newrec);
-			
-		    });
-		}
+      var self = this;
+      var SwipeData = loopback.getModel("SwipeData");
+      var d1 = moment(self.time).tz("Asia/Calcutta");
+      var yyyymmdd = d1.format("YYYYMMDD");
+      var filter = { where: { yyyymmdd: yyyymmdd, userId: self.userId } };
+      SwipeData.find(filter, options, function(err, list) {
+        if (err) {
+          return;
+        }
+        if (list && list.length > 0) {
+          var dbrec = list[0];
+          if (dbrec.reachedOfficeTime && dbrec.reachedOfficeTime > 0) {
+            console.log("already reached do not update");
+          } else {
+            console.log("swipe data update reach time");
+            dbrec.updateAttributes(
+              { reachedOfficeTime: self.time, reachedOffice: true },
+              options,
+              function() {
+                if (err) console.log("swipeData update error ", err);
+              }
+            );
+          }
+        } else {
+          var data = {
+            reachedOfficeTime: self.time,
+            reachedOffice: true,
+            yyyymmdd: yyyymmdd,
+            userId: self.userId,
+            time: self.time,
+            name: self.name,
+            statusRemarks: "Have a good day"
+          };
+          SwipeData.create(data, options, function(err, newrec) {
+            if (err) console.log("swipe data insert error", err);
+            if (newrec) console.log(newrec);
+          });
+        }
       });
     } else if (this.type == "LocationServiceEnd") {
       if (
@@ -339,57 +354,71 @@ module.exports = function(Activity) {
           justtime: self.justtime,
           provider: "homewifi"
         };
-        var AccessPoint = loopback.getModelByType('AccessPoint');
+        var AccessPoint = loopback.getModelByType("AccessPoint");
         // assume for now wifi ssid does not clash
         // lare switch to mac address
-        AccessPoint.findOne({where:{ssid:self.wifissid}}, options, function(err, dbrec){
-          if (dbrec) {
+        AccessPoint.findOne(
+          { where: { ssid: self.wifissid } },
+          options,
+          function(err, dbrec) {
+            if (dbrec) {
               locrec.latitude = dbrec.latitude;
               locrec.longitude = dbrec.longitude;
               Location.create(locrec, options, function(err, rec) {
-                  // console.log("wifi location created error = ", err, locrec, rec.id);
+                // console.log("wifi location created error = ", err, locrec, rec.id);
               });
+            }
           }
-        });
-       
-       
+        );
       } else {
-          // actually 2 to 3 mins
-          var self = this;
-          if (self.cid > 0 && this.lac > 0) {
-            setTimeout(function() {
-              var UserInfoModel = loopback.getModelByType("UserInfo");
-              var filter = {where : {id : self.userId}};
-                  UserInfoModel.findOne(filter, options, function(err, userInfo) {
-                    if (userInfo) {
-                        var now = new Date();
-                        var age = now.getTime() - userInfo.lastLocationTime.getTime();
-                        console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
-                        if (age > 300000) {
-                          //useTowerLocation(self, options);
-                        }
-                    }
-                  });
-            }, 240000);
+        // actually 2 to 3 mins
+        var self = this;
+        if (self.cid > 0 && this.lac > 0) {
+          setTimeout(function() {
+            var UserInfoModel = loopback.getModelByType("UserInfo");
+            var filter = { where: { id: self.userId } };
+            UserInfoModel.findOne(filter, options, function(err, userInfo) {
+              if (userInfo) {
+                var now = new Date();
+                var age = now.getTime() - userInfo.lastLocationTime.getTime();
+                console.log(
+                  "age of location is ",
+                  age,
+                  self.name,
+                  " last loc time ",
+                  userInfo.lastLocationTime.getTime()
+                );
+                if (age > 300000) {
+                  //useTowerLocation(self, options);
+                }
+              }
+            });
+          }, 240000);
         }
       }
     } else if (this.type == "LocationUnavilable") {
       var self = this;
       if (self.cid > 0 && this.lac > 0) {
-         console.log('use tower info as LocationUnavilable ' + self.name);
-          var UserInfoModel = loopback.getModelByType("UserInfo");
-          var filter = {where : {id : self.userId}};
-              UserInfoModel.findOne(filter, options, function(err, userInfo) {
-                if (userInfo) {
-                    var now = new Date();
-                    var age = now.getTime() - userInfo.lastLocationTime.getTime();
-                    console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
-                    if (age > 300000) {
-                      useTowerLocation(self, options);
-                    }
-                }
-              });
+        console.log("use tower info as LocationUnavilable " + self.name);
+        var UserInfoModel = loopback.getModelByType("UserInfo");
+        var filter = { where: { id: self.userId } };
+        UserInfoModel.findOne(filter, options, function(err, userInfo) {
+          if (userInfo) {
+            var now = new Date();
+            var age = now.getTime() - userInfo.lastLocationTime.getTime();
+            console.log(
+              "age of location is ",
+              age,
+              self.name,
+              " last loc time ",
+              userInfo.lastLocationTime.getTime()
+            );
+            if (age > 300000) {
+              useTowerLocation(self, options);
             }
+          }
+        });
+      }
     } else if (this.type == "LocationJobResult") {
       var Location = loopback.getModel("Location");
       var postGPS = false;

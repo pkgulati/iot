@@ -6,7 +6,6 @@ Days  X1 X2
 Days  X3 X4
 
 
-
 ## Optimize
 1. Simple Periodic like every 6 or 8 hours
 2. Day time Periodic 
@@ -24,6 +23,7 @@ Days  X3 X4
 
 1530596700000
 
+{"where":{"ownerUserId":"5acb3b18146ca8f84d18a8b0"}}
 {"order":"smsTime DESC", "limit":100}
 
 {"order":"time DESC", "limit":100, "where":{"type":"SwipeLocationResult"}}
