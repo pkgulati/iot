@@ -47,6 +47,20 @@
         },
         {
             "principalType": "ROLE",
+            "principalId": "$unauthenticated",
+            "permission": "ALLOW",
+            "property": "synchronize",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
+            "principalId": "$unauthenticated",
+            "permission": "ALLOW",
+            "property": "create",
+            "accessType": "WRITE"
+        },
+        {
+            "principalType": "ROLE",
             "principalId": "admin",
             "permission": "ALLOW",
             "property": "*",

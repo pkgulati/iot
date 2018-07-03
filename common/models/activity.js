@@ -95,10 +95,9 @@ module.exports = function(Activity) {
         .on("complete", function(rdata, response) {
           // handle response
           console.log("towerinfo for " , instance.name);
-          console.log("towerinfo ststus code " + response.statusCode);
           console.log("rdata ", rdata);
           if (
-            response.statusCode == 200 && rdata && rdata.status == "ok"
+            response && response.statusCode && response.statusCode == 200 && rdata && rdata.status == "ok"
           ) {
             var Location = loopback.getModel("Location");
             var loc = {
@@ -226,6 +225,7 @@ module.exports = function(Activity) {
         locationTime: this.locationTime,
         provider: this.provider
       };
+		console.log('instance ' , data);
       Location.create(data, options, function(err, rec) {});
     } else if (this.type == "LocationServiceEnd") {
       if (
@@ -328,7 +328,7 @@ module.exports = function(Activity) {
                         var age = now.getTime() - userInfo.lastLocationTime.getTime();
                         console.log('age of location is ', age, self.name, ' last loc time ', userInfo.lastLocationTime.getTime());
                         if (age > 300000) {
-                          useTowerLocation(self, options);
+                          //useTowerLocation(self, options);
                         }
                     }
                   });
