@@ -230,13 +230,14 @@ module.exports = function(Activity) {
         var SwipeData = loopback.getModel("SwipeData");
 	var d1 = moment(self.time).tz('Asia/Calcutta');
 	var yyyymmdd = d1.format('YYYYMMDD');
-	var filter = {where:{yyymmdd:yyyymmdd, userId:self.userId}};
-        SwipeData.findOne(filter, options, function(err, dbrec){
+	var filter = {where:{yyyymmdd:yyyymmdd, userId:self.userId}};
+        SwipeData.find(filter, options, function(err, list){
 		if (err) {
 			return ;
 		}
-		console.log('filter ', filter);
-		if (dbrec) {
+		console.log('filter ', filter, list.length);
+		if (list && list.length > 0) {
+			var dbrec = list[0];
 			console.log('swipe data exists');
 		    if (!dbrec.reachedOfficeTime || dbrec.reachedOfficeTime <= 0) {
 			dbrec.updateAttributes( { reachedOfficeTime: self.time, reachedOffice:true}, options, function() {
