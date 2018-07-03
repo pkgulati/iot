@@ -30,10 +30,9 @@ module.exports = function(FCM) {
       return;
     }
     var self = this;
-    AppUser.findById(self.userId, options, function(err, user) {
-      if (user && user.deviceToken) {
+    if (self.deviceToken) {
         var message = {
-          token: user.deviceToken
+          token: self.deviceToken
         };
         if (self.highPriority) {
           message.android = {
@@ -81,14 +80,7 @@ module.exports = function(FCM) {
             console.log("Error sending message:", error);
             cb(error, null);
           });
-      } else {
-        self.updateAttributes(
-          { status: "No Device Token For User" },
-          options,
-          function() {}
-        );
       }
-    });
   };
   FCM.observe("before save", function(ctx, next) {
     if (ctx.isNewInstance && ctx.instance && ctx.instance.userName) {
@@ -103,7 +95,10 @@ module.exports = function(FCM) {
           return next();
         }
         ctx.instance.userId = user.id;
-	next();
+        if (!ctx.instance.deviceToken && user.deviceToken) {
+          ctx.instance.deviceToken = user.deviceToken;
+        }
+	       next();
       });
     } else {
       next();    

@@ -18,7 +18,7 @@ Application to learn and share IOT stuff
 
 {"order":"smsTime DESC", "limit":100}
 
-{"order":"time DESC", "limit":100, "where":{"type":"SwipeLocationResult}}
+{"order":"time DESC", "limit":100, "where":{"type":"SwipeLocationResult"}}
 
 {"fields":{"jobs":true,"type":true, "name":false, "jobName":true,"latitude":false, "provider":false, "accuracy":false, "longitude":false, "jobId":true, "time":false, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{"name":"xyz"}}
 

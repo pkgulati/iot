@@ -28,9 +28,24 @@ var loc = {
     return dist
 }
 
+//
+// bldg30 back entrance 
+// 12.849584, 77.665728
 
 // infosys 12.847417, 77.663111
 // elite 12.905620, 77.600501
 // indirangar 12.967609, 77.641135
+
+// indiranaga to elite = 8179.45
+// indira nagar to sonyworld
+
+// sonyworld 12.937351, 77.626924   
+// indiranagar to sonyworld 3700.22
+
+// ejipura
+// 12.938574,77.632687
+// ejipura to indiranagar 3355.83
+
+
 
 console.log('distance is ', distance(12.967609, 77.641135,12.905620, 77.600501));
