@@ -36,7 +36,7 @@ var intervalFunc = function() {
   async.series(
     {
       appuser: function(callback) {
-        var filter = {where:{id:userId}};
+        var filter = { where: { id: userId } };
         AppUser.findOne(filter, options, function(err, rec) {
           if (!rec) {
             callback(new Error("User not found " + userId));
@@ -67,25 +67,25 @@ var intervalFunc = function() {
       },
       swipedata: function(callback) {
         var filter = { where: { id: userId } };
-	var now = new Date();
-    	var d1 = moment(now.getTime()).tz("Asia/Calcutta");
-    	var yyyymmdd = d1.format("YYYYMMDD");
-    	var filter = { where: { yyyymmdd: yyyymmdd, userId: userId } };
-    	SwipeData.findOne(filter, options, function(err, dbrec) {
-      	   if (dbrec) {
-          	callback(null, dbrec);
-	   } else {
-		var data = {
-		  reachedOffice: false,
-		  yyyymmdd: yyyymmdd,
-		  userId: userId,
-		  time: now.getTime(),
-		  statusRemarks: "Have a good day"
-		};
-    	        SwipeData.create(data, options, function(err, rec) {
-			callback(err, rec);
-		});
-	   }
+        var now = new Date();
+        var d1 = moment(now.getTime()).tz("Asia/Calcutta");
+        var yyyymmdd = d1.format("YYYYMMDD");
+        var filter = { where: { yyyymmdd: yyyymmdd, userId: userId } };
+        SwipeData.findOne(filter, options, function(err, dbrec) {
+          if (dbrec) {
+            callback(null, dbrec);
+          } else {
+            var data = {
+              reachedOffice: false,
+              yyyymmdd: yyyymmdd,
+              userId: userId,
+              time: now.getTime(),
+              statusRemarks: "Have a good day"
+            };
+            SwipeData.create(data, options, function(err, rec) {
+              callback(err, rec);
+            });
+          }
         });
       }
     },
@@ -94,34 +94,55 @@ var intervalFunc = function() {
         console.log("Error ", err);
         return;
       }
-	console.log('lastFCMRequestTime ', results.userinfo.lastFCMRequestTime);
-	console.log('check distance and time');
+
+      console.log("lastFCMRequestTime ", results.userinfo.lastFCMRequestTime);
+      console.log("check distance and time");
+
+      // last FCM communication
+      // If FCM is active or not
+      // Current Hour 
+      // Base Location 
+      // Home or Office or Base Locatio
+      // At current location since what time
+      // Last 15 mins moving or not
+
+      // State 0
+      // At Location1 Since long
+      
+
       if (results.swipedata.reachedOffice) {
-		console.log('already reached office');
+        console.log("already reached office");
       } else {
-      	var now = new Date();
-      	var age = (now.getTime() - results.userinfo.lastLocationTime.getTime()) / 60000;
-      	console.log("location age in minutes ", age);
-	if (age > 3) {
-	var distance = calcDistance(results.swipeconfig.latitude, 
-			results.swipeconfig.longitude, 
-			results.userinfo.latitude, 
-			results.userinfo.longitude);
-	console.log('distance is ' , distance);
-	if (distance < 5000) {
-		var data = {
-			type : 'startFCMJob',
-			deviceToken : results.swipeconfig.deviceToken,
-			highPriority: true,	
-		}
-		FCM.create(data, options, function(err, rec) {
-			console.log('FCM created ', err, rec);
-		});
-		results.userinfo.updateAttributes({lastFCMRequestTime : now.getTime()}, options, function(err, rec) {
-			console.log('lastFCMRequestTime update ' , err, rec);
-		});
-	}
-       }
+        var now = new Date();
+        var age =
+          (now.getTime() - results.userinfo.lastLocationTime.getTime()) / 60000;
+        console.log("location age in minutes ", age);
+        if (age > 3) {
+          var distance = calcDistance(
+            results.swipeconfig.latitude,
+            results.swipeconfig.longitude,
+            results.userinfo.latitude,
+            results.userinfo.longitude
+          );
+          console.log("distance is ", distance);
+          if (distance < 5000) {
+            var data = {
+              type: "startFCMJob",
+              deviceToken: results.swipeconfig.deviceToken,
+              highPriority: true
+            };
+            FCM.create(data, options, function(err, rec) {
+              console.log("FCM created ", err, rec);
+            });
+            results.userinfo.updateAttributes(
+              { lastFCMRequestTime: now.getTime() },
+              options,
+              function(err, rec) {
+                console.log("lastFCMRequestTime update ", err, rec);
+              }
+            );
+          }
+        }
       }
     }
   );
