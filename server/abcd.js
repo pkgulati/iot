@@ -34,7 +34,7 @@ var intervalFunc = function() {
   async.series(
     {
       appuser: function(callback) {
-        var filter = { where: { userId: userId } };
+        var filter = {where:{userId:userId}};
         AppUser.findOne(filter, options, function(err, rec) {
           if (!rec) {
             callback(new Error("User not found " + userId));
@@ -56,7 +56,7 @@ var intervalFunc = function() {
       swipeconfig: function(callback) {
         var filter = { where: { id: userId } };
         SwipeConfiguration.findOne(filter, options, function(err, rec) {
-          if (!config) {
+          if (!rec) {
             callback(new Error("SwipeConfig not found " + userId));
             return;
           }
