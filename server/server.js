@@ -18,19 +18,19 @@ if (hostName.startsWith('BLR')) {
 // as of now it used for picking providers.json
 app.locals.apphome = __dirname;
 
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'", "iot.kpraveen.in", "evsocial.evoncloud.com"]
-  }
-}));
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     defaultSrc: ["'self'", "iot.kpraveen.in", "evsocial.evoncloud.com"]
+//   }
+// }));
 
-var sixtyDaysInSeconds = 5184000
-app.use(helmet.hsts({
-  maxAge: sixtyDaysInSeconds,
-includeSubdomains: true
-}));
+// var sixtyDaysInSeconds = 5184000
+// app.use(helmet.hsts({
+//   maxAge: sixtyDaysInSeconds,
+// includeSubdomains: true
+// }));
 
-app.use(helmet.noSniff());
+// app.use(helmet.noSniff());
 
 options.bootDirs.push(path.join(__dirname, 'boot'));
 options.clientAppRootDir = __dirname;
@@ -62,7 +62,7 @@ app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
 
-app.use(function (req, res, next) {   
-console.log('Time:', Date.now() , 'URL ', req.url);
- next();
-}); 
+// app.use(function (req, res, next) {   
+// console.log('Time:', Date.now() , 'URL ', req.url);
+//  next();
+// }); 

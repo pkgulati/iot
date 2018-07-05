@@ -56,7 +56,7 @@ module.exports = function locFn(Location) {
 								longitude : ctx.instance.longitude,
 								accuracy : ctx.instance.accuracy,
 								lastLocationTime : locationTime,
-								name : ctx.options.ctx.username,
+								name : ctx.instance.name,
 								provider : ctx.instance.provider 
 							}, ctx.options, function(err, dbresult){
 								console.log('update of userinfo ', err, dbresult.name);

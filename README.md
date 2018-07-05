@@ -19,7 +19,7 @@ Days  X3 X4
 // using 
 {"fields":{"name":true, "justtime":true},"order":"time DESC", "limit":100,  "where":{"name": {"nin":["locadmin","praveen", "ajith"]} ,"type": "MainActivity"}}
 
-{"order":"time DESC", "limit":100}
+{"order":"time DESC", "limit":10}
 
 1530596700000
 

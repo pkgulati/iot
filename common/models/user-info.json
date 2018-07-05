@@ -17,6 +17,9 @@
         "lastLocationTime" : {
             "type" : "Date"
         },
+        "lastStatusRequestTime" : {
+            "type" : "Number"
+        },
         "accuracy" : {
             "type" : "Number",
             "default" : 0

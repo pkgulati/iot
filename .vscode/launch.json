@@ -27,6 +27,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Batch",
+            "runtimeExecutable":"/usr/local/bin/node",
+            "program": "${workspaceFolder}/server/batch.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Days",
             "program": "${workspaceFolder}/server/adddays.js"
         }

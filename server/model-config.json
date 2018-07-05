@@ -346,5 +346,9 @@
     "SwipeData" : {
         "public": true,
         "dataSource": "db"
+    },
+    "Testing" : {
+        "public": true,
+        "dataSource": "transient"
     }
 }

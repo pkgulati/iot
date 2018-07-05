@@ -4,25 +4,40 @@
 	"description": "Stores swipe data",
 	"properties": {
 		"yyyymmdd" : {
-            "type" : "String"
+            "type" : "String",
+            "required" : true
         },
         "swipeInTime" : {
-            "type" : "Number"
+            "type" : "Number",
+            "default" : 0
         },
         "swipeOutTime" : {
-            "type" : "Number"
+            "type" : "Number",
+            "default" : 0
         },
-        "reachedTime" : {
-            "type" : "Number"
+        "reachedOfficeTime" : {
+            "type" : "Number",
+            "default" : 0
+        },
+        "inTime" : {
+            "type" : "Number",
+            "description" : "if inTime is given swipeInTime, reachedOffice is not considered, otherwise they are considered with additional tolerance time"
+        },
+        "reachedOffice" : {
+            "type" : "Boolean",
+            "default" : false
         },
         "leavingTime" : {
-            "type" : "Number"
+            "type" : "Number",
+            "default" : 0
         },
         "userId" : {
-            "type" : "String"
+            "type" : "String",
+            "required" : true
         },
-        "maxServiceDuration" : {
-            "type" : "Number"
+        "name" : {
+            "type" : "String",
+            "required" : true
         }
     },
     "relations": {

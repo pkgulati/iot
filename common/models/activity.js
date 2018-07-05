@@ -4,6 +4,24 @@ var moment = require("moment-timezone");
 var restler = require("restler");
 
 module.exports = function(Activity) {
+  function calcDistance(lat1, lon1, lat2, lon2) {
+    var radlat1 = Math.PI * lat1 / 180;
+    var radlat2 = Math.PI * lat2 / 180;
+    var radlon1 = Math.PI * lon1 / 180;
+    var radlon2 = Math.PI * lon2 / 180;
+    var theta = lon1 - lon2;
+    var radtheta = Math.PI * theta / 180;
+    var dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist);
+    dist = dist * 180 / Math.PI;
+    dist = dist * 60 * 1.1515;
+    dist = dist * 1609.344;
+
+    return dist;
+  }
+
   Activity.synchronize = function(array, options, cb) {
     var results = [];
     async.forEachOf(
@@ -135,6 +153,69 @@ module.exports = function(Activity) {
     next();
   });
 
+  var markAsReached = function(self, options) {
+    // insert or update swipe data
+    SwipeData = loopback.getModelByType("SwipeData");
+    var d1 = moment(self.time).tz("Asia/Calcutta");
+    var yyyymmdd = d1.format("YYYYMMDD");
+    var filter = { where: { yyyymmdd: yyyymmdd, userId: self.userId } };
+    SwipeData.findOne(filter, options, function(err, dbrec) {
+      if (dbrec) {
+        if (!dbrec.reachedOffice) {
+          dbrec.updateAttributes(
+            { reachedOffice: true, reachedOfficeTime: self.time },
+            options,
+            function(err, updrec) {
+              if (err)
+                console.log(
+                  "could not update reachedOfficeTime in swipe data",
+                  dbrec.id
+                );
+            }
+          );
+        } else {
+          console.log("already marked as reached");
+        }
+      } else {
+        var data = {
+          reachedOfficeTime: self.time,
+          reachedOffice: true,
+          yyyymmdd: yyyymmdd,
+          userId: self.userId,
+          time: self.time,
+          name: self.name,
+          statusRemarks: "Have a good day"
+        };
+        SwipeData.create(data, options, function(err, newrec) {
+          if (err) console.log("swipe data insert error", err);
+          if (newrec) console.log('swipe data created', newrec.id);
+        });
+      }
+    });
+  };
+
+  var checkIfReached = function(self, options) {
+    var SwipeConfiguration = loopback.getModelByType("SwipeConfiguration");
+    var filter = { where: { id: self.userId } };
+    // We can cache SwipeConfiguration
+    SwipeConfiguration.findOne(filter, options, function(err, cfg) {
+      if (cfg) {
+        var dist = calcDistance(
+          cfg.latitude,
+          cfg.longitude,
+          self.latitude,
+          self.longitude
+        );
+        console.log('distance from office ', self.name, dist);
+        if (dist < 100) {
+          markAsReached(self, options);
+        } 
+      } else {
+        console.log('no swipe config for ', self.userId);
+      }
+    });
+  };
+
   Activity.prototype.process = function(options) {
     if (this.type == "ViewContact" && this.contactId) {
       var self = this;
@@ -219,14 +300,18 @@ module.exports = function(Activity) {
     } else if (this.type == "MySwipe") {
       var SwipeConfiguration = loopback.getModel("SwipeConfiguration");
       var self = this;
-      SwipeConfiguration.findById(self.userId, options, function(err, config){
-          if (config) {
-            config.updateAttributes({"deviceToken":self.deviceToken}, options, function(err, updrec){
-                if (err) {
-                  console.log('swipe deviceToken update error', err);
-                }
-            });
-          }
+      SwipeConfiguration.findById(self.userId, options, function(err, config) {
+        if (config) {
+          config.updateAttributes(
+            { deviceToken: self.deviceToken },
+            options,
+            function(err, updrec) {
+              if (err) {
+                console.log("swipe deviceToken update error", err);
+              }
+            }
+          );
+        }
       });
     } else if (this.type == "LocationResult") {
       var Location = loopback.getModel("Location");
@@ -237,49 +322,18 @@ module.exports = function(Activity) {
         accuracy: this.accuracy,
         justtime: this.justtime,
         locationTime: this.locationTime,
-        provider: this.provider
+        provider: this.provider,
+        name : this.name
       };
       Location.create(data, options, function(err, rec) {});
+      if (
+        this.userId == "5acb3b19146ca8f84d18a8b1" ||
+        this.userId == "5acb3b18146ca8f84d18a8b0"
+      ) {
+        checkIfReached(this, options);
+      }
     } else if (this.type == "ReachedOffice") {
-      var self = this;
-      var SwipeData = loopback.getModel("SwipeData");
-      var d1 = moment(self.time).tz("Asia/Calcutta");
-      var yyyymmdd = d1.format("YYYYMMDD");
-      var filter = { where: { yyyymmdd: yyyymmdd, userId: self.userId } };
-      SwipeData.find(filter, options, function(err, list) {
-        if (err) {
-          return;
-        }
-        if (list && list.length > 0) {
-          var dbrec = list[0];
-          if (dbrec.reachedOfficeTime && dbrec.reachedOfficeTime > 0) {
-            console.log("already reached do not update");
-          } else {
-            console.log("swipe data update reach time");
-            dbrec.updateAttributes(
-              { reachedOfficeTime: self.time, reachedOffice: true },
-              options,
-              function() {
-                if (err) console.log("swipeData update error ", err);
-              }
-            );
-          }
-        } else {
-          var data = {
-            reachedOfficeTime: self.time,
-            reachedOffice: true,
-            yyyymmdd: yyyymmdd,
-            userId: self.userId,
-            time: self.time,
-            name: self.name,
-            statusRemarks: "Have a good day"
-          };
-          SwipeData.create(data, options, function(err, newrec) {
-            if (err) console.log("swipe data insert error", err);
-            if (newrec) console.log(newrec);
-          });
-        }
-      });
+      markAsReached(this, options);
     } else if (this.type == "LocationServiceEnd") {
       if (
         this.data &&
