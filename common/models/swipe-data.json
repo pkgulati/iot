@@ -36,8 +36,7 @@
             "required" : true
         },
         "name" : {
-            "type" : "String",
-            "required" : true
+            "type" : "String"
         }
     },
     "relations": {
