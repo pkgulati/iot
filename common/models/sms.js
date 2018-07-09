@@ -87,7 +87,8 @@ module.exports = function(SMS) {
       var day = message.substring(pos + 12, pos + 14);
       var hour = message.substring(pos + 27, pos + 29);
       var mins = message.substring(pos + 30, pos + 32);
-      var swipeTime = new Date(year, month, day, hour, mins, 0);
+      var d1 = new Date(year, month, day, hour, mins, 0);
+	var swipeTime = new Date(d1.getTime() - 19800000);
       console.log("Punched time ", swipeTime);
       updateSwipeData(ctx.instance, swipeTime, ctx.options);
     } else {

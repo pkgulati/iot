@@ -62,7 +62,17 @@ app.get('/', function (req, res) {
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
 
+var debug = false;
+app.get('/debug/start', function(req, res) {
+	debug = true;
+	res.sendStatus(200);
+});
+app.get('/debug/stop', function(req, res) {
+	debug = false;
+	res.sendStatus(200);
+});
  app.use(function (req, res, next) {   
- console.log('Time:', Date.now() , 'URL ', req.url);
-  next();
+   if (debug)
+       console.log('Time:', Date.now() , 'URL ', req.url);
+   next();
  }); 
