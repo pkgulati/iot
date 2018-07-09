@@ -15,6 +15,12 @@ Days  X3 X4
 # Building 30
 12.8496886,77.6659607
 "type" : {"nin" : ["FCMResponse", "TeamApplication", "FCMJobFinish", "WifiJob", "FCMJobStart"]} 
+"type":{"nin" : ["MainActivity", "ViewContact","StopViewContact"]}
+
+{"where":{"type":{"nin" : ["MainActivity", "ViewContact","StopViewContact"]}}}
+
+{"fields":{"jobs":true,"type":true, "name":false, "jobName":true,"latitude":false, "provider":false, "accuracy":false, "longitude":false, "jobId":true, "time":false, "batteryPercentage" : true, "justtime":true},"order":"time DESC", "limit":100, "where":{ "jobId": {"neq":10},  "name":"shashi", "type":{"nin" : ["MainActivity", "ViewContact","StopViewContact"]}}}
+
 
 // using 
 {"fields":{"name":true, "justtime":true},"order":"time DESC", "limit":100,  "where":{"name": {"nin":["locadmin","praveen", "ajith"]} ,"type": "MainActivity"}}

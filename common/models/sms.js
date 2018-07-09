@@ -27,7 +27,16 @@ module.exports = function(SMS) {
           // ignore
         } else {
           var upd = {};
-          if (dbrec.swipeOutTime > 0) {
+          if (date.getHours() <= 12) {
+            if (time < dbrec.swipeInTime) {
+                upd.swipeInTime = time;
+            }
+          } else if (date.getHours() >= 17) {
+            if (time > dbrec.swipeOutTime) {
+                upd.swipeOutTime = time;
+            }
+          }
+          else if (dbrec.swipeOutTime > 0) {
             // already swiped out
             if (time > dbrec.swipeOutTime) {
               upd.swipeOutTime = time;
@@ -35,10 +44,8 @@ module.exports = function(SMS) {
               upd.statusRemarks = "Multiple swipe?";
             }
           } else if (dbrec.swipeInTime > 0) {
-            if (dbrec.swipeInTime > time) {
-              upd.swipeInTime = time;
-            } else if (time - dbrec.swipeInTime > ONE_HOUR) {
-              upd.swipeOutTime = time;
+            if (time < dbrec.swipeInTime) {
+                upd.swipeInTime = time;
             } else {
               upd.statusRemarks = "Multiple swipe?";
             }
