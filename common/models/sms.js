@@ -27,33 +27,32 @@ module.exports = function(SMS) {
           // ignore
         } else {
           var upd = {};
-          if (date.getHours() <= 12) {
-            if (time < dbrec.swipeInTime) {
+          if (dbrec.swipeInTime == 0) {
+            // first swipe
+            if (date.getHours() <= 15) {
+                 // normal swip in
                 upd.swipeInTime = time;
             }
-          } else if (date.getHours() >= 17) {
-            if (time > dbrec.swipeOutTime) {
-                upd.swipeOutTime = time;
+            else if (dbrec.swipeOutTime == 0) {
+              upd.swipeOutTime = time;
+            } else if (time > dbrec.swipeOutTime) {
+               upd.swipeOutTime = time;
+            } else {
+              // multiple swipes 
+              upd.statusRemarks = "multiple swipes?";
             }
           }
-          else if (dbrec.swipeOutTime > 0) {
-            // already swiped out
-            if (time > dbrec.swipeOutTime) {
-              upd.swipeOutTime = time;
-            } else {
-              upd.statusRemarks = "Multiple swipe?";
-            }
-          } else if (dbrec.swipeInTime > 0) {
-            if (time < dbrec.swipeInTime) {
+          else if (dbrec.swipeOutTime > 0 ) {
+              // swipe after swipe out
+              if (time > dbrec.swipeOutTime) {
+                upd.swipeOutTime = time;
+              }
+          } else if (time < dbrec.swipeInTime) {
                 upd.swipeInTime = time;
-            } else {
-              upd.statusRemarks = "Multiple swipe?";
-            }
-          } else if (date.getHours() >= 16) {
-            // compare with reachedInTime {
-            upd.swipeOutTime = time;
+          } else if (time - dbrec.swipeInTime > ONE_HOUR) {
+                upd.swipeOutTime = time;
           } else {
-            upd.swipeInTime = time;
+            upd.statusRemarks = "multiple swipes?";
           }
           dbrec.updateAttributes(upd, options, function(err, updrec) {
             if (err) console.log("could not update swipe data", dbrec.id);
