@@ -2,3 +2,5 @@ log
 nodered/.config.json
 package-lock.json
 client/images
+client/bower_components
+bower_components
