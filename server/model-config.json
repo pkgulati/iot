@@ -350,5 +350,9 @@
     "Testing" : {
         "public": true,
         "dataSource": "transient"
+    },
+    "SurveyData" : {
+        "public": true,
+        "dataSource": "db"
     }
 }

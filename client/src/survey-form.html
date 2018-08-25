@@ -68,15 +68,14 @@
             paper-radio-group {
                 min-width: 300px;
                 max-width: 550px;
-               @apply(--layout-flex);
+                @apply(--layout-flex);
             }
 
             paper-radio-button {
                 min-width: 300px;
                 max-width: 550px;
-             @apply(--layout-flex);
+                @apply(--layout-flex);
             }
-
         </style>
 
         <iron-pages selected="{{step}}" attr-for-selected="name">
@@ -236,6 +235,9 @@
         </iron-pages>
         <div id="fields" class="fields layout  horizontal wrap">
         </div>
+
+        <iron-ajax id="xhr" method="POST" content-type="application/json" handle-as="json" on-response="handleResponse" ></iron-ajax>
+
     </template>
 
     <script>
@@ -245,7 +247,16 @@
                 step: {
                     type: "String",
                     value: "initial"
+                },
+                surveydata: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
                 }
+            },
+            attached: function () {
+
             },
             _submitInitial: function () {
                 this.set("step", "owner");
@@ -274,8 +285,18 @@
             _submitOthers: function () {
                 this.set("step", "final");
                 Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+                this._submitData();
+            },
+            _submitData: function () {
+                console.log('survey data ', this.surveydata);
+                this.$.xhr.url = "/api/surveydata";
+                this.$.xhr.body = this.surveydata;
+                this.$.xhr.generateRequest();
+            },
+            handleResponse : function(e) {
+                console.log('handleResponse ', e.detail.response);
             }
         });
-    </script>
+     </script>
 
 </dom-module>
